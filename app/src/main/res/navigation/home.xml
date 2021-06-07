@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home"
+    app:startDestination="@id/profile">
+    <fragment
+        android:id="@+id/profile"
+        android:name="com.ada.mybuffet.screens.profile.Profile"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/newShare"
+        android:name="com.ada.mybuffet.screens.newShare.NewShare"
+        android:label="fragment_new_share"
+        tools:layout="@layout/fragment_new_share" >
+        <action
+            android:id="@+id/action_newShare_to_myShares"
+            app:destination="@id/myShares" />
+    </fragment>
+    <fragment
+        android:id="@+id/myShares"
+        android:name="com.ada.mybuffet.screens.myShares.ShareDetail"
+        android:label="fragment_share_detail"
+        tools:layout="@layout/fragment_share_detail" />
+</navigation>
