@@ -20,7 +20,15 @@
     </fragment>
     <fragment
         android:id="@+id/myShares"
-        android:name="com.ada.mybuffet.screens.myShares.ShareDetail"
+        android:name="com.ada.mybuffet.screens.myShares.MyShares"
         android:label="fragment_share_detail"
-        tools:layout="@layout/fragment_share_detail" />
+        tools:layout="@layout/fragment_share_detail" >
+        <action
+            android:id="@+id/action_myShares_to_shareDetail2"
+            app:destination="@id/shareDetail2" />
+    </fragment>
+    <fragment
+        android:id="@+id/shareDetail2"
+        android:name="com.ada.mybuffet.screens.myShares.ShareDetail"
+        android:label="ShareDetail" />
 </navigation>
