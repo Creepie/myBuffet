@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home"
-    app:startDestination="@id/profile">
+    app:startDestination="@id/myShares">
     <fragment
         android:id="@+id/profile"
         android:name="com.ada.mybuffet.screens.profile.Profile"
@@ -26,9 +26,17 @@
         <action
             android:id="@+id/action_myShares_to_shareDetail2"
             app:destination="@id/shareDetail2" />
+        <action
+            android:id="@+id/action_myShares_to_newShare"
+            app:destination="@id/newShare" />
     </fragment>
     <fragment
         android:id="@+id/shareDetail2"
         android:name="com.ada.mybuffet.screens.myShares.ShareDetail"
         android:label="ShareDetail" />
+    <fragment
+        android:id="@+id/news"
+        android:name="com.ada.mybuffet.screens.news.News"
+        android:label="fragment_news"
+        tools:layout="@layout/fragment_news" />
 </navigation>

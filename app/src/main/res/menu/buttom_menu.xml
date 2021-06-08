@@ -7,9 +7,9 @@
         android:icon="@drawable/ic_money"
         />
     <item
-        android:id="@+id/newShare"
-        android:title="Add Share"
-        android:icon="@drawable/ic_add"
+        android:id="@+id/news"
+        android:title="News"
+        android:icon="@drawable/ic_news"
         />
     <item
         android:id="@+id/profile"
