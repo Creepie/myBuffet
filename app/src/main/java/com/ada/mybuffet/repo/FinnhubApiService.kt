@@ -13,7 +13,7 @@ import retrofit2.http.Url
  * sandbox_c2vgcniad3i9mrpv9cn0
  */
 
-private const val Base_URL = "https://finnhub.io/api/v1"
+private const val Base_URL = "https://finnhub.io/api/v1/"
 
 private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
