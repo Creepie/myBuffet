@@ -6,8 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ada.mybuffet.R
+import com.ada.mybuffet.repo.SymbolPressResponse
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,10 +44,17 @@ class News : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val btn = view.findViewById<Button>(R.id.news_bT_loadNews)
+        val txt = view.findViewById<TextView>(R.id.news_tV_news)
 
         btn.setOnClickListener {
             viewModel.getNews()
         }
+
+        val observer = Observer<SymbolPressResponse> {
+            newNews -> txt.text = newNews.symbol
+        }
+
+        viewModel.news.observe(viewLifecycleOwner,observer)
     }
 
     override fun onCreateView(
