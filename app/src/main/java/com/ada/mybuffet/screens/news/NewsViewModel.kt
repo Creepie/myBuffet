@@ -12,25 +12,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 class NewsViewModel (application: Application) : AndroidViewModel(application){
+    var model = NewsModel(viewModelScope)
 
-    private var _news = MutableLiveData<SymbolPressResponse>()
 
-    val news: LiveData<SymbolPressResponse>
-        get() = _news
 
     init {
-        getNews()
+        model.loadAll()
     }
 
-    fun getNews(){
-        viewModelScope.launch {
-            try {
-                FinnhubApi.retrofitService
-                _news.value = FinnhubApi.retrofitService.getPressNews("https://finnhub.io/api/v1/press-releases?symbol=AAPL&token=sandbox_c2vgcniad3i9mrpv9cn0")
-                print("x")
-            } catch (networkError: IOException){
-                print("y")
-            }
-        }
-    }
+
 }

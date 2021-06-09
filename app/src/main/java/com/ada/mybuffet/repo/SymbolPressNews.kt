@@ -7,7 +7,7 @@ data class SymbolPressResponse(
 
 data class SymbolPressEntry(
     val symbol: String,
-    val datetime: String,
+    val datetime: String? = null,
     val headline: String,
     val description: String
 )

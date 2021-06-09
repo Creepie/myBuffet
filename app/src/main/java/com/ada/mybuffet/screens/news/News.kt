@@ -9,7 +9,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.ada.mybuffet.R
+import com.ada.mybuffet.features.NewsRecyclerAdapter
 import com.ada.mybuffet.repo.SymbolPressResponse
 
 // TODO: Rename parameter arguments, choose names that match
@@ -45,16 +48,23 @@ class News : Fragment() {
 
         val btn = view.findViewById<Button>(R.id.news_bT_loadNews)
         val txt = view.findViewById<TextView>(R.id.news_tV_news)
+        val test = view.findViewById<RecyclerView>(R.id.news_recycler)
 
         btn.setOnClickListener {
-            viewModel.getNews()
+            viewModel.model.loadAll()
         }
 
-        val observer = Observer<SymbolPressResponse> {
-            newNews -> txt.text = newNews.symbol
+        test.layoutManager = LinearLayoutManager(activity)
+
+
+
+        val observer = Observer<MutableList<SymbolPressResponse>> {
+            newNews ->
+            val adapter = NewsRecyclerAdapter(newNews)
+            test.adapter = adapter
         }
 
-        viewModel.news.observe(viewLifecycleOwner,observer)
+        viewModel.model.news.observe(viewLifecycleOwner,observer)
     }
 
     override fun onCreateView(
