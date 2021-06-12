@@ -64,7 +64,7 @@ class News : Fragment() {
             test.adapter = adapter
         }
 
-        viewModel.model.news.observe(viewLifecycleOwner,observer)
+        viewModel.news.observe(viewLifecycleOwner,observer)
     }
 
     override fun onCreateView(

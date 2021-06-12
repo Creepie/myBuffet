@@ -20,6 +20,7 @@ class NewsModel(var viewModelScope: CoroutineScope) {
     val news: LiveData<MutableList<SymbolPressResponse>>
         get() = _news
 
+
     fun loadAll(){
         urlList.add("https://finnhub.io/api/v1/press-releases?symbol=AAPL&token=sandbox_c2vgcniad3i9mrpv9cn0")
         urlList.add("https://finnhub.io/api/v1/press-releases?symbol=VOE.VI&token=sandbox_c2vgcniad3i9mrpv9cn0")
@@ -31,11 +32,9 @@ class NewsModel(var viewModelScope: CoroutineScope) {
     fun getNews(url: String){
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                FinnhubApi.retrofitService
                 val test = FinnhubApi.retrofitService.getPressNews(url)
                 list.add(test)
                 _news.postValue(list)
-
             } catch (networkError: IOException){
                 Log.i("API","fetchNews Error with code: ${networkError.message}")
             }
