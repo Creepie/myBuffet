@@ -26,15 +26,10 @@ class NewsViewModel (application: Application) : AndroidViewModel(application){
     }
 
 
-    fun loadData(){
-        model.loadAll()
-
-        val observer = Observer<MutableList<SymbolPressResponse>> {
-                newNews -> _news.value = newNews
-
-        }
-
-        model.news.observeForever(observer)
+   fun loadData(){
+       viewModelScope.launch {
+           _news.value = model.loadAll()
+       }
     }
 
 

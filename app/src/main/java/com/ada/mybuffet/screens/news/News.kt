@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ada.mybuffet.R
+import com.ada.mybuffet.databinding.FragmentNewsBinding
 import com.ada.mybuffet.features.NewsRecyclerAdapter
 import com.ada.mybuffet.repo.SymbolPressResponse
 
@@ -26,6 +27,8 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class News : Fragment() {
+    var _binding: FragmentNewsBinding? = null
+    val binding: FragmentNewsBinding get() = _binding!!
 
     private val viewModel: NewsViewModel by lazy {
         ViewModelProvider(this).get(NewsViewModel::class.java)
@@ -46,22 +49,20 @@ class News : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val btn = view.findViewById<Button>(R.id.news_bT_loadNews)
-        val txt = view.findViewById<TextView>(R.id.news_tV_news)
-        val test = view.findViewById<RecyclerView>(R.id.news_recycler)
+        binding.newsBTLoadNews
 
-        btn.setOnClickListener {
-            viewModel.model.loadAll()
+        binding.newsBTLoadNews.setOnClickListener {
+            viewModel.loadData()
         }
 
-        test.layoutManager = LinearLayoutManager(activity)
+        binding.newsRecycler.layoutManager = LinearLayoutManager(activity)
 
 
 
         val observer = Observer<MutableList<SymbolPressResponse>> {
             newNews ->
             val adapter = NewsRecyclerAdapter(newNews)
-            test.adapter = adapter
+            binding.newsRecycler.adapter = adapter
         }
 
         viewModel.news.observe(viewLifecycleOwner,observer)
@@ -71,8 +72,14 @@ class News : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentNewsBinding.inflate(inflater,container,false)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_news, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

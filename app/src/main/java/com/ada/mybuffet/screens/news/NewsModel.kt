@@ -11,7 +11,7 @@ import java.io.IOException
 
 class NewsModel(var viewModelScope: CoroutineScope) {
 
-    var list = ArrayList<SymbolPressResponse>()
+    private var list = ArrayList<SymbolPressResponse>()
 
     var urlList = ArrayList<String>()
 
@@ -21,23 +21,33 @@ class NewsModel(var viewModelScope: CoroutineScope) {
         get() = _news
 
 
-    fun loadAll(){
+    suspend fun loadAll(): ArrayList<SymbolPressResponse>{
+        list.clear()
         urlList.add("https://finnhub.io/api/v1/press-releases?symbol=AAPL&token=sandbox_c2vgcniad3i9mrpv9cn0")
         urlList.add("https://finnhub.io/api/v1/press-releases?symbol=VOE.VI&token=sandbox_c2vgcniad3i9mrpv9cn0")
+        var time = System.currentTimeMillis()
+        val scopeList = mutableListOf<Deferred<Boolean?>>()
         for (url in urlList){
-            getNews(url)
+            var test = CoroutineScope(Dispatchers.IO).async {
+                Log.d("LOG",(System.currentTimeMillis()-time).toString())
+                var test = getNews(url)
+                test?.let {
+                    list.add(test)
+                }
+            }
+            scopeList.add(test)
         }
+        scopeList.awaitAll()
+        //todo sort list
+        return list
     }
 
-    fun getNews(url: String){
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val test = FinnhubApi.retrofitService.getPressNews(url)
-                list.add(test)
-                _news.postValue(list)
+    suspend fun getNews(url: String) :SymbolPressResponse?{
+            return try {
+                FinnhubApi.retrofitService.getPressNews(url)
             } catch (networkError: IOException){
                 Log.i("API","fetchNews Error with code: ${networkError.message}")
+                null;
             }
-        }
     }
 }
