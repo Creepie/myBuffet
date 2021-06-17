@@ -13,7 +13,10 @@ class NewsModel(var viewModelScope: CoroutineScope) {
 
     private var list = ArrayList<SymbolPressResponse>()
 
-    var urlList = ArrayList<String>()
+    var urlList = arrayListOf<String>(
+        "https://finnhub.io/api/v1/press-releases?symbol=AAPL&token=sandbox_c2vgcniad3i9mrpv9cn0",
+        "https://finnhub.io/api/v1/press-releases?symbol=VOE.VI&token=sandbox_c2vgcniad3i9mrpv9cn0"
+    )
 
     private var _news = MutableLiveData<MutableList<SymbolPressResponse>>()
 
@@ -23,8 +26,6 @@ class NewsModel(var viewModelScope: CoroutineScope) {
 
     suspend fun loadAll(): ArrayList<SymbolPressResponse>{
         list.clear()
-        urlList.add("https://finnhub.io/api/v1/press-releases?symbol=AAPL&token=sandbox_c2vgcniad3i9mrpv9cn0")
-        urlList.add("https://finnhub.io/api/v1/press-releases?symbol=VOE.VI&token=sandbox_c2vgcniad3i9mrpv9cn0")
         var time = System.currentTimeMillis()
         val scopeList = mutableListOf<Deferred<Boolean?>>()
         for (url in urlList){
@@ -39,6 +40,7 @@ class NewsModel(var viewModelScope: CoroutineScope) {
         }
         scopeList.awaitAll()
         //todo sort list
+
         return list
     }
 
