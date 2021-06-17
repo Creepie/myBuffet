@@ -9,23 +9,15 @@ import com.ada.mybuffet.repo.SymbolPressResponse
 import kotlinx.coroutines.*
 import java.io.IOException
 
-class NewsModel(var viewModelScope: CoroutineScope) {
-
-    private var list = ArrayList<SymbolPressResponse>()
+class NewsModel() {
 
     var urlList = arrayListOf<String>(
         "https://finnhub.io/api/v1/press-releases?symbol=AAPL&token=sandbox_c2vgcniad3i9mrpv9cn0",
         "https://finnhub.io/api/v1/press-releases?symbol=VOE.VI&token=sandbox_c2vgcniad3i9mrpv9cn0"
     )
 
-    private var _news = MutableLiveData<MutableList<SymbolPressResponse>>()
-
-    val news: LiveData<MutableList<SymbolPressResponse>>
-        get() = _news
-
-
     suspend fun loadAll(): ArrayList<SymbolPressResponse>{
-        list.clear()
+        var list = ArrayList<SymbolPressResponse>()
         var time = System.currentTimeMillis()
         val scopeList = mutableListOf<Deferred<Boolean?>>()
         for (url in urlList){

@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 class NewsViewModel (application: Application) : AndroidViewModel(application){
-    var model = NewsModel(viewModelScope)
+    var model = NewsModel()
 
     private var _news = MutableLiveData<MutableList<SymbolPressResponse>>()
 
