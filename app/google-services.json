@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "272081863309",
+    "project_id": "mybuffet-app-1a",
+    "storage_bucket": "mybuffet-app-1a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:272081863309:android:e1467afae4ca60cc7ad8c4",
+        "android_client_info": {
+          "package_name": "com.ada.mybuffet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "272081863309-f97quu6fr1kv2o7dqqmu77c852vnalhl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDujw175hbwz2wrvoN9ZdKQM-tolSRCjBo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "272081863309-f97quu6fr1kv2o7dqqmu77c852vnalhl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
