@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.ada.mybuffet.screens.login.Login
+import com.ada.mybuffet.screens.login.Register
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         Handler(Looper.getMainLooper()).postDelayed({
-            val i = Intent(this,Login::class.java)
+            val i = Intent(this, Register::class.java)
             startActivity(i)
             finish()
         }, 3000)
