@@ -67,6 +67,8 @@
                 android:layout_marginTop="4dp"
                 android:autofillHints="@string/login_email"
                 android:background="@drawable/edittext_rounded"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
                 android:ems="10"
                 android:inputType="textEmailAddress"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -93,6 +95,8 @@
                 android:autofillHints="@string/login_password"
                 android:background="@drawable/edittext_rounded"
                 android:ems="10"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
                 android:inputType="textPassword"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -118,6 +122,8 @@
                 android:autofillHints="@string/login_repeat_password"
                 android:background="@drawable/edittext_rounded"
                 android:ems="10"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
                 android:inputType="textPassword"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -128,7 +134,7 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/register_tv_reset_password"
+        android:id="@+id/register_tv_go_to_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
