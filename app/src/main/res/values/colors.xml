@@ -7,4 +7,21 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Custom colors -->
+    <color name="accent_1">#FF57C9BD</color>
+    <color name="accent_2">#FF68EBD2</color>
+    <color name="accent_darker">#FF40B2A6</color>
+    <color name="background_primary">#FFF3F4F6</color>
+    <color name="background_card">#FFFFFFFF</color>
+    <color name="sharePrice_profit">#FF61C86B</color>
+    <color name="sharePrice_loss">#FFE7423E</color>
+    <color name="actionColor">#FF2F80ED</color>
+    <color name="textColor">#FF000000</color>
+    <color name="grayText">#FFB5B5B5</color>
+
+    <!-- Dark mode colors -->
+    <color name="background_primary_darkMode">#FF363636</color>
+    <color name="background_card_darkMode">#FF232323</color>
+    <color name="textColorDarkMode">#FFFFFFFF</color>
 </resources>
