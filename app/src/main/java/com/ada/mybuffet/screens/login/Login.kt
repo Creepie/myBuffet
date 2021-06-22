@@ -3,6 +3,8 @@ package com.ada.mybuffet.screens.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.ActivityLoginBinding
 import com.ada.mybuffet.screens.home.Home
 
@@ -29,6 +31,11 @@ class Login : AppCompatActivity() {
     private fun performLogin() {
         val email = binding.loginEtEmail.text.toString()
         val password = binding.loginEtPassword.text.toString()
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(applicationContext, applicationContext.getString(R.string.register_fields_not_filled), Toast.LENGTH_SHORT).show()
+            return
+        }
 
         val i = Intent(this, Home::class.java)
         startActivity(i)
