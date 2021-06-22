@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.ada.mybuffet.R
 import com.ada.mybuffet.screens.home.Home
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_register.*
 
 class Register : AppCompatActivity() {
@@ -13,14 +14,22 @@ class Register : AppCompatActivity() {
         setContentView(R.layout.activity_register)
 
         register_bT_logIn.setOnClickListener {
-            val i = Intent(this, Home::class.java)
-            startActivity(i)
-            finish()
+            performRegistration()
         }
 
         register_tv_go_to_login.setOnClickListener {
             val i = Intent(this, Login::class.java)
             startActivity(i)
         }
+    }
+
+    private fun performRegistration() {
+        val email = register_et_email.text.toString()
+        val password = register_et_password.text.toString()
+        val passwordRepeated = register_et_repeat_password.text.toString()
+
+        val i = Intent(this, Home::class.java)
+        startActivity(i)
+        finish()
     }
 }

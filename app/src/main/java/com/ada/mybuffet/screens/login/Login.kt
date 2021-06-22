@@ -15,14 +15,21 @@ class Login : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         login_bT_registerMail.setOnClickListener {
-           val i = Intent(this, Register::class.java)
-           startActivity(i)
+            val i = Intent(this, Register::class.java)
+            startActivity(i)
         }
 
         login_bT_logIn.setOnClickListener {
-            val i = Intent(this, Home::class.java)
-            startActivity(i)
-            finish()
+            performLogin()
         }
+    }
+
+    private fun performLogin() {
+        val email = login_et_email.text.toString()
+        val password = login_et_password.text.toString()
+
+        val i = Intent(this, Home::class.java)
+        startActivity(i)
+        finish()
     }
 }
