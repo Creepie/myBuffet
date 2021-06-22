@@ -27,6 +27,11 @@ class Login : AppCompatActivity() {
         binding.loginBTLogIn.setOnClickListener {
             performLogin()
         }
+
+        binding.loginTvResetPassword.setOnClickListener {
+            val i = Intent(this, ResetPassword::class.java)
+            startActivity(i)
+        }
     }
 
     private fun performLogin() {
@@ -48,7 +53,5 @@ class Login : AppCompatActivity() {
                 Toast.makeText(applicationContext, applicationContext.getString(R.string.login_failure_message), Toast.LENGTH_SHORT).show()
                 return@addOnFailureListener
             }
-
-
     }
 }

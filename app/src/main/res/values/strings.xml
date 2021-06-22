@@ -2,16 +2,21 @@
     <string name="app_name">myBuffet</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="login_email">E Mail</string>
+
+    <string name="login_email">Email</string>
     <string name="login_password">Password</string>
     <string name="login_repeat_password">Repeat Password</string>
     <string name="login_btn_label_signup">Sign Up</string>
     <string name="login_btn_label_login">Log In</string>
     <string name="login_reset_password">Reset Password</string>
     <string name="login_failure_message">Login failed.</string>
+
     <string name="register_already_have_an_account">Already have an account? Sign in.</string>
     <string name="register_passwords_dont_match">Passwords do not match. Try again.</string>
     <string name="register_password_invalid">Password too short (min. 6 characters).</string>
     <string name="register_fields_not_filled">Please make sure to fill out all fields.</string>
     <string name="register_failure_message">Sign up failed.</string>
+
+    <string name="resetPassword_failure_message">Password reset failed.</string>
+    <string name="resetPassword_success_message">Password change request was sent to your email address.</string>
 </resources>

@@ -3,10 +3,8 @@ package com.ada.mybuffet.screens.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import com.ada.mybuffet.R
-import com.ada.mybuffet.databinding.ActivityLoginBinding
 import com.ada.mybuffet.databinding.ActivityRegisterBinding
 import com.ada.mybuffet.screens.home.Home
 import com.google.firebase.auth.FirebaseAuth
