@@ -24,9 +24,13 @@ class Register : AppCompatActivity() {
     }
 
     private fun performRegistration() {
+        // get values of text fields
         val email = register_et_email.text.toString()
         val password = register_et_password.text.toString()
         val passwordRepeated = register_et_repeat_password.text.toString()
+
+        // create user in firebase
+
 
         val i = Intent(this, Home::class.java)
         startActivity(i)
