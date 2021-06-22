@@ -54,17 +54,14 @@ class Register : AppCompatActivity() {
 
         // create user in firebase
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (!it.isSuccessful) {
-                    return@addOnCompleteListener
-                }
-
-                Log.d("register.kt", "successful log in, uid: ${it.result?.user?.uid}")
+            .addOnSuccessListener {
+                val i = Intent(this, Home::class.java)
+                startActivity(i)
+                finish()
             }
-
-
-        val i = Intent(this, Home::class.java)
-        startActivity(i)
-        finish()
+            .addOnFailureListener {
+                Toast.makeText(applicationContext, applicationContext.getString(R.string.register_failure_message), Toast.LENGTH_SHORT).show()
+                return@addOnFailureListener
+            }
     }
 }
