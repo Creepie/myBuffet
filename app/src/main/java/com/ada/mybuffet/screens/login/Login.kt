@@ -15,8 +15,8 @@ class Login : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         login_bT_registerMail.setOnClickListener {
-            val i = Intent(this, Register::class.java)
-            startActivity(i)
+            // go back to calling activity
+            finish()
         }
 
         login_bT_logIn.setOnClickListener {
