@@ -30,6 +30,7 @@ class Register : AppCompatActivity() {
         val passwordRepeated = register_et_repeat_password.text.toString()
 
         // create user in firebase
+        Firebase
 
 
         val i = Intent(this, Home::class.java)
