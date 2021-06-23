@@ -1,13 +1,16 @@
 package com.ada.mybuffet.screens.login
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.ActivityRegisterBinding
 import com.ada.mybuffet.screens.home.Home
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 class Register : AppCompatActivity() {
 
@@ -50,16 +53,49 @@ class Register : AppCompatActivity() {
             return
         }
 
-        // create user in firebase
+        // create user in firebase auth
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                val i = Intent(this, Home::class.java)
-                startActivity(i)
-                finish()
+                storeUserInDatabase(email, it.user?.uid)
             }
             .addOnFailureListener {
                 Toast.makeText(applicationContext, applicationContext.getString(R.string.register_failure_message), Toast.LENGTH_SHORT).show()
                 return@addOnFailureListener
             }
+    }
+
+    private fun storeUserInDatabase(email: String, uid: String?) {
+        if (uid == null || uid.isEmpty()) {
+            Toast.makeText(applicationContext, applicationContext.getString(R.string.register_failure_message), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // get firestore instance
+        val firestore = Firebase.firestore
+
+        // Create a new user as a key value data structure
+        val user = hashMapOf(
+            "authuid" to uid,
+            "email" to email
+        )
+
+        // store user in firestore
+        firestore.collection("users")
+            .add(user)
+            .addOnSuccessListener { documentReference ->
+                Log.d("RegisterScreen", "DocumentSnapshot added with ID: ${documentReference.id}")
+                closeActivityAndGoToHome()
+            }
+            .addOnFailureListener {
+                Toast.makeText(applicationContext, applicationContext.getString(R.string.register_failure_message), Toast.LENGTH_SHORT).show()
+                return@addOnFailureListener
+            }
+    }
+
+
+    private fun closeActivityAndGoToHome() {
+        val i = Intent(this, Home::class.java)
+        startActivity(i)
+        finish()
     }
 }
