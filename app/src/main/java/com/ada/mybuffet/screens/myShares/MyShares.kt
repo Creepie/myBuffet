@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.fragment.findNavController
 import com.ada.mybuffet.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,13 +44,13 @@ class MyShares : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var btn_detail = view.findViewById<Button>(R.id.myShares_bT_detail)
-        var btn_newShare = view.findViewById<Button>(R.id.myShares_bT_add)
+        //var btn_detail = view.findViewById<Button>(R.id.myShares_bT_detail)
+        var btn_newShare = view.findViewById<FloatingActionButton>(R.id.myShares_fab_add)
 
 
-        btn_detail.setOnClickListener {
-            findNavController().navigate(R.id.action_myShares_to_shareDetail2)
-        }
+        //btn_detail.setOnClickListener {
+        //    findNavController().navigate(R.id.action_myShares_to_shareDetail2)
+        //}
 
         btn_newShare.setOnClickListener {
             findNavController().navigate(R.id.action_myShares_to_newShare)
