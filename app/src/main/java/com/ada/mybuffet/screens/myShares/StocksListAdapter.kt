@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ada.mybuffet.databinding.RecyclerViewItemMysharesStocksBinding
 
-class StocksListAdapter(private val stocksList: List<StocksListItem>) :
+class StocksListAdapter(private val stocksList: ArrayList<StocksListItem>) :
     RecyclerView.Adapter<StocksListAdapter.StocksListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StocksListViewHolder {

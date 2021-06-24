@@ -20,7 +20,9 @@ class Login : AppCompatActivity() {
         setContentView(view)
 
         binding.loginBTRegisterMail.setOnClickListener {
-            // go back to calling activity
+            // go back to register
+            val i = Intent(this, Register::class.java)
+            startActivity(i)
             finish()
         }
 

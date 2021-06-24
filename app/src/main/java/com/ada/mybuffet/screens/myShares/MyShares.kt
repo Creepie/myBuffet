@@ -1,14 +1,24 @@
 package com.ada.mybuffet.screens.myShares
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ada.mybuffet.R
+import com.ada.mybuffet.databinding.FragmentMysharesBinding
+import com.ada.mybuffet.databinding.FragmentProfileBinding
+import com.ada.mybuffet.screens.login.Login
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +31,14 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MyShares : Fragment() {
+    // set the _binding variable initially to null and
+    // also when the view is destroyed again it has to be set to null
+    private var _binding: FragmentMysharesBinding? = null
+
+    // extract the non null value of the _binding with kotlin backing
+    private val binding get() = _binding!!  // only valid between onCreateView & onDestroyView
+
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -37,8 +55,39 @@ class MyShares : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_myshares, container, false)
+        _binding = FragmentMysharesBinding.inflate(inflater, container, false)
+
+        val stocksListDummy = arrayListOf<StocksListItem>()
+        stocksListDummy.add(StocksListItem("APPL"))
+        stocksListDummy.add(StocksListItem("TSLA"))
+
+        val userid = FirebaseAuth.getInstance().currentUser?.uid
+        val firestore = FirebaseFirestore.getInstance()
+
+        if (userid != null) {
+            val docRef = firestore.collection("users").document(userid)
+            docRef.addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("MySharesTag", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    Log.d("MySharesTag", "Current data: ${snapshot.data}")
+                } else {
+                    Log.d("MySharesTag", "Current data: null")
+                }
+            }
+        } else {
+            Log.w("MySharesTag", "user id is null")
+        }
+
+        val stocksRecyclerView = binding.mySharesRecyclerViewStocks
+        val adapter = StocksListAdapter(stocksListDummy)
+        stocksRecyclerView.adapter = adapter
+        stocksRecyclerView.layoutManager = LinearLayoutManager(activity)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,6 +104,11 @@ class MyShares : Fragment() {
         btn_newShare.setOnClickListener {
             findNavController().navigate(R.id.action_myShares_to_newShare)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

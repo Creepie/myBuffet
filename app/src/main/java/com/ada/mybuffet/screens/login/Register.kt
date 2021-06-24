@@ -29,6 +29,7 @@ class Register : AppCompatActivity() {
         binding.registerTvGoToLogin.setOnClickListener {
             val i = Intent(this, Login::class.java)
             startActivity(i)
+            finish()
         }
     }
 
@@ -80,10 +81,10 @@ class Register : AppCompatActivity() {
         )
 
         // store user in firestore
-        firestore.collection("users")
-            .add(user)
-            .addOnSuccessListener { documentReference ->
-                Log.d("RegisterScreen", "DocumentSnapshot added with ID: ${documentReference.id}")
+        firestore.collection("users").document(uid)
+            .set(user)
+            .addOnSuccessListener {
+                Log.d("RegisterScreen", "DocumentSnapshot added with UID")
                 closeActivityAndGoToHome()
             }
             .addOnFailureListener {
