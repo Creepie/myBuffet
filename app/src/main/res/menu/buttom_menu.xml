@@ -3,9 +3,8 @@
 
     <item
         android:id="@+id/myShares"
-        android:title="my Shares"
-        android:icon="@drawable/ic_money"
-        />
+        android:icon="@drawable/ic_portfolio"
+        android:title="my Shares" />
     <item
         android:id="@+id/news"
         android:title="News"

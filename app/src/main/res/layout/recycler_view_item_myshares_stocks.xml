@@ -8,17 +8,114 @@
     >
 
     <TextView
-        android:id="@+id/rclview_tv_stock_symbol"
+        android:id="@+id/recycler_view_tv_stock_symbol"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@string/font_roboto_regular"
-        android:text="Exchange Profit/Loss"
+        android:text="APPL"
         android:textColor="@color/black"
         android:textSize="13sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/recycler_view_tv_stock_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apple Inc."
+        android:fontFamily="@string/font_roboto_medium"
+        android:textSize="10sp"
+        android:textColor="@color/grayText"
+        app:layout_constraintStart_toStartOf="@+id/recycler_view_tv_stock_symbol"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_tv_stock_symbol" />
+
+    <TextView
+        android:id="@+id/recycler_view_tv_stock_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@string/font_roboto_regular"
+        android:text="€ 31.11"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/recycler_view_img_share_price_up_down"
+        app:layout_constraintTop_toTopOf="@+id/recycler_view_tv_stock_symbol" />
+
+    <TextView
+        android:id="@+id/recycler_view_tv_stock_price_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@string/font_roboto_medium"
+        android:text="(+13.84%)"
+        android:textColor="@color/sharePrice_profit"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toStartOf="@+id/recycler_view_img_share_price_up_down"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_tv_stock_price" />
+
+    <ImageView
+        android:id="@+id/recycler_view_img_share_price_up_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_view_tv_stock_price_percent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recycler_view_tv_stock_price"
+        app:srcCompat="@drawable/ic_trending_up" />
+
+    <TextView
+        android:id="@+id/recycler_view_tv_dividend_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:fontFamily="@string/font_roboto_regular"
+        android:text="€ 31.11"
+        android:textColor="@color/sharePrice_profit"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_tv_stock_name" />
+
+    <TextView
+        android:id="@+id/recycler_view_tv_dividend_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dividend Profit"
+        android:fontFamily="@string/font_roboto_medium"
+        android:textSize="10sp"
+        android:textColor="@color/grayText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_tv_dividend_total" />
+
+    <ImageView
+        android:id="@+id/recycler_view_img_total_holdings_up_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_view_tv_total_holdings_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recycler_view_tv_total_holdings_value"
+        app:srcCompat="@drawable/ic_trending_up" />
+
+    <TextView
+        android:id="@+id/recycler_view_tv_total_holdings_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@string/font_roboto_regular"
+        android:text="€ 631.11"
+        android:textColor="@color/sharePrice_profit"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/recycler_view_img_total_holdings_up_down"
+        app:layout_constraintTop_toTopOf="@+id/recycler_view_tv_dividend_total" />
+
+    <TextView
+        android:id="@+id/recycler_view_tv_total_holdings_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Holdings"
+        android:fontFamily="@string/font_roboto_medium"
+        android:textSize="10sp"
+        android:textColor="@color/grayText"
+        app:layout_constraintEnd_toStartOf="@+id/recycler_view_img_total_holdings_up_down"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_tv_total_holdings_value" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
