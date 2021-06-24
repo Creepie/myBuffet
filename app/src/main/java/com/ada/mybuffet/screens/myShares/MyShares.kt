@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ada.mybuffet.R
@@ -38,6 +40,9 @@ class MyShares : Fragment() {
     // extract the non null value of the _binding with kotlin backing
     private val binding get() = _binding!!  // only valid between onCreateView & onDestroyView
 
+    private val viewModel: MySharesViewModel by lazy {
+        ViewModelProvider(this).get(MySharesViewModel::class.java)
+    }
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -61,26 +66,9 @@ class MyShares : Fragment() {
         stocksListDummy.add(StocksListItem("APPL"))
         stocksListDummy.add(StocksListItem("TSLA"))
 
-        val userid = FirebaseAuth.getInstance().currentUser?.uid
-        val firestore = FirebaseFirestore.getInstance()
-
-        if (userid != null) {
-            val docRef = firestore.collection("users").document(userid)
-            docRef.addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w("MySharesTag", "Listen failed.", e)
-                    return@addSnapshotListener
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    Log.d("MySharesTag", "Current data: ${snapshot.data}")
-                } else {
-                    Log.d("MySharesTag", "Current data: null")
-                }
-            }
-        } else {
-            Log.w("MySharesTag", "user id is null")
-        }
+        viewModel.mySharesModel.observe(viewLifecycleOwner, Observer { mySharesModel ->
+            Log.d("MySharesViewModelTagX", "mysharesmodel ${mySharesModel.toString()}")
+        })
 
         val stocksRecyclerView = binding.mySharesRecyclerViewStocks
         val adapter = StocksListAdapter(stocksListDummy)
