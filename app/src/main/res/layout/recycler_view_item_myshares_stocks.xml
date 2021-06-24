@@ -60,7 +60,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/recycler_view_tv_stock_price_percent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/recycler_view_tv_stock_price"
-        app:srcCompat="@drawable/ic_money" />
+        app:srcCompat="@drawable/ic_trending_up" />
 
     <TextView
         android:id="@+id/recycler_view_tv_dividend_total"
@@ -93,7 +93,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/recycler_view_tv_total_holdings_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/recycler_view_tv_total_holdings_value"
-        app:srcCompat="@drawable/ic_money" />
+        app:srcCompat="@drawable/ic_trending_up" />
 
     <TextView
         android:id="@+id/recycler_view_tv_total_holdings_value"

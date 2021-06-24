@@ -35,7 +35,7 @@
                 android:layout_marginTop="45dp">
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/myShares_tv_screen_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@string/font_roboto_black"
@@ -48,10 +48,11 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/imageButton"
+                    android:id="@+id/myShares_btn_refresh"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_add"
+                    android:src="@drawable/ic_refresh"
+                    android:background="?android:selectableItemBackgroundBorderless"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -72,7 +73,7 @@
                     android:paddingBottom="14dp">
 
                     <TextView
-                        android:id="@+id/textView"
+                        android:id="@+id/myShares_tv_total_portfolio_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@string/font_roboto_regular"
@@ -84,14 +85,14 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:id="@+id/imageView"
+                        android:id="@+id/myShares_chart_placeholder"
                         android:layout_width="0dp"
                         android:layout_height="100dp"
                         android:layout_marginTop="20dp"
                         android:scaleType="centerCrop"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView"
+                        app:layout_constraintTop_toBottomOf="@+id/myShares_tv_total_portfolio_value"
                         tools:src="@drawable/ic_launcher_background" />
 
                     <LinearLayout
@@ -104,10 +105,10 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView">
+                        app:layout_constraintTop_toBottomOf="@+id/myShares_chart_placeholder">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/button2"
+                            android:id="@+id/myShares_btn_chart_day"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -119,7 +120,7 @@
                             app:cornerRadius="40dp" />
 
                         <Button
-                            android:id="@+id/button5"
+                            android:id="@+id/myShares_btn_chart_week"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -132,7 +133,7 @@
                             app:cornerRadius="40dp" />
 
                         <Button
-                            android:id="@+id/button4"
+                            android:id="@+id/myShares_btn_chart_month"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -145,7 +146,7 @@
                             app:cornerRadius="40dp" />
 
                         <Button
-                            android:id="@+id/button3"
+                            android:id="@+id/myShares_btn_chart_year"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -168,7 +169,7 @@
                 android:layout_marginBottom="12dp">
 
                 <TextView
-                    android:id="@+id/textView7"
+                    android:id="@+id/myShares_tv_section_title_profit_loss_overview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Profit/Loss Overview"
@@ -177,10 +178,10 @@
                     android:textColor="@color/black"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView4" />
+                    app:layout_constraintTop_toTopOf="@+id/myShares_tv_show_details_profit_loss_overview" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/myShares_tv_show_details_profit_loss_overview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Show Details"
@@ -206,7 +207,7 @@
                     android:paddingBottom="14dp">
 
                     <TextView
-                        android:id="@+id/textView9"
+                        android:id="@+id/myShares_tv_profit_card_total_sum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="€ 634.89"
@@ -218,7 +219,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView8"
+                        android:id="@+id/myShares_tv_profit_card_total_percentage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
@@ -227,28 +228,28 @@
                         android:fontFamily="@string/font_roboto_regular"
                         android:textStyle="bold"
                         android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/textView9"
-                        app:layout_constraintStart_toEndOf="@+id/textView9" />
+                        app:layout_constraintBottom_toBottomOf="@+id/myShares_tv_profit_card_total_sum"
+                        app:layout_constraintStart_toEndOf="@+id/myShares_tv_profit_card_total_sum" />
 
                     <ImageView
-                        android:id="@+id/imageView2"
+                        android:id="@+id/myShares_img_profit_card_total_trending"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_money"
+                        android:src="@drawable/ic_trending_up"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/constraintLayout"
+                        android:id="@+id/myShares_pill_exchange_profit_loss"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="25dp"
                         android:background="@drawable/layout_pill_bg"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView9">
+                        app:layout_constraintTop_toBottomOf="@+id/myShares_tv_profit_card_total_sum">
 
                         <TextView
-                            android:id="@+id/textView12"
+                            android:id="@+id/myShares_tv_exchange_profit_loss_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@string/font_roboto_regular"
@@ -261,7 +262,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/textView13"
+                            android:id="@+id/myShares_tv_exchange_profit_loss_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@string/font_roboto_regular"
@@ -270,30 +271,30 @@
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                            app:layout_constraintEnd_toStartOf="@+id/myShares_img_exchange_profit_loss_trending"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
-                            android:id="@+id/imageView3"
+                            android:id="@+id/myShares_img_exchange_profit_loss_trending"
                             android:layout_width="wrap_content"
                             android:layout_height="0dp"
-                            android:src="@drawable/ic_money"
+                            android:src="@drawable/ic_trending_up"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/constraintLayout2"
+                        android:id="@+id/myShares_pill_dividend_profit"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/layout_pill_bg"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+                        app:layout_constraintTop_toBottomOf="@+id/myShares_pill_exchange_profit_loss">
 
                         <TextView
-                            android:id="@+id/textView121"
+                            android:id="@+id/myShares_tv_dividend_profit_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@string/font_roboto_regular"
@@ -306,7 +307,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/textView131"
+                            android:id="@+id/myShares_tv_dividend_profit_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@string/font_roboto_regular"
@@ -315,14 +316,14 @@
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/imageView31"
+                            app:layout_constraintEnd_toStartOf="@+id/myShares_img_dividend_profit_trending"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
-                            android:id="@+id/imageView31"
+                            android:id="@+id/myShares_img_dividend_profit_trending"
                             android:layout_width="wrap_content"
                             android:layout_height="0dp"
-                            android:src="@drawable/ic_money"
+                            android:src="@drawable/ic_trending_up"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -334,10 +335,10 @@
                         android:layout_marginTop="10dp"
                         android:background="@drawable/layout_pill_bg"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+                        app:layout_constraintTop_toBottomOf="@+id/myShares_pill_dividend_profit">
 
                         <TextView
-                            android:id="@+id/textView1211"
+                            android:id="@+id/myShares_tv_fees_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@string/font_roboto_regular"
@@ -350,7 +351,7 @@
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/textView1311"
+                            android:id="@+id/myShares_tv_fees_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@string/font_roboto_regular"
@@ -359,14 +360,14 @@
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/imageView311"
+                            app:layout_constraintEnd_toStartOf="@+id/myShares_img_fees_trending"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <ImageView
-                            android:id="@+id/imageView311"
+                            android:id="@+id/myShares_img_fees_trending"
                             android:layout_width="wrap_content"
                             android:layout_height="0dp"
-                            android:src="@drawable/ic_money"
+                            android:src="@drawable/ic_trending_down"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -383,7 +384,7 @@
                 android:layout_marginBottom="12dp">
 
                 <TextView
-                    android:id="@+id/textView7111"
+                    android:id="@+id/myShares_tv_section_title_stocks"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@string/font_roboto_black"
@@ -392,10 +393,10 @@
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView4111" />
+                    app:layout_constraintTop_toTopOf="@+id/myShares_tv_show_details_stocks" />
 
                 <TextView
-                    android:id="@+id/textView4111"
+                    android:id="@+id/myShares_tv_show_details_stocks"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@string/font_roboto_black"
@@ -410,6 +411,7 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="80dp"
                 app:cardBackgroundColor="@color/background_card"
                 app:cardCornerRadius="12dp">
 
