@@ -28,5 +28,7 @@
     <!-- Tab bar -->
     <color name="tab_bar_item_color_active">#FF40B2A6</color>
     <color name="tab_bar_item_color_inactive">#FF3A3A3A</color>
+    <color name="tab_bar_item_color_active_dark_mode">#FF68EBD2</color>
+    <color name="tab_bar_item_color_inactive_dark_mode">#FF787878</color>
 
 </resources>
