@@ -11,7 +11,7 @@ class MySharesViewModel : ViewModel() {
 
     private var firestore: FirebaseFirestore
 
-    private var _mySharesModel = MutableLiveData<MySharesModel>()
+    private var _shareItems = MutableLiveData<ArrayList<ShareItem>>()
 
     init {
         firestore = FirebaseFirestore.getInstance()
@@ -23,19 +23,24 @@ class MySharesViewModel : ViewModel() {
         val userid = FirebaseAuth.getInstance().currentUser?.uid
 
         if (userid != null) {
-            val docRef = firestore.collection("users").document(userid)
+            val docRef = firestore.collection("users").document(userid).collection("shares")
             docRef.addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.w("MySharesViewModelTag", "Listen failed.", e)
                     return@addSnapshotListener
                 }
 
-                if (snapshot != null && snapshot.exists()) {
-                    Log.d("MySharesViewModelTag", "Current data: ${snapshot.data}")
-                    val model = snapshot.toObject(MySharesModel::class.java)
-                    Log.d("MySharesViewModelTag", "Model data: ${model.toString()}")
-
-                    _mySharesModel.value = model
+                if (snapshot != null) {
+                    Log.d("MySharesViewModelTag", "Current data: ${snapshot.size()}")
+                    val firestoreShareItems = ArrayList<ShareItem>()
+                    val documents = snapshot.documents
+                    documents.forEach { doc ->
+                        val shareItem = doc.toObject(ShareItem::class.java)
+                        if (shareItem != null) {
+                            firestoreShareItems.add(shareItem)
+                        }
+                    }
+                    _shareItems.value = firestoreShareItems
                 } else {
                     Log.d("MySharesViewModelTag", "Current data: null")
                 }
@@ -43,8 +48,8 @@ class MySharesViewModel : ViewModel() {
         }
     }
 
-    internal var mySharesModel: MutableLiveData<MySharesModel>
-        get() { return _mySharesModel }
-        set(value) { _mySharesModel = value }
+    internal var shareItems: MutableLiveData<ArrayList<ShareItem>>
+        get() { return _shareItems }
+        set(value) { _shareItems = value }
 
 }
