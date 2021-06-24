@@ -17,7 +17,8 @@ class SharesListAdapter(private val sharesList: ArrayList<ShareItem>) :
     override fun onBindViewHolder(holder: SharesListViewHolder, position: Int) {
         with(holder) {
             with(sharesList[position]) {
-                binding.rclviewTvStockSymbol.text = stockSymbol
+                binding.recyclerViewTvStockSymbol.text = stockSymbol
+                binding.recyclerViewTvStockName.text = stockName
             }
         }
     }
