@@ -26,9 +26,11 @@ class StocksOverviewModel {
 
     suspend fun load(): ArrayList<StockShare>{
         val list = mutableListOf<Deferred<Boolean>>()
-        //todo for loop over 5 shares
-        for (i in 1..5){
+
+        //todo why get a result of 5 or 6 items
+        for (i in 0..10){
             var symbol = stockList[0].constituents[i]
+
             var scope = CoroutineScope(Dispatchers.IO).async {
                 val scopeList = mutableListOf<Deferred<Unit>>()
                 var share = StockShare(symbol = symbol)

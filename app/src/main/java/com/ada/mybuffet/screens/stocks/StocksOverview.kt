@@ -5,9 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentStocksOverviewBinding
+import com.ada.mybuffet.features.NewsRecyclerAdapter
+import com.ada.mybuffet.repo.StockShare
+import com.ada.mybuffet.repo.SymbolPressResponse
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,7 +45,14 @@ class StocksOverview : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.loadStockData()
+        viewModel
+
+        val observer = Observer<MutableList<StockShare>> {
+                stockList -> println(stockList)
+            var x = 10
+        }
+
+        viewModel.stocks.observe(viewLifecycleOwner,observer)
     }
 
     override fun onCreateView(
