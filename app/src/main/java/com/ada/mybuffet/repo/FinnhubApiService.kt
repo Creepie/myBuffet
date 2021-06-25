@@ -22,6 +22,7 @@ private val retrofit = Retrofit.Builder()
     .baseUrl(Base_URL)
     .build()
 
+
 interface FinnhubApiService{
 
     /**
