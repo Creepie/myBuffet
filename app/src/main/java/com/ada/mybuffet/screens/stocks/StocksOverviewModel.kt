@@ -2,12 +2,7 @@ package com.ada.mybuffet.screens.stocks
 
 import android.util.Log
 import com.ada.mybuffet.repo.*
-import com.google.firebase.inject.Deferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import retrofit2.http.Url
+import kotlinx.coroutines.*
 import java.io.IOException
 
 class StocksOverviewModel {
@@ -20,21 +15,53 @@ class StocksOverviewModel {
     var stockList = ArrayList<IndexSymbols>()
 
 
-    suspend fun loadStockList(): ArrayList<IndexSymbols>{
+    suspend fun loadStockList(): Int{
         stockList = loadIndexList()
-        return stockList
+        var count = 0
+        if (stockList.isNotEmpty()){
+            count = stockList[0].constituents.size
+        }
+        return count
     }
 
     suspend fun load(): ArrayList<StockShare>{
-        var shares = ArrayList<StockShare>()
-        var dividends = loadDividends(stockList)
-        var currentPrices = 1
-        return shares
+        val list = mutableListOf<Deferred<Boolean>>()
+        //todo for loop over 5 shares
+        for (i in 1..5){
+            var symbol = stockList[0].constituents[i]
+            var scope = CoroutineScope(Dispatchers.IO).async {
+                val scopeList = mutableListOf<Deferred<Unit>>()
+                var share = StockShare(symbol = symbol)
+                //go into Scope for the divis
+                var scopeDivis = CoroutineScope(Dispatchers.IO).async {
+                    var dividends = loadDividend(symbol)
+                    share.dividends = dividends
+                }
+                scopeList.add(scopeDivis)
+                //go into Scope for the current price
+                var scopeCurPrice = CoroutineScope(Dispatchers.IO).async {
+                    var price = loadCurrentPrice(symbol)
+                    share.curPrice = price?.c
+                }
+                scopeList.add(scopeCurPrice)
+                //go into Scope for the name
+                var scopeName = CoroutineScope(Dispatchers.IO).async {
+                    var name = loadShareName(symbol)
+                    share.name = name?.result?.get(0)?.description
+                }
+                scopeList.add(scopeName)
+                scopeList.awaitAll()
+                stockShares.add(share)
+            }
+            list.add(scope)
+        }
+        list.awaitAll()
+        return stockShares
     }
 
    suspend fun loadIndexList(): ArrayList<IndexSymbols>{
        var list = ArrayList<IndexSymbols>()
-       val scopeList = mutableListOf<kotlinx.coroutines.Deferred<Boolean?>>()
+       val scopeList = mutableListOf<Deferred<Boolean?>>()
        for(index in indexList){
            var scope = CoroutineScope(Dispatchers.IO).async {
                var data = loadIndex(index)
@@ -79,6 +106,26 @@ class StocksOverviewModel {
         return try {
             val url = "https://finnhub.io/api/v1/stock/dividend2?symbol=${symbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
             FinnhubApi.retrofitService.getDividends(url)
+        } catch (networkError: IOException){
+            Log.i("API", "fetchIndex Error with code: ${networkError.message}")
+            null
+        }
+    }
+
+    suspend fun loadCurrentPrice(symbol: String): SymbolPrice?{
+        return try {
+            val url = "https://finnhub.io/api/v1/quote?symbol=${symbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
+            FinnhubApi.retrofitService.getCurrentPrice(url)
+        } catch (networkError: IOException){
+            Log.i("API", "fetchIndex Error with code: ${networkError.message}")
+            null
+        }
+    }
+
+    suspend fun loadShareName(symbol: String): SymbolLookupResponse?{
+        return try {
+            val url = "https://finnhub.io/api/v1/search?q=${symbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
+            FinnhubApi.retrofitService.getName(url)
         } catch (networkError: IOException){
             Log.i("API", "fetchIndex Error with code: ${networkError.message}")
             null

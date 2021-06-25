@@ -15,7 +15,8 @@ class StocksOverviewViewModel(application: Application): AndroidViewModel(applic
     fun loadStockData(){
         viewModelScope.launch {
             var stockList = model.loadStockList()
-
+            var test = model.load()
+            var wa = 1
         }
     }
 }
