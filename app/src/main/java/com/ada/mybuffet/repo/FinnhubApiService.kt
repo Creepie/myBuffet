@@ -51,6 +51,27 @@ interface FinnhubApiService{
      */
     @GET
     suspend fun getStockCandles(@Url url: String): SymbolCandles
+
+    /**
+     * this function is to get the current exchangeRate
+     * in the request you can set a base currency like USD
+     */
+    @GET
+    suspend fun getExchangeRate(@Url url: String): ExchangeRate
+
+    /**
+     * this function is to get the symbols of company's in a specific index like DAX
+     * in the request you can set the index you are looking for
+     */
+    @GET
+    suspend fun getIndexSymbols(@Url url: String): IndexSymbols
+
+    /**
+     * this function is to get the dividends of a specific company
+     */
+    @GET
+    suspend fun getDividends(@Url url: String): List<Dividend>
+
 }
 
 object FinnhubApi{

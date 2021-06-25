@@ -39,4 +39,9 @@
         android:name="com.ada.mybuffet.screens.news.News"
         android:label="fragment_news"
         tools:layout="@layout/fragment_news" />
+    <fragment
+        android:id="@+id/stocks"
+        android:name="com.ada.mybuffet.screens.stocks.StocksOverview"
+        android:label="fragment_stocks_overview"
+        tools:layout="@layout/fragment_stocks_overview" />
 </navigation>

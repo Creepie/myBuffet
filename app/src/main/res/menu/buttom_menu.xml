@@ -5,6 +5,13 @@
         android:id="@+id/myShares"
         android:icon="@drawable/ic_portfolio"
         android:title="my Shares" />
+
+    <item
+        android:id="@+id/stocks"
+        android:icon="@drawable/ic_stocks"
+        android:title="stocks"
+        />
+
     <item
         android:id="@+id/news"
         android:title="News"
