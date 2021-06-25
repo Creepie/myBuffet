@@ -31,7 +31,7 @@ class MySharesViewModel : ViewModel() {
                 }
 
                 if (snapshot != null) {
-                    Log.d("MySharesViewModelTag", "Current data: ${snapshot.size()}")
+                    Log.d("MySharesViewModelTag", "Current data: ${snapshot}")
                     val firestoreShareItems = ArrayList<ShareItem>()
                     val documents = snapshot.documents
                     documents.forEach { doc ->
