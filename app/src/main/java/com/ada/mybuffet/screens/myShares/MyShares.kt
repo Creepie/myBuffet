@@ -57,15 +57,12 @@ class MyShares : Fragment() {
     ): View? {
         _binding = FragmentMysharesBinding.inflate(inflater, container, false)
 
-        val stocksListDummy = arrayListOf<ShareItem>()
-        stocksListDummy.add(ShareItem("APPL", "Apple Inc."))
-        stocksListDummy.add(ShareItem("TSLA", "Tesla Inc."))
-
+        // recycler view setup
         val stocksRecyclerView = binding.mySharesRecyclerViewStocks
         stocksRecyclerView.adapter = SharesListAdapter(arrayListOf<ShareItem>())    // init empty
         stocksRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        // add vertical inter-item spacing of 8dp
+        // add vertical inter-item spacing of 8dp to recyclerview items
         stocksRecyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL).also { deco ->
             with(ShapeDrawable(RectShape())) {
                 intrinsicHeight = (resources.displayMetrics.density * 8).toInt()
@@ -74,11 +71,11 @@ class MyShares : Fragment() {
             }
         })
 
+        // connect recyclerview to viewmodel data
         viewModel.shareItems.observe(viewLifecycleOwner, Observer { shareItems ->
             val adapter = SharesListAdapter(shareItems)
             stocksRecyclerView.adapter = adapter
         })
-
 
 
         return binding.root
@@ -92,7 +89,7 @@ class MyShares : Fragment() {
 
 
         //btn_detail.setOnClickListener {
-        //    findNavController().navigate(R.id.action_myShares_to_shareDetail2)
+        //    findNavController().navigate(R.id.action_myShares_to_shareDetailScreen)
         //}
 
         btn_newShare.setOnClickListener {
