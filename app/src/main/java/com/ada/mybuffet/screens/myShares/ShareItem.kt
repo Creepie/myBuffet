@@ -11,32 +11,30 @@ data class ShareItem(
     val currentPrice: String = "",
     val currentPricePercent: String = "",
     val totalDividends: String = "",
-    val totalHoldings: String = ""
+    val totalHoldings: String = "",
+    val totalFees: String = "",
+    val totalInvestment: String = ""
 ) {
-    public fun getCurrentPricePercentFormatted(): String {
+    public fun isPricePositive(): Boolean {
         return try {
+            val price = BigDecimal(currentPricePercent)
 
-            val price = BigDecimal(currentPrice)
-            val pricePercent = BigDecimal(currentPricePercent)
-            val formattedPercent = NumberFormat.getInstance(Locale.GERMANY).format(pricePercent)
-
-            return if (price >= BigDecimal.ZERO) {
-                "(+$formattedPercent%)"
-            } else {
-                "(-$formattedPercent%)"
-            }
+            price >= BigDecimal.ZERO
         } catch (e: NumberFormatException) {
-            "n/a"
+            true // mark as positive in case of exceptions
         }
     }
 
-    public fun isPricePositive(): Boolean {
+    public fun isInvestmentPositive(): Boolean {
         return try {
-            val price = BigDecimal(currentPrice)
+            val holdings = BigDecimal(totalHoldings)
+            val investment = BigDecimal(totalInvestment)
+            val dividends = BigDecimal(totalDividends)
+            val fees = BigDecimal(totalFees)
 
-            return price >= BigDecimal.ZERO
+            (holdings + dividends) >= (investment + fees)
         } catch (e: NumberFormatException) {
-            true // mark as positive in case of exceptions
+            true
         }
     }
 }

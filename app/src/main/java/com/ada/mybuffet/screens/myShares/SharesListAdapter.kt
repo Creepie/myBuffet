@@ -6,9 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.RecyclerViewItemMysharesStocksBinding
-import com.ada.mybuffet.utils.CurrencyFormatter
-import kotlinx.coroutines.currentCoroutineContext
-import kotlin.coroutines.coroutineContext
+import com.ada.mybuffet.utils.NumberFormatUtils
 
 class SharesListAdapter(private val sharesList: ArrayList<ShareItem>) :
     RecyclerView.Adapter<SharesListAdapter.SharesListViewHolder>() {
@@ -24,17 +22,33 @@ class SharesListAdapter(private val sharesList: ArrayList<ShareItem>) :
             with(sharesList[position]) {
                 binding.recyclerViewTvStockSymbol.text = stockSymbol
                 binding.recyclerViewTvStockName.text = stockName
-                binding.recyclerViewTvStockPrice.text = CurrencyFormatter.toCurrencyString(currentPrice)
-                binding.recyclerViewTvStockPricePercent.text = getCurrentPricePercentFormatted()
-                binding.recyclerViewTvDividendTotal.text = CurrencyFormatter.toCurrencyString(totalDividends)
-                binding.recyclerViewTvTotalHoldingsValue.text = CurrencyFormatter.toCurrencyString(totalHoldings)
+                binding.recyclerViewTvStockPrice.text = NumberFormatUtils.toCurrencyString(currentPrice)
+                binding.recyclerViewTvStockPricePercent.text = NumberFormatUtils.toPercentString(currentPricePercent)
+                binding.recyclerViewTvDividendTotal.text = NumberFormatUtils.toCurrencyString(totalDividends)
+                binding.recyclerViewTvTotalHoldingsValue.text = NumberFormatUtils.toCurrencyString(totalHoldings)
 
                 if (isPricePositive()) {
                     binding.recyclerViewImgSharePriceUpDown.setImageResource(R.drawable.ic_trending_up)
                     binding.recyclerViewImgTotalHoldingsUpDown.setImageResource(R.drawable.ic_trending_up)
+
+                    val textColor = ContextCompat.getColor(holder.binding.root.context, R.color.sharePrice_profit)
+                    binding.recyclerViewTvStockPrice.setTextColor(textColor)
+                    binding.recyclerViewTvStockPricePercent.setTextColor(textColor)
                 } else {
                     binding.recyclerViewImgSharePriceUpDown.setImageResource(R.drawable.ic_trending_down)
                     binding.recyclerViewImgTotalHoldingsUpDown.setImageResource(R.drawable.ic_trending_down)
+
+                    val textColor = ContextCompat.getColor(holder.binding.root.context, R.color.sharePrice_loss)
+                    binding.recyclerViewTvStockPrice.setTextColor(textColor)
+                    binding.recyclerViewTvStockPricePercent.setTextColor(textColor)
+                }
+
+                if (isInvestmentPositive()) {
+                    val textColor = ContextCompat.getColor(holder.binding.root.context, R.color.sharePrice_profit)
+                    binding.recyclerViewTvTotalHoldingsValue.setTextColor(textColor)
+                } else {
+                    val textColor = ContextCompat.getColor(holder.binding.root.context, R.color.sharePrice_loss)
+                    binding.recyclerViewTvTotalHoldingsValue.setTextColor(textColor)
                 }
             }
         }
