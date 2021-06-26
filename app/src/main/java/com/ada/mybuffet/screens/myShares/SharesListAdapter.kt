@@ -6,9 +6,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.RecyclerViewItemMysharesStocksBinding
+import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.NumberFormatUtils
 
-class SharesListAdapter(private val sharesList: ArrayList<ShareItem>) :
+class SharesListAdapter(private val sharesList: MutableList<ShareItem>) :
     RecyclerView.Adapter<SharesListAdapter.SharesListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SharesListViewHolder {

@@ -3,18 +3,34 @@ package com.ada.mybuffet.screens.myShares
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
+import com.ada.mybuffet.screens.myShares.model.ShareItem
+import com.ada.mybuffet.screens.myShares.repo.IShareItemProvider
+import com.ada.mybuffet.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import kotlinx.coroutines.Dispatchers
+import java.lang.Exception
 
-class MySharesViewModel : ViewModel() {
+class MySharesViewModel(private val shareItemProvider: IShareItemProvider) : ViewModel() {
 
+
+    val fetchShareItemList = liveData(Dispatchers.IO) {
+        try {
+            val shareItemList = shareItemProvider.getShareItems()
+            emit(shareItemList)
+        } catch (e: Exception) {
+            emit(Resource.Failure<Throwable>(e.cause!!))
+        }
+    }
+
+    /*
     private var firestore: FirebaseFirestore
 
     private var _shareItems = MutableLiveData<ArrayList<ShareItem>>()
 
     init {
-        firestore = FirebaseFirestore.getInstance()
         firestore.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
         listenForFirestoreData()
     }
@@ -51,5 +67,5 @@ class MySharesViewModel : ViewModel() {
     internal var shareItems: MutableLiveData<ArrayList<ShareItem>>
         get() { return _shareItems }
         set(value) { _shareItems = value }
-
+    */
 }

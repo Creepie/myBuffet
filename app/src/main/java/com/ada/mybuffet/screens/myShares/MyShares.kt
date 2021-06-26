@@ -3,11 +3,11 @@ package com.ada.mybuffet.screens.myShares
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -15,6 +15,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentMysharesBinding
+import com.ada.mybuffet.screens.myShares.model.ShareItem
+import com.ada.mybuffet.screens.myShares.repo.MySharesRepository
+import com.ada.mybuffet.screens.myShares.repo.ShareItemProvider
+import com.ada.mybuffet.utils.Resource
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,7 +40,15 @@ class MyShares : Fragment() {
     private val binding get() = _binding!!  // only valid between onCreateView & onDestroyView
 
     private val viewModel: MySharesViewModel by lazy {
-        ViewModelProvider(this).get(MySharesViewModel::class.java)
+        ViewModelProvider(this,
+            MySharesViewModelFactory(
+                ShareItemProvider(
+                    MySharesRepository()
+                )
+            )
+        ).get(
+            MySharesViewModel::class.java
+        )
     }
 
     // TODO: Rename and change types of parameters
@@ -71,10 +83,26 @@ class MyShares : Fragment() {
             }
         })
 
-        // connect recyclerview to viewmodel data
-        viewModel.shareItems.observe(viewLifecycleOwner, Observer { shareItems ->
-            val adapter = SharesListAdapter(shareItems)
-            stocksRecyclerView.adapter = adapter
+        // connect recyclerview to viewModel data
+        viewModel.fetchShareItemList.observe(viewLifecycleOwner, Observer { observedResource ->
+
+            when (observedResource) {
+                is Resource.Loading -> {
+                    // could use this to indicate data loading in the UI
+                    // for this you need to use emit(Resource.Loading()) before the try catch
+                    // in the view model
+                }
+
+                is Resource.Success -> {
+                    val sharesItemsList: MutableList<ShareItem> = observedResource.data as MutableList<ShareItem>
+                    val adapter = SharesListAdapter(sharesItemsList)
+                    stocksRecyclerView.adapter = adapter
+                }
+
+                is Resource.Failure -> {
+                    Toast.makeText(context, "Data could not be loaded", Toast.LENGTH_SHORT).show()
+                }
+            }
         })
 
 

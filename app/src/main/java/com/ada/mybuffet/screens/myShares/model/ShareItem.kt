@@ -1,9 +1,6 @@
-package com.ada.mybuffet.screens.myShares
+package com.ada.mybuffet.screens.myShares.model
 
 import java.math.BigDecimal
-import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.*
 
 data class ShareItem(
     val stockSymbol: String = "",
