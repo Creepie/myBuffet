@@ -17,7 +17,9 @@ import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentMysharesBinding
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.screens.myShares.repo.MySharesRepository
-import com.ada.mybuffet.screens.myShares.repo.ShareItemProvider
+import com.ada.mybuffet.screens.myShares.repo.MySharesDataProvider
+import com.ada.mybuffet.screens.myShares.viewModel.MySharesViewModel
+import com.ada.mybuffet.screens.myShares.viewModel.MySharesViewModelFactory
 import com.ada.mybuffet.utils.Resource
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -42,7 +44,7 @@ class MyShares : Fragment() {
     private val viewModel: MySharesViewModel by lazy {
         ViewModelProvider(this,
             MySharesViewModelFactory(
-                ShareItemProvider(
+                MySharesDataProvider(
                     MySharesRepository()
                 )
             )
@@ -83,7 +85,6 @@ class MyShares : Fragment() {
             }
         })
 
-        // connect recyclerview to viewModel data
         viewModel.fetchShareItemList.observe(viewLifecycleOwner, Observer { observedResource ->
 
             when (observedResource) {
@@ -91,15 +92,21 @@ class MyShares : Fragment() {
                     // could use this to indicate data loading in the UI
                     // for this you need to use emit(Resource.Loading()) before the try catch
                     // in the view model
+                    // showProgress()
                 }
 
                 is Resource.Success -> {
+                    // hideProgress()
+
                     val sharesItemsList: MutableList<ShareItem> = observedResource.data as MutableList<ShareItem>
+
+                    // connect recyclerview to viewModel data
                     val adapter = SharesListAdapter(sharesItemsList)
                     stocksRecyclerView.adapter = adapter
                 }
 
                 is Resource.Failure -> {
+                    // hideProgress()
                     Toast.makeText(context, "Data could not be loaded", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -129,6 +136,17 @@ class MyShares : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
+    /*
+    fun showProgress(){
+        progressBar.visibility = View.VISIBLE
+    }
+
+    fun hideProgress(){
+        progressBar.visibility = View.GONE
+    }
+     */
 
     companion object {
         /**
