@@ -10,6 +10,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.math.BigDecimal
 
 class MySharesRepository : IMySharesRepository {
 
@@ -41,6 +42,77 @@ class MySharesRepository : IMySharesRepository {
 
                 // offer for flow (offer method is now deprecated, using trySend instead)
                 trySend(Resource.Success(shareItemList)).isSuccess
+            } else {
+                Log.d(TAG, "Current data: null")
+            }
+        }
+
+        // close flow channel if not in use to avoid leaks
+        awaitClose{
+            subscription.remove()
+        }
+    }
+
+    override suspend fun getProfitLossOverviewDataFromDB(): Flow<Resource<HashMap<String, BigDecimal>>> = callbackFlow {
+        // create reference to the collection in firestore
+        val userid = FirebaseAuth.getInstance().currentUser!!.uid
+        val docRef = firestore.collection("users").document(userid).collection("shares")
+
+        // create subscription which listens to database changes
+        val subscription = docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+            } else if (snapshot != null) {
+                Log.d(TAG, "Listen successful")
+
+                var profitLossOverviewData = hashMapOf<String, BigDecimal>(
+                    "totalProfit" to BigDecimal.ZERO,
+                    "exchangeProfitLoss" to BigDecimal.ZERO,
+                    "dividendProfit" to BigDecimal.ZERO,
+                    "totalInvestment" to BigDecimal.ZERO,
+                    "fees" to BigDecimal.ZERO
+                )
+
+                val documents = snapshot.documents
+                documents.forEach { doc ->
+                    val totalHoldingsStr = doc.getString("totalHoldings")
+                    val totalInvestmentStr = doc.getString("totalInvestment")
+                    val totalFeesStr = doc.getString("totalFees")
+                    val totalDividendsStr = doc.getString("totalDividends")
+
+                    if (totalHoldingsStr != null && totalInvestmentStr != null && totalFeesStr != null && totalDividendsStr != null) {
+                        val totalHoldings = BigDecimal(totalHoldingsStr)
+                        val totalInvestment = BigDecimal(totalInvestmentStr)
+                        val totalFees = BigDecimal(totalFeesStr)
+                        val totalDividends = BigDecimal(totalDividendsStr)
+
+                        val totalProfit = totalHoldings.plus(totalDividends).minus(totalInvestment).minus(totalFees)
+                        val exchangeProfitLoss = totalHoldings.minus(totalInvestment)
+
+                        Log.d(TAG, "totalHoldings: $totalHoldings")
+                        Log.d(TAG, "totalInvestment: $totalInvestment")
+                        Log.d(TAG, "totalFees: $totalFees")
+                        Log.d(TAG, "totalDividends: $totalDividends")
+                        Log.d(TAG, "totalProfit: $totalProfit")
+                        Log.d(TAG, "exchangeProfitLoss: $exchangeProfitLoss")
+
+                        profitLossOverviewData["totalProfit"] = profitLossOverviewData["totalProfit"]!!.plus(totalProfit)
+                        profitLossOverviewData["exchangeProfitLoss"] = profitLossOverviewData["exchangeProfitLoss"]!!.plus(exchangeProfitLoss)
+                        profitLossOverviewData["dividendProfit"] = profitLossOverviewData["dividendProfit"]!!.plus(totalDividends)
+                        profitLossOverviewData["fees"] = profitLossOverviewData["fees"]!!.plus(totalFees)
+                        profitLossOverviewData["totalInvestment"] = profitLossOverviewData["totalInvestment"]!!.plus(totalInvestment)
+                    }
+                }
+
+                Log.d(TAG, "xexchangeProfitLoss: ${profitLossOverviewData.get("exchangeProfitLoss")}")
+                Log.d(TAG, "xtotalInvestment: ${profitLossOverviewData.get("totalInvestment")}")
+                Log.d(TAG, "xtotalFees: ${profitLossOverviewData.get("fees")}")
+                Log.d(TAG, "xtotalDividends: ${profitLossOverviewData.get("dividendProfit")}")
+                Log.d(TAG, "xtotalProfit: ${profitLossOverviewData.get("totalProfit")}")
+
+
+                // offer for flow (offer method is now deprecated, using trySend instead)
+                trySend(Resource.Success(profitLossOverviewData)).isSuccess
             } else {
                 Log.d(TAG, "Current data: null")
             }

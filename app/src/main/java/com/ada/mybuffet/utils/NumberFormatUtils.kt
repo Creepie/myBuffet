@@ -44,6 +44,21 @@ class NumberFormatUtils {
                 "n/a"
             }
         }
+
+        @JvmStatic
+        fun toPercentString(number: BigDecimal) : String {
+            return try {
+                val localizedNumber = NumberFormat.getInstance(locale).format(number)
+
+                return if (number >= BigDecimal.ZERO) {
+                    "(+$localizedNumber%)"
+                } else {
+                    "($localizedNumber%)"
+                }
+            } catch (e: java.lang.NumberFormatException) {
+                "n/a"
+            }
+        }
     }
 
 

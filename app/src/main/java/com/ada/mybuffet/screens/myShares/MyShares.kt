@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -20,8 +21,10 @@ import com.ada.mybuffet.screens.myShares.repo.MySharesRepository
 import com.ada.mybuffet.screens.myShares.repo.MySharesDataProvider
 import com.ada.mybuffet.screens.myShares.viewModel.MySharesViewModel
 import com.ada.mybuffet.screens.myShares.viewModel.MySharesViewModelFactory
+import com.ada.mybuffet.utils.NumberFormatUtils
 import com.ada.mybuffet.utils.Resource
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.math.BigDecimal
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -112,6 +115,83 @@ class MyShares : Fragment() {
             }
         })
 
+
+
+        viewModel.fetchProfitLossOverviewData.observe(viewLifecycleOwner, Observer { observedResource ->
+            when (observedResource) {
+                is Resource.Loading -> {
+                    // could use this to indicate data loading in the UI
+                    // for this you need to use emit(Resource.Loading()) before the try catch
+                    // in the view model
+                    // showProgress()
+                }
+
+                is Resource.Success -> {
+                    // hideProgress()
+
+                    val profitLossOverviewData: HashMap<String, BigDecimal> = observedResource.data as HashMap<String, BigDecimal>
+                    val totalProfit = profitLossOverviewData["totalProfit"]
+                    binding.mySharesTvProfitCardTotalSum.text = totalProfit?.let {
+                        NumberFormatUtils.toCurrencyString(it)
+                    }
+
+                    val exchangeProfitLoss = profitLossOverviewData["exchangeProfitLoss"]
+
+                    if (exchangeProfitLoss != null) {
+                        binding.mySharesTvExchangeProfitLossValue.text = NumberFormatUtils.toCurrencyString(exchangeProfitLoss)
+
+                        if (exchangeProfitLoss >= BigDecimal.ZERO) {
+                            val textColor = ContextCompat.getColor(binding.root.context, R.color.sharePrice_profit)
+                            binding.mySharesTvExchangeProfitLossValue.setTextColor(textColor)
+                            binding.mySharesImgExchangeProfitLossTrending.setImageResource(R.drawable.ic_trending_up)
+                        } else {
+                            val textColor = ContextCompat.getColor(binding.root.context, R.color.sharePrice_loss)
+                            binding.mySharesTvExchangeProfitLossValue.setTextColor(textColor)
+                            binding.mySharesImgExchangeProfitLossTrending.setImageResource(R.drawable.ic_trending_down)
+                        }
+
+
+                    }
+
+
+                    val dividendProfit = profitLossOverviewData["dividendProfit"]
+                    binding.mySharesTvDividendProfitValue.text = dividendProfit?.let {
+                        NumberFormatUtils.toCurrencyString(it)
+                    }
+
+                    val totalFees = profitLossOverviewData["fees"]
+                    binding.mySharesTvFeesValue.text = totalFees?.let {
+                        NumberFormatUtils.toCurrencyString(it)
+                    }
+
+                    val totalInvestment = profitLossOverviewData["totalInvestment"]
+                    if (totalProfit != null && totalInvestment != null) {
+                        val profitPercentage = totalProfit.multiply(BigDecimal(100)).divide(totalInvestment)
+
+
+                        binding.mySharesTvProfitCardTotalPercentage.text = NumberFormatUtils.toPercentString(profitPercentage)
+
+                        if (profitPercentage >= BigDecimal.ZERO) {
+                            val textColor = ContextCompat.getColor(binding.root.context, R.color.sharePrice_profit)
+                            binding.mySharesTvProfitCardTotalSum.setTextColor(textColor)
+                            binding.mySharesTvProfitCardTotalPercentage.setTextColor(textColor)
+                            binding.mySharesImgProfitCardTotalTrending.setImageResource(R.drawable.ic_trending_up)
+                        } else {
+                            val textColor = ContextCompat.getColor(binding.root.context, R.color.sharePrice_loss)
+                            binding.mySharesTvProfitCardTotalSum.setTextColor(textColor)
+                            binding.mySharesTvProfitCardTotalPercentage.setTextColor(textColor)
+                            binding.mySharesImgProfitCardTotalTrending.setImageResource(R.drawable.ic_trending_down)
+                        }
+
+                    }
+                }
+
+                is Resource.Failure -> {
+                    // hideProgress()
+                    Toast.makeText(context, "Data could not be loaded", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
 
         return binding.root
     }

@@ -12,7 +12,6 @@ class MySharesViewModel(private val mySharesDataProvider: IMySharesDataProvider)
 
 
     val fetchShareItemList = liveData(Dispatchers.IO) {
-
         // indicate that resource has started loading
         emit(Resource.Loading())
 
@@ -25,5 +24,17 @@ class MySharesViewModel(private val mySharesDataProvider: IMySharesDataProvider)
         }
     }
 
-    
+    val fetchProfitLossOverviewData = liveData(Dispatchers.IO) {
+        // indicate that resource has started loading
+        emit(Resource.Loading())
+
+        try {
+            mySharesDataProvider.getProfitLossOverviewData().collect { resource ->
+                emit(resource)
+            }
+        } catch (e: Exception) {
+            emit(Resource.Failure<Exception>(e))
+        }
+    }
+
 }
