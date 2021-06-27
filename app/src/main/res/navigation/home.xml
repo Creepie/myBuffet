@@ -24,14 +24,14 @@
         android:label="fragment_share_detail"
         tools:layout="@layout/fragment_share_detail" >
         <action
-            android:id="@+id/action_myShares_to_shareDetail2"
-            app:destination="@id/shareDetail2" />
+            android:id="@+id/action_myShares_to_shareDetailScreen"
+            app:destination="@id/shareDetailScreen" />
         <action
             android:id="@+id/action_myShares_to_newShare"
             app:destination="@id/newShare" />
     </fragment>
     <fragment
-        android:id="@+id/shareDetail2"
+        android:id="@+id/shareDetailScreen"
         android:name="com.ada.mybuffet.screens.myShares.ShareDetail"
         android:label="ShareDetail" />
     <fragment

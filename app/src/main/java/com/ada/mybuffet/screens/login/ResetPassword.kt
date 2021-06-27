@@ -1,16 +1,18 @@
 package com.ada.mybuffet.screens.login
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import br.com.simplepass.loadingbutton.customViews.CircularProgressButton
 import com.ada.mybuffet.R
-import com.ada.mybuffet.databinding.ActivityLoginBinding
 import com.ada.mybuffet.databinding.ActivityResetPasswordBinding
 import com.ada.mybuffet.screens.home.Home
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 class ResetPassword : AppCompatActivity() {
 
@@ -26,12 +28,13 @@ class ResetPassword : AppCompatActivity() {
             finish()
         }
 
-        binding.resetPasswordBtnReset.setOnClickListener {
-            performPasswordReset()
+        val resetPasswordButton = binding.resetPasswordBtnReset
+        resetPasswordButton.setOnClickListener {
+            performPasswordReset(resetPasswordButton)
         }
     }
 
-    private fun performPasswordReset() {
+    private fun performPasswordReset(resetPasswordButton: CircularProgressButton) {
         val email = binding.resetPasswordEtEmail.text.toString()
 
         if (email.isEmpty()) {
@@ -39,12 +42,23 @@ class ResetPassword : AppCompatActivity() {
             return
         }
 
+        resetPasswordButton.startAnimation()
+
         FirebaseAuth.getInstance().sendPasswordResetEmail(email)
             .addOnSuccessListener {
-                Toast.makeText(applicationContext, applicationContext.getString(R.string.resetPassword_success_message), Toast.LENGTH_SHORT).show()
-                finish()
+                val btnFillColor = ContextCompat.getColor(applicationContext, R.color.accent_darker)
+                resetPasswordButton.doneLoadingAnimation(btnFillColor, BitmapFactory.decodeResource(resources, R.drawable.ic_done_white_48dp))
+                Toast.makeText(applicationContext, applicationContext.getString(R.string.resetPassword_success_message), Toast.LENGTH_LONG).show()
+
+                // add a short delay in order to briefly show the finished animation
+                // and then launch Home
+                Handler(Looper.getMainLooper()).postDelayed({
+                    finish()
+                }, 500)
             }
             .addOnFailureListener {
+                resetPasswordButton.revertAnimation()
+
                 Toast.makeText(applicationContext, applicationContext.getString(R.string.resetPassword_failure_message), Toast.LENGTH_SHORT).show()
                 return@addOnFailureListener
             }
