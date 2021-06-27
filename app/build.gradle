@@ -71,4 +71,7 @@ dependencies {
     // animations
     implementation 'br.com.simplepass:loading-button-android:2.2.0'
 
+    // charts
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
 }
