@@ -103,9 +103,25 @@ class MyShares : Fragment() {
 
                     val sharesItemsList: MutableList<ShareItem> = observedResource.data as MutableList<ShareItem>
 
-                    // connect recyclerview to viewModel data
-                    val adapter = SharesListAdapter(sharesItemsList)
-                    stocksRecyclerView.adapter = adapter
+                    if (sharesItemsList.size == 0) {
+                        // show empty recycler view placeholder message
+                        binding.mySharesTvRecyclerViewEmptyMessage.visibility = View.VISIBLE
+
+                        // hide recycler view
+                        stocksRecyclerView.visibility = View.GONE
+                    } else {
+                        // display recycler view
+                        stocksRecyclerView.visibility = View.VISIBLE
+
+                        // hide placeholder message
+                        binding.mySharesTvRecyclerViewEmptyMessage.visibility = View.GONE
+
+                        // connect recyclerview to viewModel data
+                        val adapter = SharesListAdapter(sharesItemsList)
+                        stocksRecyclerView.adapter = adapter
+                    }
+
+
                 }
 
                 is Resource.Failure -> {
@@ -136,7 +152,6 @@ class MyShares : Fragment() {
                     }
 
                     val exchangeProfitLoss = profitLossOverviewData["exchangeProfitLoss"]
-
                     if (exchangeProfitLoss != null) {
                         binding.mySharesTvExchangeProfitLossValue.text = NumberFormatUtils.toCurrencyString(exchangeProfitLoss)
 
@@ -149,8 +164,6 @@ class MyShares : Fragment() {
                             binding.mySharesTvExchangeProfitLossValue.setTextColor(textColor)
                             binding.mySharesImgExchangeProfitLossTrending.setImageResource(R.drawable.ic_trending_down)
                         }
-
-
                     }
 
 
@@ -164,11 +177,9 @@ class MyShares : Fragment() {
                         NumberFormatUtils.toCurrencyString(it)
                     }
 
-                    val totalInvestment = profitLossOverviewData["totalInvestment"]
-                    if (totalProfit != null && totalInvestment != null) {
-                        val profitPercentage = totalProfit.multiply(BigDecimal(100)).divide(totalInvestment)
+                    val profitPercentage = profitLossOverviewData["profitPercentage"]
 
-
+                    if (profitPercentage != null) {
                         binding.mySharesTvProfitCardTotalPercentage.text = NumberFormatUtils.toPercentString(profitPercentage)
 
                         if (profitPercentage >= BigDecimal.ZERO) {

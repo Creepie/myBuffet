@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 class MySharesRepository : IMySharesRepository {
 
@@ -67,6 +68,7 @@ class MySharesRepository : IMySharesRepository {
 
                 var profitLossOverviewData = hashMapOf<String, BigDecimal>(
                     "totalProfit" to BigDecimal.ZERO,
+                    "profitPercentage" to BigDecimal.ZERO,
                     "exchangeProfitLoss" to BigDecimal.ZERO,
                     "dividendProfit" to BigDecimal.ZERO,
                     "totalInvestment" to BigDecimal.ZERO,
@@ -89,13 +91,6 @@ class MySharesRepository : IMySharesRepository {
                         val totalProfit = totalHoldings.plus(totalDividends).minus(totalInvestment).minus(totalFees)
                         val exchangeProfitLoss = totalHoldings.minus(totalInvestment)
 
-                        Log.d(TAG, "totalHoldings: $totalHoldings")
-                        Log.d(TAG, "totalInvestment: $totalInvestment")
-                        Log.d(TAG, "totalFees: $totalFees")
-                        Log.d(TAG, "totalDividends: $totalDividends")
-                        Log.d(TAG, "totalProfit: $totalProfit")
-                        Log.d(TAG, "exchangeProfitLoss: $exchangeProfitLoss")
-
                         profitLossOverviewData["totalProfit"] = profitLossOverviewData["totalProfit"]!!.plus(totalProfit)
                         profitLossOverviewData["exchangeProfitLoss"] = profitLossOverviewData["exchangeProfitLoss"]!!.plus(exchangeProfitLoss)
                         profitLossOverviewData["dividendProfit"] = profitLossOverviewData["dividendProfit"]!!.plus(totalDividends)
@@ -104,11 +99,10 @@ class MySharesRepository : IMySharesRepository {
                     }
                 }
 
-                Log.d(TAG, "xexchangeProfitLoss: ${profitLossOverviewData.get("exchangeProfitLoss")}")
-                Log.d(TAG, "xtotalInvestment: ${profitLossOverviewData.get("totalInvestment")}")
-                Log.d(TAG, "xtotalFees: ${profitLossOverviewData.get("fees")}")
-                Log.d(TAG, "xtotalDividends: ${profitLossOverviewData.get("dividendProfit")}")
-                Log.d(TAG, "xtotalProfit: ${profitLossOverviewData.get("totalProfit")}")
+                if (profitLossOverviewData["totalInvestment"] != BigDecimal.ZERO) {
+                    val profitPercentage = profitLossOverviewData["totalProfit"]!!.multiply(BigDecimal(100)).divide(profitLossOverviewData["totalInvestment"]!!, 2, RoundingMode.HALF_UP)
+                    profitLossOverviewData["profitPercentage"] = profitPercentage
+                }
 
 
                 // offer for flow (offer method is now deprecated, using trySend instead)
