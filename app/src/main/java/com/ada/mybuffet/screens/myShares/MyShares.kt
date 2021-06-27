@@ -1,6 +1,7 @@
 package com.ada.mybuffet.screens.myShares
 
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
 import android.os.Bundle
@@ -26,6 +27,7 @@ import com.ada.mybuffet.screens.myShares.viewModel.MySharesViewModelFactory
 import com.ada.mybuffet.utils.MPChartCustomMarkerView
 import com.ada.mybuffet.utils.NumberFormatUtils
 import com.ada.mybuffet.utils.Resource
+import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -34,7 +36,6 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.firebase.Timestamp
 import java.math.BigDecimal
 import java.util.*
 import kotlin.collections.ArrayList
@@ -90,26 +91,47 @@ class MyShares : Fragment() {
     ): View? {
         _binding = FragmentMysharesBinding.inflate(inflater, container, false)
 
-        setupPortfolioTotalOverview()
+        setupPortfolioTotalChartSettings()
+        setupPortfolioTotalOverviewObserver()
         setupProfitLossOverview()
         setupRecyclerView()
 
         return binding.root
     }
 
-    private fun setupPortfolioTotalOverview() {
+    private fun setupPortfolioTotalOverviewObserver() {
         portfolioTotalChart = binding.mySharesChartTotalPortfolioValue
 
-        portfolioTotalChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-            override fun onValueSelected(e: Entry, h: Highlight?) {
-                val valueStr = e.y.toString()
-                binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(valueStr)
-            }
+        viewModel.fetchTotalPortfolioValueHistory.observe(viewLifecycleOwner, Observer { observedResource ->
+            when (observedResource) {
+                is Resource.Loading -> {
+                    // could use this to indicate data loading in the UI
+                    // for this you need to use emit(Resource.Loading()) before the try catch
+                    // in the view model
+                    // showProgress()
+                }
 
-            override fun onNothingSelected() {
-                
+                is Resource.Success -> {
+                    // hideProgress()
+                    val portfolioValueList: MutableList<PortfolioValueByDate> = observedResource.data as MutableList<PortfolioValueByDate>
+                    binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(portfolioValueList.last().portfolioTotalValue)
+                    setupPortfolioTotalChart(portfolioValueList)
+                }
+
+                is Resource.Failure -> {
+                    // hideProgress()
+                    Toast.makeText(context, "Chart data could not be loaded", Toast.LENGTH_SHORT).show()
+                }
             }
         })
+    }
+
+    private fun setupPortfolioTotalChartSettings() {
+        portfolioTotalChart = binding.mySharesChartTotalPortfolioValue
+
+        // change no data placeholder
+        portfolioTotalChart.setNoDataText(getString(R.string.myShares_chart_empty_message))
+        portfolioTotalChart.setNoDataTextColor(Color.WHITE)
 
         // remove description text
         portfolioTotalChart.description.isEnabled = false
@@ -131,48 +153,53 @@ class MyShares : Fragment() {
         portfolioTotalChart.axisRight.isEnabled = false
         portfolioTotalChart.legend.isEnabled = false
 
-        // create a custom MarkerView (extend MarkerView) and specify the layout
-        // to use for it
-        // create a custom MarkerView (extend MarkerView) and specify the layout
-        // to use for it
-        val dbItems = ArrayList<PortfolioValueByDate>()
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624399200000)), "540.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624485600000)), "580.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624572000000)), "550.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624658400000)), "500.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp.now(), "600.00"))
-
-        val mv = MPChartCustomMarkerView(context, R.layout.custom_marker_view, dbItems)
-        mv.chartView = portfolioTotalChart // For bounds control
-        portfolioTotalChart.marker = mv // Set the marker to the chart
-
-
-        // add chart data
-        setPortfolioTotalChartData()
-
-
         // set animation with duration
-        portfolioTotalChart.animateX(1000)
+        portfolioTotalChart.animateXY(100, 100)
 
         // refresh the drawing
         portfolioTotalChart.invalidate()
     }
 
+    private fun setupPortfolioTotalChart(portfolioValueList: MutableList<PortfolioValueByDate>) {
+        // add listener
+        portfolioTotalChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry, h: Highlight?) {
+                val valueStr = e.y.toString()
+                binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(valueStr)
+            }
 
-    private fun setPortfolioTotalChartData() {
-        val dbItems = ArrayList<PortfolioValueByDate>()
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624399200000)), "540.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624485600000)), "580.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624572000000)), "550.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624658400000)), "500.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp.now(), "600.00"))
+            override fun onNothingSelected() {
+                binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(portfolioValueList.last().portfolioTotalValue)
+            }
+        })
+
+        // create a custom MarkerView (extend MarkerView) and specify the layout
+        // to use for it
+        // create a custom MarkerView (extend MarkerView) and specify the layout
+        // to use for it
+        val mv = MPChartCustomMarkerView(
+            context,
+            R.layout.custom_marker_view,
+            portfolioValueList
+        )
+        mv.chartView = portfolioTotalChart // For bounds control
+        portfolioTotalChart.marker = mv // Set the marker to the chart
+
+
+        // add chart data
+        setPortfolioTotalChartData(portfolioValueList)
+
+        // refresh the drawing
+        portfolioTotalChart.invalidate()
+    }
+
+    private fun setPortfolioTotalChartData(portfolioValueList: MutableList<PortfolioValueByDate>) {
+
 
         val values = ArrayList<Entry>()
-        dbItems.forEachIndexed { index, element ->
+        portfolioValueList.forEachIndexed { index, element ->
             values.add(Entry(index.toFloat(), element.portfolioTotalValue.toFloat()))
         }
-
-
 
         var lineDataSet: LineDataSet
 
@@ -207,9 +234,8 @@ class MyShares : Fragment() {
             // disable highlight lines
             lineDataSet.setDrawHighlightIndicators(false)
 
-            // text size of values
-            lineDataSet.valueTextColor = Color.WHITE
-            lineDataSet.valueTextSize = 9f
+            // disable value drawing
+            lineDataSet.setDrawValues(false)
 
             val dataSets: ArrayList<ILineDataSet> = ArrayList()
             dataSets.add(lineDataSet) // add the data sets

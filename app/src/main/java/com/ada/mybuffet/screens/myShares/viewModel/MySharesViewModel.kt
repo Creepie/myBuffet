@@ -37,4 +37,17 @@ class MySharesViewModel(private val mySharesDataProvider: IMySharesDataProvider)
         }
     }
 
+    val fetchTotalPortfolioValueHistory = liveData(Dispatchers.IO) {
+        // indicate that resource has started loading
+        emit(Resource.Loading())
+
+        try {
+            mySharesDataProvider.getTotalPortfolioValueHistory().collect { resource ->
+                emit(resource)
+            }
+        } catch (e: Exception) {
+            emit(Resource.Failure<Exception>(e))
+        }
+    }
+
 }

@@ -39,4 +39,5 @@
     <string name="myShares_rv_placeholder_name">Abcd Inc.</string>
     <string name="myShares_rv_label_dividend_profit">Dividend Profit</string>
     <string name="myShares_rv_label_total_holdings">Total Holdings</string>
+    <string name="myShares_chart_empty_message">Not enough data available</string>
 </resources>
