@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentMysharesBinding
 import com.ada.mybuffet.screens.myShares.model.PortfolioValueByDate
 import com.ada.mybuffet.screens.myShares.model.ShareItem
@@ -22,13 +23,16 @@ import com.ada.mybuffet.screens.myShares.repo.MySharesDataProvider
 import com.ada.mybuffet.screens.myShares.repo.MySharesRepository
 import com.ada.mybuffet.screens.myShares.viewModel.MySharesViewModel
 import com.ada.mybuffet.screens.myShares.viewModel.MySharesViewModelFactory
+import com.ada.mybuffet.utils.MPChartCustomMarkerView
 import com.ada.mybuffet.utils.NumberFormatUtils
 import com.ada.mybuffet.utils.Resource
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.Timestamp
 import java.math.BigDecimal
@@ -96,6 +100,17 @@ class MyShares : Fragment() {
     private fun setupPortfolioTotalOverview() {
         portfolioTotalChart = binding.mySharesChartTotalPortfolioValue
 
+        portfolioTotalChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onValueSelected(e: Entry, h: Highlight?) {
+                val valueStr = e.y.toString()
+                binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(valueStr)
+            }
+
+            override fun onNothingSelected() {
+                
+            }
+        })
+
         // remove description text
         portfolioTotalChart.description.isEnabled = false
 
@@ -120,10 +135,16 @@ class MyShares : Fragment() {
         // to use for it
         // create a custom MarkerView (extend MarkerView) and specify the layout
         // to use for it
-        val mv = MyMarkerView(this, R.layout.custom_marker_view)
-        mv.setChartView(chart) // For bounds control
+        val dbItems = ArrayList<PortfolioValueByDate>()
+        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624399200000)), "540.00"))
+        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624485600000)), "580.00"))
+        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624572000000)), "550.00"))
+        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624658400000)), "500.00"))
+        dbItems.add(PortfolioValueByDate(Timestamp.now(), "600.00"))
 
-        chart.setMarker(mv) // Set the marker to the chart
+        val mv = MPChartCustomMarkerView(context, R.layout.custom_marker_view, dbItems)
+        mv.chartView = portfolioTotalChart // For bounds control
+        portfolioTotalChart.marker = mv // Set the marker to the chart
 
 
         // add chart data
@@ -140,18 +161,17 @@ class MyShares : Fragment() {
 
     private fun setPortfolioTotalChartData() {
         val dbItems = ArrayList<PortfolioValueByDate>()
-        dbItems.add(PortfolioValueByDate(Timestamp.now(), "600.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624658400000)), "500.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624572000000)), "550.00"))
-        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624485600000)), "580.00"))
         dbItems.add(PortfolioValueByDate(Timestamp(Date(1624399200000)), "540.00"))
+        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624485600000)), "580.00"))
+        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624572000000)), "550.00"))
+        dbItems.add(PortfolioValueByDate(Timestamp(Date(1624658400000)), "500.00"))
+        dbItems.add(PortfolioValueByDate(Timestamp.now(), "600.00"))
 
         val values = ArrayList<Entry>()
-        values.add(Entry(0f, dbItems[0].portfolioTotalValue.toFloat()))
-        values.add(Entry(1f, 450.25f))
-        values.add(Entry(2f, 500.13f))
-        values.add(Entry(3f, 370.77f))
-        values.add(Entry(4f, 390.77f))
+        dbItems.forEachIndexed { index, element ->
+            values.add(Entry(index.toFloat(), element.portfolioTotalValue.toFloat()))
+        }
+
 
 
         var lineDataSet: LineDataSet
@@ -183,6 +203,9 @@ class MyShares : Fragment() {
 
             // draw points as solid circles
             lineDataSet.setDrawCircleHole(false)
+
+            // disable highlight lines
+            lineDataSet.setDrawHighlightIndicators(false)
 
             // text size of values
             lineDataSet.valueTextColor = Color.WHITE
