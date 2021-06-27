@@ -1,9 +1,14 @@
 package com.ada.mybuffet.screens.login
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import br.com.simplepass.loadingbutton.customViews.CircularProgressButton
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.ActivityLoginBinding
 import com.ada.mybuffet.screens.home.Home
@@ -26,8 +31,9 @@ class Login : AppCompatActivity() {
             finish()
         }
 
-        binding.loginBTLogIn.setOnClickListener {
-            performLogin()
+        val loginProgressButton = binding.loginBTLogIn
+        loginProgressButton.setOnClickListener {
+            performLogin(loginProgressButton)
         }
 
         binding.loginTvResetPassword.setOnClickListener {
@@ -36,7 +42,7 @@ class Login : AppCompatActivity() {
         }
     }
 
-    private fun performLogin() {
+    private fun performLogin(loginProgressButton: CircularProgressButton) {
         val email = binding.loginEtEmail.text.toString()
         val password = binding.loginEtPassword.text.toString()
 
@@ -45,13 +51,24 @@ class Login : AppCompatActivity() {
             return
         }
 
+        loginProgressButton.startAnimation()
+
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                val i = Intent(this, Home::class.java)
-                startActivity(i)
-                finish()
+                val btnFillColor = ContextCompat.getColor(applicationContext, R.color.accent_darker)
+                loginProgressButton.doneLoadingAnimation(btnFillColor, BitmapFactory.decodeResource(resources, R.drawable.ic_done_white_48dp))
+
+                // add a short delay in order to briefly show the finished animation
+                // and then launch Home
+                Handler(Looper.getMainLooper()).postDelayed({
+                    val i = Intent(this, Home::class.java)
+                    startActivity(i)
+                    finish()
+                }, 500)
             }
             .addOnFailureListener {
+                loginProgressButton.revertAnimation()
+
                 Toast.makeText(applicationContext, applicationContext.getString(R.string.login_failure_message), Toast.LENGTH_SHORT).show()
                 return@addOnFailureListener
             }

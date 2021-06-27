@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">myBuffet</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="global_show_details">Show Details</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="login_email">Email</string>
@@ -19,4 +21,22 @@
 
     <string name="resetPassword_failure_message">Password reset failed.</string>
     <string name="resetPassword_success_message">Password change request was sent to your email address.</string>
+
+    <string name="myShares_portfolio">Portfolio</string>
+    <string name="myShares_placeholder_money">0.00 €</string>
+    <string name="myShares_day">Day</string>
+    <string name="myShares_week">Week</string>
+    <string name="myShares_month">Month</string>
+    <string name="myShares_year">Year</string>
+    <string name="myShares_profit_loss_overview">Profit/Loss Overview</string>
+    <string name="myShares_placeholder_percent">(+0.00%)</string>
+    <string name="myShares_exchange_profit_loss">Exchange Profit/Loss</string>
+    <string name="myShares_dividend_profit">Dividend Profit</string>
+    <string name="myShares_fees">Fees</string>
+    <string name="myShares_stocks">Stocks</string>
+    <string name="myShares_empty_placeholder">No stocks in your portfolio yet.</string>
+    <string name="myShares_rv_placeholder_symbol">ABCD</string>
+    <string name="myShares_rv_placeholder_name">Abcd Inc.</string>
+    <string name="myShares_rv_label_dividend_profit">Dividend Profit</string>
+    <string name="myShares_rv_label_total_holdings">Total Holdings</string>
 </resources>
