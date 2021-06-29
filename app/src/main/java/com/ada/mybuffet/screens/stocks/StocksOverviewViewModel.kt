@@ -1,12 +1,20 @@
 package com.ada.mybuffet.screens.stocks
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.ada.mybuffet.repo.StockShare
+import com.ada.mybuffet.repo.worker.RefreshStockSymbolWorker
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 class StocksOverviewViewModel(application: Application): AndroidViewModel(application) {
     var model = StocksOverviewModel()

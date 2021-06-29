@@ -8,7 +8,7 @@ import java.io.IOException
 class StocksOverviewModel {
 
     var indexList = arrayListOf<String>(
-        "https://finnhub.io/api/v1/index/constituents?symbol=^GDAXI&token=c2vgcniad3i9mrpv9cmg"
+        "^GDAXI", "^DJI", "^NDX", "^STOXX50E"
     )
 
     var stockShares = ArrayList<StockShare>()
@@ -71,7 +71,8 @@ class StocksOverviewModel {
        val scopeList = mutableListOf<Deferred<Boolean?>>()
        for(index in indexList){
            var scope = CoroutineScope(Dispatchers.IO).async {
-               var data = loadIndex(index)
+               var url = "https://finnhub.io/api/v1/index/constituents?symbol=${index}&token=c2vgcniad3i9mrpv9cmg"
+               var data = loadIndex(url)
                data?.let {
                    list.add(data)
                }
