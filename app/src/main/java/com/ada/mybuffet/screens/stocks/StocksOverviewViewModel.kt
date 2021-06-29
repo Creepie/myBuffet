@@ -21,17 +21,10 @@ class StocksOverviewViewModel(application: Application): AndroidViewModel(applic
     }
 
     fun loadStockData(){
-        viewModelScope.launch {
-            var count = model.loadStockList()
-            _stocks.value = model.loadShares(startIndexes, endIndex, list)
-            var test = 2
-        }
+       //todo Firebase API call
     }
 
     fun reloadStockData(){
-        viewModelScope.launch {
-            model.stockShares.clear()
-            _stocks.value = model.loadShares(startIndexes, endIndex, list)
-        }
+        //todo Firebase API call
     }
 }

@@ -39,6 +39,7 @@ class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
             //
             var newIndex = calcStartIndex(endIndex, list)
             saveStartIndexToFirebase(newIndex)
+            var test = 0
         } catch (e: HttpException) {
             return Result.retry()
         }
@@ -52,10 +53,10 @@ class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
     private fun calcEndIndex(startIndexes: StockIndexes, list: ArrayList<IndexSymbols>): StockIndexes{
         //todo calc end Index for index and shares
         var endIndex = StockIndexes(startIndexes.stockIndex, startIndexes.shareIndex)
-        if (startIndexes.shareIndex + 3 > list[startIndexes.stockIndex].constituents.size){
+        if (startIndexes.shareIndex + 2 > list[startIndexes.stockIndex].constituents.size){
           endIndex.shareIndex = list[startIndexes.stockIndex].constituents.size
         } else {
-          endIndex.shareIndex += 3
+          endIndex.shareIndex += 2
         }
         return endIndex
     }
@@ -70,7 +71,6 @@ class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
             }
             startIndexes.shareIndex = 0
         }
-
         return startIndexes
     }
 
@@ -98,8 +98,6 @@ class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
     }
 
     private fun saveStartIndexToFirebase(startIndexes: StockIndexes) {
-        startIndexes.shareIndex = 5
-        startIndexes.stockIndex = 1
         firestore.collection("stockIndexes").document("index").set(startIndexes)
     }
 

@@ -31,7 +31,6 @@ class StocksOverviewModel {
     ): ArrayList<StockShare>{
         val list = mutableListOf<Deferred<Boolean>>()
         var time = System.currentTimeMillis()
-        //todo why get a result of 5 or 6 items
         for (i in startIndexes.shareIndex..endIndex.shareIndex){
             var symbol = symbolList[startIndexes.stockIndex].constituents[i]
 
@@ -55,7 +54,11 @@ class StocksOverviewModel {
                 //go into Scope for the name
                 var scopeName = CoroutineScope(Dispatchers.IO).async {
                     var name = loadShareName(symbol)
-                    share.name = name?.result?.get(0)?.description
+                    name.let {
+                        if (name?.result?.isNotEmpty() == true){
+                            share.name = name?.result?.get(0)?.description
+                        }
+                    }
                     Log.d("LOG","$i name rdy ${(System.currentTimeMillis()-time)}")
                 }
                 Log.d("LOG","$i all scopes started ${(System.currentTimeMillis()-time)}")
