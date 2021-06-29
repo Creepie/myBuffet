@@ -27,15 +27,15 @@ class myBuffetApplication : Application() {
 
     private fun setupRecurringWork(){
         val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.UNMETERED)
-            .setRequiresBatteryNotLow(true)
-            .setRequiresCharging(true)
+            .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+            .setRequiresBatteryNotLow(false)
+            .setRequiresCharging(false)
             .apply {
-                setRequiresDeviceIdle(true)
+                setRequiresDeviceIdle(false)
             }
             .build()
 
-        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshStockSymbolWorker>(3, TimeUnit.MINUTES)
+        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshStockSymbolWorker>(16, TimeUnit.MINUTES)
             .setConstraints(constraints).build()
 
         WorkManager.getInstance().enqueueUniquePeriodicWork(
