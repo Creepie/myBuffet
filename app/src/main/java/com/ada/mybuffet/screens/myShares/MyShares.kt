@@ -51,7 +51,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [MyShares.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MyShares : Fragment() {
+class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
     // set the _binding variable initially to null and
     // also when the view is destroyed again it has to be set to null
     private var _binding: FragmentMysharesBinding? = null
@@ -325,7 +325,7 @@ class MyShares : Fragment() {
     private fun setupRecyclerView() {
         // recycler view setup
         val stocksRecyclerView = binding.mySharesRecyclerViewStocks
-        stocksRecyclerView.adapter = SharesListAdapter(arrayListOf<ShareItem>())    // init empty
+        stocksRecyclerView.adapter = SharesListAdapter(arrayListOf<ShareItem>(), this)    // init empty
         stocksRecyclerView.layoutManager = LinearLayoutManager(activity)
 
         // add vertical inter-item spacing of 8dp to recyclerview items
@@ -365,7 +365,7 @@ class MyShares : Fragment() {
                         binding.mySharesTvRecyclerViewEmptyMessage.visibility = View.GONE
 
                         // connect recyclerview to viewModel data
-                        val adapter = SharesListAdapter(sharesItemsList)
+                        val adapter = SharesListAdapter(sharesItemsList, this)
                         stocksRecyclerView.adapter = adapter
                     }
 
@@ -392,8 +392,6 @@ class MyShares : Fragment() {
         //}
 
         btn_newShare.setOnClickListener {
-            //TODO change back
-            findNavController().navigate(R.id.action_myShares_to_shareDetailScreen)
         }
     }
 
@@ -431,5 +429,10 @@ class MyShares : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun onCardClicked(shareItem: ShareItem) {
+        val action = MySharesDirections.actionMySharesToShareDetailScreen(shareItem)
+        findNavController().navigate(action)
     }
 }

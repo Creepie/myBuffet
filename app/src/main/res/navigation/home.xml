@@ -44,5 +44,9 @@
         android:id="@+id/shareDetail"
         android:name="com.ada.mybuffet.screens.detailShare.ShareDetail"
         android:label="fragment_share_detail"
-        tools:layout="@layout/fragment_share_detail" />
+        tools:layout="@layout/fragment_share_detail" >
+        <argument
+            android:name="shareItem"
+            app:argType="com.ada.mybuffet.screens.myShares.model.ShareItem" />
+    </fragment>
 </navigation>
