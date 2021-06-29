@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.ada.mybuffet.databinding.FragmentProfileBinding
 import com.ada.mybuffet.screens.login.Login
-import com.ada.mybuffet.screens.login.Register
 import com.google.firebase.auth.FirebaseAuth
 
 // TODO: Rename parameter arguments, choose names that match
@@ -56,6 +55,7 @@ class Profile : Fragment() {
             // switch to register activity
             val i = Intent(activity, Login::class.java)
             startActivity(i)
+            activity?.finish()
         }
 
         return binding.root
