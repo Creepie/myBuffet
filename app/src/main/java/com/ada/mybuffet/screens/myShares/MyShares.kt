@@ -219,7 +219,8 @@ class MyShares : Fragment() {
         //}
 
         btn_newShare.setOnClickListener {
-            findNavController().navigate(R.id.action_myShares_to_newShare)
+            //TODO change back
+            findNavController().navigate(R.id.action_myShares_to_shareDetailScreen)
         }
     }
 

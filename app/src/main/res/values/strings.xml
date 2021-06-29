@@ -39,4 +39,44 @@
     <string name="myShares_rv_placeholder_name">Abcd Inc.</string>
     <string name="myShares_rv_label_dividend_profit">Dividend Profit</string>
     <string name="myShares_rv_label_total_holdings">Total Holdings</string>
+
+
+    <string name="purchase_item_value_placeholder">€ 0.00</string>
+    <string name="purchase_item_date_placeholder">01.01.2021</string>
+    <string name="purchase_item_fees_placeholder">€ 0.00</string>
+    <string name="purchase_item_amount_placeholder">0</string>
+    <string name="purchase_item_price_per_share_placeholder">€ 0.00</string>
+
+    <string name="purchase_item_fee_label">Fees</string>
+    <string name="purchase_item_amount_label">Shares</string>
+    <string name="purchase_item_price_per_share_label">Share Price</string>
+
+    <string name="share_detail_stock_default">ABC</string>
+    <string name="share_detail_purchases">Purchases</string>
+    <string name="share_detail_holdings_overview">Holdings Overview</string>
+    <string name="share_detail_holdings_value_placeholder">€ 0.00</string>
+    <string name="share_detail_holdings_value_percentage_placeholder">(+0.00%)</string>
+
+    <string name="share_detail_total_investment_placeholder">€ 0.00</string>
+    <string name="share_detail_total_investment_label">Total Investment Sum</string>
+
+    <string name="share_detail_exchange_profit_loss_label">Exchange Profit/Loss</string>
+    <string name="share_detail_exchange_profit_loss_placeholder">€ 0.00</string>
+
+    <string name="share_detail_dividend_profit_label">Dividend Profit</string>
+    <string name="share_detail_dividend_profit_placeholder">€ 0.00</string>
+
+    <string name="share_detail_fees_label">Fees</string>
+    <string name="share_detail_fees_placeholder">€ 0.00</string>
+
+    <string name="share_detail_add_fee_fab">add purchase</string>
+    <string name="share_detail_add_sale_fab">add sale</string>
+    <string name="share_detail_add_dividend_fab">add dividends</string>
+    <string name="share_detail_add_purchase_fab">add fees</string>
+
+    <string name="share_detail_empty_purchase_message">no purchases yet</string>
+    <string name="share_detail_empty_sale_message">no sales yet</string>
+
+    <string name="share_detail_sale_title">Sales</string>
+
 </resources>
