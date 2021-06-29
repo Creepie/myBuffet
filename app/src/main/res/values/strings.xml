@@ -69,14 +69,33 @@
     <string name="share_detail_fees_label">Fees</string>
     <string name="share_detail_fees_placeholder">€ 0.00</string>
 
-    <string name="share_detail_add_fee_fab">add purchase</string>
+    <string name="share_detail_add_fee_fab">add fees</string>
     <string name="share_detail_add_sale_fab">add sale</string>
     <string name="share_detail_add_dividend_fab">add dividends</string>
-    <string name="share_detail_add_purchase_fab">add fees</string>
+    <string name="share_detail_add_purchase_fab">add purchase</string>
 
     <string name="share_detail_empty_purchase_message">no purchases yet</string>
     <string name="share_detail_empty_sale_message">no sales yet</string>
 
     <string name="share_detail_sale_title">Sales</string>
+
+    <string name="share_detail_purchase_deleted">Purchase was deleted</string>
+    <string name="share_detail_sale_deleted">Sale was deleted</string>
+
+
+
+
+    <string name="add_item_purchase_title">Add Share Purchase</string>
+    <string name="add_item_purchase_subtitle">Share Purchase Details</string>
+    <string name="add_item_purchase_symbol_label">Symbol</string>
+    <string name="add_item_purchase_name_label">Name</string>
+    <string name="add_item_purchase_price_per_share_label">Price per Share</string>
+    <string name="add_item_purchase_number_of_share_label">Number of Shares</string>
+    <string name="add_item_purchase_fee_label">Fees</string>
+    <string name="add_item_purchase_date_label">Purchase Date</string>
+    <string name="add_item_save_button">SAVE</string>
+
+    <string name="add_item_sale_title">Add Share Sale</string>
+    <string name="add_item_sale_subtitle">Share Sale Details</string>
 
 </resources>

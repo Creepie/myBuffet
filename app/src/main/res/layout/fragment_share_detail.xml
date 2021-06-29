@@ -28,12 +28,12 @@
             android:paddingTop="3dp"
             android:paddingRight="15dp"
             android:paddingBottom="3dp"
-            android:text="@string/share_detail_add_purchase_fab"
+            android:text="@string/share_detail_add_fee_fab"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/share_detail_fab_add_purchase"
+            android:id="@+id/share_detail_fab_add_fees"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:fabSize="mini"
@@ -79,9 +79,10 @@
             android:layout_margin="16dp"
             android:backgroundTint="@color/background_primary_darkMode"
             android:clickable="true"
-            android:src="@drawable/ic_money"
-            app:fabSize="mini"
+            android:rotation="-35"
+            android:src="?attr/actionModeCloseDrawable"
             app:borderWidth="0dp"
+            app:fabSize="mini"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="@android:color/white" />
@@ -119,9 +120,9 @@
             android:layout_margin="16dp"
             android:backgroundTint="@color/background_primary_darkMode"
             android:clickable="true"
-            android:src="@drawable/ic_money"
-            app:fabSize="mini"
+            android:src="@drawable/ic_portfolio"
             app:borderWidth="0dp"
+            app:fabSize="mini"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="@android:color/white" />
@@ -148,20 +149,21 @@
             android:paddingTop="3dp"
             android:paddingRight="15dp"
             android:paddingBottom="3dp"
-            android:text="@string/share_detail_add_fee_fab"
+            android:text="@string/share_detail_add_purchase_fab"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/share_detail_fab_add_fees"
+            android:id="@+id/share_detail_fab_add_purchase"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:backgroundTint="@color/background_primary_darkMode"
             android:clickable="true"
-            android:src="@drawable/ic_money"
-            app:fabSize="mini"
+            android:rotation="135"
+            android:src="?attr/homeAsUpIndicator"
             app:borderWidth="0dp"
+            app:fabSize="mini"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="@android:color/white" />

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_primary"
-    tools:context=".screens.addItem.AddItem">
+    tools:context=".screens.addItem.AddSale">
 
 
     <androidx.core.widget.NestedScrollView
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content">
 
                 <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
-                    android:id="@+id/add_item_purchase_save_button"
+                    android:id="@+id/add_item_sale_save_button"
                     android:layout_width="wrap_content"
                     android:layout_height="30sp"
                     android:layout_marginTop="40dp"
@@ -39,7 +39,7 @@
                     app:spinning_bar_padding="6dp" />
 
                 <ImageButton
-                    android:id="@+id/add_item_purchase_close"
+                    android:id="@+id/add_item_sale_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
@@ -55,12 +55,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:text="@string/add_item_purchase_title"
+                    android:text="@string/add_item_sale_title"
                     android:textColor="@color/black"
                     android:textSize="30sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/add_item_purchase_close" />
+                    app:layout_constraintTop_toBottomOf="@+id/add_item_sale_close" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -73,11 +73,11 @@
                 android:layout_marginBottom="12dp">
 
                 <TextView
-                    android:id="@+id/add_items_purchase_sub_title"
+                    android:id="@+id/add_items_sale_sub_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@string/font_roboto_black"
-                    android:text="@string/add_item_purchase_subtitle"
+                    android:text="@string/add_item_sale_subtitle"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -112,7 +112,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/layout_pill_bg">
                         <EditText
-                            android:id="@+id/add_item_purchase_input_symbol"
+                            android:id="@+id/add_item_sale_input_symbol"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -142,7 +142,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/layout_pill_bg">
                         <EditText
-                            android:id="@+id/add_item_purchase_input_name"
+                            android:id="@+id/add_item_sale_input_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -172,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/layout_pill_bg">
                         <EditText
-                            android:id="@+id/add_item_purchase_input_price"
+                            android:id="@+id/add_item_sale_input_price"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -202,7 +202,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/layout_pill_bg">
                         <EditText
-                            android:id="@+id/add_item_purchase_input_number"
+                            android:id="@+id/add_item_sale_input_number"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -232,7 +232,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/layout_pill_bg">
                         <EditText
-                            android:id="@+id/add_item_purchase_input_fees"
+                            android:id="@+id/add_item_sale_input_fees"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"

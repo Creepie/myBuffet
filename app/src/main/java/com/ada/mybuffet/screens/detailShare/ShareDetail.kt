@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.*
 import com.ada.mybuffet.R
@@ -16,6 +17,7 @@ import com.ada.mybuffet.screens.detailShare.model.SaleItem
 import com.ada.mybuffet.screens.detailShare.repo.ShareDetailRepository
 import com.ada.mybuffet.screens.detailShare.viewModel.ShareDetailViewModel
 import com.ada.mybuffet.screens.detailShare.viewModel.ShareDetailViewModelFactory
+import com.ada.mybuffet.screens.myShares.MySharesDirections
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.Resource
 import com.google.android.material.snackbar.Snackbar
@@ -100,13 +102,18 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                         is ShareDetailPurchaseAdapter.ShareDetailViewHolder -> shareDetailPurchaseAdapter.currentList[viewHolder.adapterPosition]
                         else -> return
                     }
+                    val text = when (viewHolder) {
+                        is ShareDetailSaleAdapter.ShareDetailViewHolder -> R.string.share_detail_sale_deleted
+                        is ShareDetailPurchaseAdapter.ShareDetailViewHolder -> R.string.share_detail_purchase_deleted
+                        else -> return
+                    }
                     viewModel.onItemSwiped(item).observe(viewLifecycleOwner) {
                         when (it) {
                             is Resource.Success -> {
                                 val deletedItem = it.data
                                 Snackbar.make(
                                     requireView(),
-                                    "Purchase delted",
+                                    text,
                                     Snackbar.LENGTH_LONG
                                 )
                                     .setAction("UNDO") {
@@ -181,7 +188,13 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
             }
 
             shareDetailFabAddPurchase.setOnClickListener{
+                val action = ShareDetailDirections.actionShareDetailToAddItem(shareItem)
+                findNavController().navigate(action)
+            }
 
+            shareDetailFabAddSale.setOnClickListener{
+                val action = ShareDetailDirections.actionShareDetailToAddSale(shareItem)
+                findNavController().navigate(action)
             }
         }
     }
