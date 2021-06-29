@@ -1,9 +1,9 @@
 package com.ada.mybuffet
 
 import android.app.Application
-import android.os.Build
 import android.util.Log
 import androidx.work.*
+import com.ada.mybuffet.repo.worker.RefreshStockShareWorker
 import com.ada.mybuffet.repo.worker.RefreshStockSymbolWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,12 +35,27 @@ class myBuffetApplication : Application() {
             }
             .build()
 
-        val repeatingRequest = PeriodicWorkRequestBuilder<RefreshStockSymbolWorker>(16, TimeUnit.MINUTES)
+        val repeatingStockSymbolRequest = PeriodicWorkRequestBuilder<RefreshStockSymbolWorker>(2, TimeUnit.HOURS)
             .setConstraints(constraints).build()
 
-        WorkManager.getInstance().enqueueUniquePeriodicWork(
+        val repeatingStockShareRequest = PeriodicWorkRequestBuilder<RefreshStockShareWorker>(16, TimeUnit.MINUTES)
+            .setConstraints(constraints).build()
+
+        val requests = ArrayList<PeriodicWorkRequest>()
+        requests.add(repeatingStockSymbolRequest)
+        requests.add(repeatingStockShareRequest)
+
+        WorkManager.getInstance().enqueue(requests)
+
+       /* WorkManager.getInstance().enqueueUniquePeriodicWork(
             RefreshStockSymbolWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
             repeatingRequest)
+
+        WorkManager.getInstance().enqueueUniquePeriodicWork(
+            RefreshStockShareWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            rep
+        )*/
     }
 }

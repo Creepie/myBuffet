@@ -24,11 +24,7 @@ class RefreshStockSymbolWorker(appContext: Context, params: WorkerParameters) :
         try {
            val data = model.loadIndexList()
             for (stock in data){
-                val store = hashMapOf(
-                    "StockSymbol" to stock.symbol,
-                    "symbols" to stock.constituents
-                )
-                firestore.collection("stocks").document(stock.symbol).set(store)
+                firestore.collection("stocks").document(stock.symbol).set(stock)
             }
             Log.i("WORKER_RUNNING", "Refresh Stock got the data")
         } catch (e: HttpException){

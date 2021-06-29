@@ -24,12 +24,16 @@ class StocksOverviewModel {
         return count
     }
 
-    suspend fun load(): ArrayList<StockShare>{
+    suspend fun loadShares(
+        startIndexes: StockIndexes,
+        endIndex: StockIndexes,
+        symbolList: ArrayList<IndexSymbols>
+    ): ArrayList<StockShare>{
         val list = mutableListOf<Deferred<Boolean>>()
         var time = System.currentTimeMillis()
         //todo why get a result of 5 or 6 items
-        for (i in 0..10){
-            var symbol = stockList[0].constituents[i]
+        for (i in startIndexes.shareIndex..endIndex.shareIndex){
+            var symbol = symbolList[startIndexes.stockIndex].constituents[i]
 
             var scope = CoroutineScope(Dispatchers.IO).async {
                 val scopeList = mutableListOf<Deferred<Int>>()
@@ -90,24 +94,6 @@ class StocksOverviewModel {
             Log.i("API", "fetchIndex Error with code: ${networkError.message}")
             null;
         }
-    }
-
-    suspend fun loadDividends(indexList: ArrayList<IndexSymbols>): ArrayList<Dividends>{
-        var list = ArrayList<Dividends>()
-        val scopeList = mutableListOf<kotlinx.coroutines.Deferred<Boolean?>>()
-        for (index in indexList){
-            for(company in index.constituents){
-                var scope = CoroutineScope(Dispatchers.IO).async {
-                    var data = loadDividend(company)
-                    data?.let {
-                        list.add(data)
-                    }
-                }
-                scopeList.add(scope)
-            }
-        }
-        scopeList.awaitAll()
-        return list
     }
 
     suspend fun loadDividend(symbol: String): Dividends?{
