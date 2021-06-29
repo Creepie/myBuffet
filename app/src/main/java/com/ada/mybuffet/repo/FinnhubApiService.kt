@@ -70,7 +70,7 @@ interface FinnhubApiService{
      * this function is to get the dividends of a specific company
      */
     @GET
-    suspend fun getDividends(@Url url: String): List<Dividend>
+    suspend fun getDividends(@Url url: String): Dividends
 
 }
 

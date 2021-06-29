@@ -5,7 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.ada.mybuffet.R
+import com.ada.mybuffet.databinding.FragmentStocksOverviewBinding
+import com.ada.mybuffet.features.NewsRecyclerAdapter
+import com.ada.mybuffet.repo.StockShare
+import com.ada.mybuffet.repo.SymbolPressResponse
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,6 +24,13 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class StocksOverview : Fragment() {
+    var _binding: FragmentStocksOverviewBinding? = null
+    val binding: FragmentStocksOverviewBinding get() = _binding!!
+
+    private val viewModel: StocksOverviewViewModel by lazy {
+        ViewModelProvider(this).get(StocksOverviewViewModel::class.java)
+    }
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -30,12 +43,30 @@ class StocksOverview : Fragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel
+
+        val observer = Observer<MutableList<StockShare>> {
+                stockList -> println(stockList)
+            var x = 10
+        }
+
+        viewModel.stocks.observe(viewLifecycleOwner,observer)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        _binding = FragmentStocksOverviewBinding.inflate(inflater,container,false)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_stocks_overview, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

@@ -73,5 +73,8 @@ dependencies {
 
     // charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    
+    //WorkManager
+    implementation "android.arch.work:work-runtime-ktx:1.0.1"
 
 }
