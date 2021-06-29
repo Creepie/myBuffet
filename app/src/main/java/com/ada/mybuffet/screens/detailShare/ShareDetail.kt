@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.*
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentShareDetailBinding
@@ -21,27 +22,22 @@ import com.google.android.material.snackbar.Snackbar
 
 class ShareDetail : Fragment(R.layout.fragment_share_detail) {
 
+    private val args: ShareDetailArgs by navArgs()
+
     private val viewModel: ShareDetailViewModel by viewModels() {
         ShareDetailViewModelFactory(
             ShareDetailRepository(),
-            "DS13Qiic8WB5cdZRLNGb"
+            args.shareItem.shareItemId
         )
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //TODO replace
-        val shareItem = ShareItem(
-            stockSymbol = "VOE.VI",
-            stockName = "Voestalpine AG",
-            currentPrice = "33.12",
-            currentPricePercent = "11.74",
-            totalDividends = "113.17",
-            totalHoldings = "631.15",
-            totalFees = "13.75",
-            totalInvestment = "600.00"
-        )
+        //Get Argument
+        val shareItem = args.shareItem
 
         //Setup binding
         val binding = FragmentShareDetailBinding.bind(view)

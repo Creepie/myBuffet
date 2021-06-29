@@ -9,7 +9,10 @@ import com.ada.mybuffet.databinding.RecyclerViewItemMysharesStocksBinding
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.NumberFormatUtils
 
-class SharesListAdapter(private val sharesList: MutableList<ShareItem>) :
+class SharesListAdapter(
+    private val sharesList: MutableList<ShareItem>,
+    private val listener: MySharesRecyclerVIewClickListener
+    ) :
     RecyclerView.Adapter<SharesListAdapter.SharesListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SharesListViewHolder {
@@ -50,6 +53,9 @@ class SharesListAdapter(private val sharesList: MutableList<ShareItem>) :
                 } else {
                     val textColor = ContextCompat.getColor(holder.binding.root.context, R.color.sharePrice_loss)
                     binding.recyclerViewTvTotalHoldingsValue.setTextColor(textColor)
+                }
+                binding.root.setOnClickListener{
+                    listener.onCardClicked(sharesList[position])
                 }
             }
         }

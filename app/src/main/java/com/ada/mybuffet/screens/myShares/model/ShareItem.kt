@@ -1,8 +1,14 @@
 package com.ada.mybuffet.screens.myShares.model
 
+import android.os.Parcelable
+import com.google.firebase.firestore.DocumentId
+import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
 
-data class ShareItem(
+@Parcelize
+data class ShareItem (
+    @DocumentId
+    val shareItemId: String = "",
     val stockSymbol: String = "",
     val stockName: String = "",
     val currentPrice: String = "",
@@ -11,7 +17,7 @@ data class ShareItem(
     val totalHoldings: String = "",
     val totalFees: String = "",
     val totalInvestment: String = ""
-) {
+) : Parcelable {
     public fun isPricePositive(): Boolean {
         return try {
             val price = BigDecimal(currentPricePercent)

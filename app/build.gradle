@@ -4,6 +4,8 @@ plugins {
 }
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'org.jetbrains.kotlin.android.extensions'
+apply plugin: 'androidx.navigation.safeargs.kotlin' //added for safe args
 
 android {
     compileSdkVersion 30
@@ -35,7 +37,13 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    //Needed for safe args
+    sourceSets {
+        getByName("main").java.srcDirs("build/generated/source/navigation-args")
+    }
 }
+
 
 dependencies {
     implementation platform('com.google.firebase:firebase-bom:28.1.0')
