@@ -39,8 +39,8 @@
     <string name="myShares_rv_placeholder_name">Abcd Inc.</string>
     <string name="myShares_rv_label_dividend_profit">Dividend Profit</string>
     <string name="myShares_rv_label_total_holdings">Total Holdings</string>
-
-
+    <string name="myShares_chart_empty_message">Not enough data available</string>
+  
     <string name="purchase_item_value_placeholder">€ 0.00</string>
     <string name="purchase_item_date_placeholder">01.01.2021</string>
     <string name="purchase_item_fees_placeholder">€ 0.00</string>

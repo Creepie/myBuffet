@@ -1,11 +1,13 @@
 package com.ada.mybuffet.screens.myShares.repo
 
 import android.util.Log
+import com.ada.mybuffet.screens.myShares.model.PortfolioValueByDate
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -107,6 +109,42 @@ class MySharesRepository : IMySharesRepository {
 
                 // offer for flow (offer method is now deprecated, using trySend instead)
                 trySend(Resource.Success(profitLossOverviewData)).isSuccess
+            } else {
+                Log.d(TAG, "Current data: null")
+            }
+        }
+
+        // close flow channel if not in use to avoid leaks
+        awaitClose{
+            subscription.remove()
+        }
+    }
+
+    override suspend fun getTotalPortfolioValueHistoryFromDB(): Flow<Resource<MutableList<PortfolioValueByDate>>> = callbackFlow {
+        // create reference to the collection in firestore
+        val userid = FirebaseAuth.getInstance().currentUser!!.uid
+        val docRef = firestore.collection("users").document(userid).collection("portfolioValueHistory")
+
+        // create subscription which listens to database changes
+        val subscription = docRef
+            .orderBy("date", Query.Direction.ASCENDING)
+            .addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+            } else if (snapshot != null) {
+                Log.d(TAG, "Listen successful")
+
+                val portfolioValueList = mutableListOf<PortfolioValueByDate>()
+                val documents = snapshot.documents
+                documents.forEach { doc ->
+                    val portfolioValueItem = doc.toObject(PortfolioValueByDate::class.java)
+                    if (portfolioValueItem != null) {
+                        portfolioValueList.add(portfolioValueItem)
+                    }
+                }
+
+                // offer for flow (offer method is now deprecated, using trySend instead)
+                trySend(Resource.Success(portfolioValueList)).isSuccess
             } else {
                 Log.d(TAG, "Current data: null")
             }
