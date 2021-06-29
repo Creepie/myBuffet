@@ -26,33 +26,38 @@ class StocksOverviewModel {
 
     suspend fun load(): ArrayList<StockShare>{
         val list = mutableListOf<Deferred<Boolean>>()
-
+        var time = System.currentTimeMillis()
         //todo why get a result of 5 or 6 items
         for (i in 0..10){
             var symbol = stockList[0].constituents[i]
 
             var scope = CoroutineScope(Dispatchers.IO).async {
-                val scopeList = mutableListOf<Deferred<Unit>>()
+                val scopeList = mutableListOf<Deferred<Int>>()
                 var share = StockShare(symbol = symbol)
                 //go into Scope for the divis
                 var scopeDivis = CoroutineScope(Dispatchers.IO).async {
                     var dividends = loadDividend(symbol)
                     share.dividends = dividends
+                    Log.d("LOG","$i divi rdy ${(System.currentTimeMillis()-time)}")
                 }
                 scopeList.add(scopeDivis)
                 //go into Scope for the current price
                 var scopeCurPrice = CoroutineScope(Dispatchers.IO).async {
                     var price = loadCurrentPrice(symbol)
                     share.curPrice = price?.c
+                    Log.d("LOG","$i curPrice rdy ${(System.currentTimeMillis()-time)}")
                 }
                 scopeList.add(scopeCurPrice)
                 //go into Scope for the name
                 var scopeName = CoroutineScope(Dispatchers.IO).async {
                     var name = loadShareName(symbol)
                     share.name = name?.result?.get(0)?.description
+                    Log.d("LOG","$i name rdy ${(System.currentTimeMillis()-time)}")
                 }
+                Log.d("LOG","$i all scopes started ${(System.currentTimeMillis()-time)}")
                 scopeList.add(scopeName)
                 scopeList.awaitAll()
+                Log.d("LOG","$i all scopes done ${(System.currentTimeMillis()-time)}")
                 stockShares.add(share)
             }
             list.add(scope)
