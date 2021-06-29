@@ -30,13 +30,11 @@ class ShareDetailSaleAdapter :  ListAdapter<SaleItem, ShareDetailSaleAdapter.Sha
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(saleItem: SaleItem) {
-            //val value = saleItem.sharePrice.toDouble() * saleItem.shareNumber
-
             binding.apply {
-                //itemPurchaseAmount.text = purchase.shareNumber.toString()
-                //itemPurchaseValue.text = String.format("€ %.2f", value)
-                //itemPurchaseSharePrice.text = "€ ${purchase.sharePrice}"
-                //itemPurchaseFee.text = "€ ${purchase.fees}"
+                itemPurchaseAmount.text = saleItem.shareNumber.toString()
+                itemPurchaseValue.text = String.format("€ %.2f", saleItem.getValue())
+                itemPurchaseSharePrice.text = "€ ${saleItem.sharePrice}"
+                itemPurchaseFee.text = "€ ${saleItem.fees}"
             }
         }
 

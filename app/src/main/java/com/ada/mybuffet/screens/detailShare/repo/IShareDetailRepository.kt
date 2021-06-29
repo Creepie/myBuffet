@@ -6,7 +6,9 @@ import com.ada.mybuffet.utils.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface IShareDetailRepository {
-    suspend fun getPurchases(): Flow<Resource<MutableList<Purchase>>>
+    suspend fun getPurchases(stockId: String): Flow<Resource<MutableList<Purchase>>>
+    suspend fun getSales(stockId: String): Flow<Resource<MutableList<SaleItem>>>
 
-    suspend fun getSales(): Flow<Resource<MutableList<SaleItem>>>
+    suspend fun <T: Any> deleteItem(stockId: String, item: T) : Resource<T>
+    suspend fun <T: Any> addItem(stockId: String, item: T) : Resource<T>
 }

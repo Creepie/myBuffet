@@ -28,11 +28,9 @@ class ShareDetailPurchaseAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(purchase: Purchase) {
-            val value = purchase.sharePrice.toDouble() * purchase.shareNumber
-
             binding.apply {
                 itemPurchaseAmount.text = purchase.shareNumber.toString()
-                itemPurchaseValue.text = String.format("€ %.2f", value)
+                itemPurchaseValue.text = String.format("€ %.2f", purchase.getValue())
                 itemPurchaseSharePrice.text = "€ ${purchase.sharePrice}"
                 itemPurchaseFee.text = "€ ${purchase.fees}"
             }

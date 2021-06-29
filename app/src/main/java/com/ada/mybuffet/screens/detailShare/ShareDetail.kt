@@ -7,8 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.*
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentShareDetailBinding
 import com.ada.mybuffet.screens.detailShare.model.Purchase
@@ -18,12 +17,14 @@ import com.ada.mybuffet.screens.detailShare.viewModel.ShareDetailViewModel
 import com.ada.mybuffet.screens.detailShare.viewModel.ShareDetailViewModelFactory
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.Resource
+import com.google.android.material.snackbar.Snackbar
 
 class ShareDetail : Fragment(R.layout.fragment_share_detail) {
 
     private val viewModel: ShareDetailViewModel by viewModels() {
         ShareDetailViewModelFactory(
-            ShareDetailRepository()
+            ShareDetailRepository(),
+            "DS13Qiic8WB5cdZRLNGb"
         )
     }
 
@@ -42,14 +43,16 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
             totalInvestment = "600.00"
         )
 
+        //Setup binding
         val binding = FragmentShareDetailBinding.bind(view)
 
-        //Setup Recycler
+        //Setup RecyclerView
         val shareDetailPurchaseAdapter = ShareDetailPurchaseAdapter()
         val shareDetailSaleAdapter = ShareDetailSaleAdapter()
 
 
         binding.apply {
+            //Purchases Recycler
             shareDetailRecyclerViewPurchase.apply {
                 adapter = shareDetailPurchaseAdapter
                 layoutManager = LinearLayoutManager(requireContext())
@@ -66,6 +69,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                     })
             }
 
+            //Sales Recycler
             shareDetailRecyclerViewSales.apply {
                 adapter = shareDetailSaleAdapter
                 layoutManager = LinearLayoutManager(requireContext())
@@ -81,6 +85,49 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                         }
                     })
             }
+
+            //Delete To Swipe TouchHandler
+            val simpleTouchHandler = object :
+                ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false;
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+
+                    val item = when (viewHolder) {
+                        is ShareDetailSaleAdapter.ShareDetailViewHolder -> shareDetailSaleAdapter.currentList[viewHolder.adapterPosition]
+                        is ShareDetailPurchaseAdapter.ShareDetailViewHolder -> shareDetailPurchaseAdapter.currentList[viewHolder.adapterPosition]
+                        else -> return
+                    }
+                    viewModel.onItemSwiped(item).observe(viewLifecycleOwner) {
+                        when (it) {
+                            is Resource.Success -> {
+                                val deletedItem = it.data
+                                Snackbar.make(
+                                    requireView(),
+                                    "Purchase delted",
+                                    Snackbar.LENGTH_LONG
+                                )
+                                    .setAction("UNDO") {
+                                        viewModel.onUndoDeleteItem(deletedItem)
+                                            .observe(viewLifecycleOwner) {}
+                                    }
+                                    .show()
+                            }
+                        }
+                    }
+
+                }
+            }
+            //Subscribe to touch handler
+            ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(shareDetailRecyclerViewPurchase)
+            ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(shareDetailRecyclerViewSales)
+
         }
 
         //Observe View Model
@@ -89,8 +136,9 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                 is Resource.Success -> {
                     val purchases: List<Purchase> = (it.data as List<Purchase>)
                     shareDetailPurchaseAdapter.submitList(purchases)
-                    if(purchases.isEmpty()) {
-                        binding.shareDetailRecyclerViewPurchaseEmptyMessage.visibility = View.VISIBLE
+                    if (purchases.isEmpty()) {
+                        binding.shareDetailRecyclerViewPurchaseEmptyMessage.visibility =
+                            View.VISIBLE
                     } else {
                         binding.shareDetailRecyclerViewPurchaseEmptyMessage.visibility = View.GONE
                     }
@@ -103,7 +151,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                 is Resource.Success -> {
                     val sales: List<SaleItem> = (it.data as List<SaleItem>)
                     shareDetailSaleAdapter.submitList(sales)
-                    if(sales.isEmpty()) {
+                    if (sales.isEmpty()) {
                         binding.shareDetailRecyclerViewSalesEmptyMessage.visibility = View.VISIBLE
                     } else {
                         binding.shareDetailRecyclerViewSalesEmptyMessage.visibility = View.GONE
@@ -131,6 +179,14 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                     hideFABMenu(binding)
                 }
             }
+
+            shareDetailRefreshButton.setOnClickListener {
+                it.animate().rotationBy(360f)
+            }
+
+            shareDetailFabAddPurchase.setOnClickListener{
+
+            }
         }
     }
 
@@ -153,7 +209,6 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
         binding.shareViewFabLayout3.visibility = View.GONE
         binding.shareViewFabLayout4.visibility = View.GONE
         binding.shareDetailFabAdd.animate().rotationBy(-180F)
-        //binding.shareViewFabLayout1.animate().translationY(200f)
     }
 
 

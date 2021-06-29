@@ -75,6 +75,7 @@
     <string name="share_detail_add_purchase_fab">add fees</string>
 
     <string name="share_detail_empty_purchase_message">no purchases yet</string>
+    <string name="share_detail_empty_sale_message">no sales yet</string>
 
     <string name="share_detail_sale_title">Sales</string>
 
