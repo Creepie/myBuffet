@@ -35,7 +35,7 @@ class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
             //load the shares from the model
             var data = model.loadShares(startIndexes, endIndex, list)
             //save it to firebase
-            saveToFirebase(data)
+            saveToFirebase(data, list[startIndexes.stockIndex].symbol)
             //
             var newIndex = calcStartIndex(endIndex, list)
             saveStartIndexToFirebase(newIndex)
@@ -48,23 +48,26 @@ class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
 
     /**
      * this method is to calc the right end index for the api calls
-     * check if out of bounds > if yes
+     * check if out of bounds if yes > set to maximum if not set endIndex
      */
     private fun calcEndIndex(startIndexes: StockIndexes, list: ArrayList<IndexSymbols>): StockIndexes{
         //todo calc end Index for index and shares
         var endIndex = StockIndexes(startIndexes.stockIndex, startIndexes.shareIndex)
-        if (startIndexes.shareIndex + 2 > list[startIndexes.stockIndex].constituents.size){
-          endIndex.shareIndex = list[startIndexes.stockIndex].constituents.size
+        if (startIndexes.shareIndex + 2 >= list[startIndexes.stockIndex].constituents.size){
+          endIndex.shareIndex = list[startIndexes.stockIndex].constituents.size-1
         } else {
           endIndex.shareIndex += 2
         }
         return endIndex
     }
 
+    /**
+     * this method is to calc the new startIndex for the next api call
+     */
     private fun calcStartIndex(startIndexes: StockIndexes, list: ArrayList<IndexSymbols>): StockIndexes{
         //todo calc start Index for index and shares
-        if (startIndexes.shareIndex == list[startIndexes.stockIndex].constituents.size){
-            if (startIndexes.stockIndex == list.size){
+        if (startIndexes.shareIndex == list[startIndexes.stockIndex].constituents.size-1){
+            if (startIndexes.stockIndex == list.size-1){
                 startIndexes.stockIndex = 0
             } else {
                 startIndexes.stockIndex++
@@ -74,7 +77,9 @@ class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
         return startIndexes
     }
 
-
+    /**
+     * this method is to get the stockList from firebase for the detail api call
+     */
     private suspend fun getStockListFromFirebase():ArrayList<IndexSymbols>{
         val docRef = firestore.collection("stocks")
         var list = ArrayList<IndexSymbols>()
@@ -91,16 +96,25 @@ class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
     }
 
 
-    private fun saveToFirebase(data: ArrayList<StockShare>) {
+    /**
+     * this method saves the data to firebase
+     */
+    private fun saveToFirebase(data: ArrayList<StockShare>, symbol: String) {
         for (share in data) {
-            firestore.collection("stockShares").document(share.symbol).set(share)
+            firestore.collection(symbol).document(share.symbol).set(share)
         }
     }
 
+    /**
+     * this method saves the new start index to firebase for the next api call
+     */
     private fun saveStartIndexToFirebase(startIndexes: StockIndexes) {
         firestore.collection("stockIndexes").document("index").set(startIndexes)
     }
 
+    /**
+     * this method gets the start index from firebase
+     */
     private suspend fun getStartIndex(): StockIndexes{
         var indexObj = StockIndexes(0,0)
         val docRef = firestore.collection("stockIndexes").document("index")
