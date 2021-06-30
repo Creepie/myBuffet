@@ -38,6 +38,30 @@ class ShareDetailViewModel(private val shareDetailRepo: IShareDetailRepository, 
         }
     }
 
+    val fetchFeeItemList = liveData(Dispatchers.IO) {
+        emit(Resource.Loading())
+
+        try {
+            shareDetailRepo.getFees(stockId).collect { resource ->
+                emit(resource)
+            }
+        } catch (e: Exception) {
+            emit(Resource.Failure<Exception>(e))
+        }
+    }
+
+    val fetchDividendItemList = liveData(Dispatchers.IO) {
+        emit(Resource.Loading())
+
+        try {
+            shareDetailRepo.getDividends(stockId).collect { resource ->
+                emit(resource)
+            }
+        } catch (e: Exception) {
+            emit(Resource.Failure<Exception>(e))
+        }
+    }
+
     fun <T: Any> onItemSwiped(item: T) = liveData(Dispatchers.IO) {
         try {
             emit(shareDetailRepo.deleteItem(stockId, item))

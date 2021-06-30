@@ -1,15 +1,14 @@
 package com.ada.mybuffet.screens.addItem
 
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.InputType
+import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,15 +18,17 @@ import com.ada.mybuffet.databinding.FragmentAddSaleBinding
 import com.ada.mybuffet.screens.addItem.repo.AddItemRepository
 import com.ada.mybuffet.screens.addItem.viewModel.AddItemViewModel
 import com.ada.mybuffet.screens.addItem.viewModel.AddItemViewModelFactory
-import com.ada.mybuffet.screens.detailShare.model.SaleItem
-import com.ada.mybuffet.screens.home.Home
+import com.ada.mybuffet.screens.detailShare.model.Purchase
+import com.ada.mybuffet.screens.detailShare.repo.ShareDetailRepository
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.Resource
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
-class AddSale : Fragment(R.layout.fragment_add_sale) {
-    private val args: AddSaleArgs by navArgs()
+
+class AddPurchase : Fragment(R.layout.fragment_add_item) {
+
+    private val args: AddPurchaseArgs by navArgs()
     private val viewModel: AddItemViewModel by viewModels() {
         AddItemViewModelFactory(
             AddItemRepository(),
@@ -41,23 +42,24 @@ class AddSale : Fragment(R.layout.fragment_add_sale) {
         var shareItem = args.shareItem
 
         //Setup binding
-        val binding = FragmentAddSaleBinding.bind(view)
+        val binding = FragmentAddItemBinding.bind(view)
 
         binding.apply {
             //Set Symbol and name if passed in the argument
-            addItemSaleInputSymbol.setText(shareItem!!.stockSymbol)
-            addItemSaleInputSymbol.inputType = InputType.TYPE_NULL
-            addItemSaleInputSymbol.setTextColor(Color.GRAY)
-            addItemSaleInputName.setText(shareItem!!.stockName)
-            addItemSaleInputName.inputType = InputType.TYPE_NULL
-            addItemSaleInputName.setTextColor(Color.GRAY)
+            if (shareItem != null) {
+                addItemPurchaseInputSymbol.setText(shareItem!!.stockSymbol)
+                addItemPurchaseInputSymbol.inputType = InputType.TYPE_NULL
+                addItemPurchaseInputSymbol.setTextColor(Color.GRAY)
+                addItemPurchaseInputName.setText(shareItem!!.stockName)
+                addItemPurchaseInputName.inputType = InputType.TYPE_NULL
+                addItemPurchaseInputName.setTextColor(Color.GRAY)
+            }
 
-            //Set on click listeners
-            addItemSaleClose.setOnClickListener {
+            addItemPurchaseClose.setOnClickListener {
                 view.findNavController().popBackStack()
             }
 
-            addItemSaleSaveButton.setOnClickListener {
+            addItemPurchaseSaveButton.setOnClickListener {
                 handleSubmit(binding, viewModel, shareItem, view)
             }
         }
@@ -65,17 +67,18 @@ class AddSale : Fragment(R.layout.fragment_add_sale) {
 
 
     private fun handleSubmit(
-        binding: FragmentAddSaleBinding,
+        binding: FragmentAddItemBinding,
         viewModel: AddItemViewModel,
-        shareItem: ShareItem,
+        shareItemVal: ShareItem?,
         view: View
     ) {
         binding.apply {
-            val symbol = addItemSaleInputSymbol.text.toString()
-            val name = addItemSaleInputName.text.toString()
-            val price = addItemSaleInputPrice.text.toString()
-            val numberString = addItemSaleInputNumber.text.toString()
-            val fees = addItemSaleInputFees.text.toString()
+            var shareItem = shareItemVal
+            val symbol = addItemPurchaseInputSymbol.text.toString()
+            val name = addItemPurchaseInputName.text.toString()
+            val price = addItemPurchaseInputPrice.text.toString()
+            val numberString = addItemPurchaseInputNumber.text.toString()
+            val fees = addItemPurchaseInputFees.text.toString()
 
             if (symbol.isNotEmpty()
                 && name.isNotEmpty()
@@ -83,30 +86,43 @@ class AddSale : Fragment(R.layout.fragment_add_sale) {
                 && numberString.isNotEmpty()
                 && fees.isNotEmpty()
             ) {
-                addItemSaleSaveButton.startAnimation()
+                addItemPurchaseSaveButton.startAnimation()
                 val number = numberString.toString().toInt()
-                val saleItem = SaleItem(
+                val purchaseItem = Purchase(
                     date = Date(),
                     fees = fees,
                     sharePrice = price,
                     shareNumber = number
                 )
-                viewModel.onFormSubmitted(saleItem, shareItem).observe(viewLifecycleOwner) {
+                if (shareItem == null) {
+                    shareItem = ShareItem(
+                        stockName = name,
+                        stockSymbol = symbol
+                    )
+                }
+                viewModel.onFormSubmitted(purchaseItem, shareItem).observe(viewLifecycleOwner) {
                     when (it) {
                         is Resource.Success -> {
                             val btnFillColor = activity?.let { it1 ->
                                 ContextCompat.getColor(
-                                    it1.applicationContext, R.color.actionColor)
+                                    it1.applicationContext, R.color.actionColor
+                                )
                             }
                             if (btnFillColor != null) {
-                                addItemSaleSaveButton.doneLoadingAnimation(btnFillColor, BitmapFactory.decodeResource(resources, R.drawable.ic_done_white_48dp))
+                                addItemPurchaseSaveButton.doneLoadingAnimation(
+                                    btnFillColor,
+                                    BitmapFactory.decodeResource(
+                                        resources,
+                                        R.drawable.ic_done_white_48dp
+                                    )
+                                )
                             }
                             Handler(Looper.getMainLooper()).postDelayed({
                                 view.findNavController().popBackStack()
                             }, 600)
                         }
                         is Resource.Failure -> {
-                            addItemSaleSaveButton.revertAnimation()
+                            addItemPurchaseSaveButton.revertAnimation()
                         }
                     }
                 }
@@ -119,6 +135,4 @@ class AddSale : Fragment(R.layout.fragment_add_sale) {
             }
         }
     }
-
-
 }

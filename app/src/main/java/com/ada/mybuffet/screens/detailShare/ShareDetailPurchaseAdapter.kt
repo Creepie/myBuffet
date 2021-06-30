@@ -33,6 +33,7 @@ class ShareDetailPurchaseAdapter :
                 itemPurchaseValue.text = String.format("€ %.2f", purchase.getValue())
                 itemPurchaseSharePrice.text = "€ ${purchase.sharePrice}"
                 itemPurchaseFee.text = "€ ${purchase.fees}"
+                itemPurchaseDate.text = purchase.getFormattedDate()
             }
         }
 

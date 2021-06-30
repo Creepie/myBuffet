@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.firebase.firestore.DocumentId
 import kotlinx.android.parcel.Parcelize
 import java.lang.NumberFormatException
+import java.text.SimpleDateFormat
 import java.util.Date
 
 @Parcelize
@@ -24,5 +25,15 @@ data class Purchase (
             Log.w("Purchase", "Errror occured while calculating the value of purchase $id", e)
         }
         return 0.00
+    }
+
+    fun getFormattedDate(): String {
+        val pattern = "dd.MM.yyyy"
+        val simpleDateFormat = SimpleDateFormat(pattern)
+        return if(date != null) {
+            simpleDateFormat.format(date)
+        } else {
+            "unknown"
+        }
     }
 }

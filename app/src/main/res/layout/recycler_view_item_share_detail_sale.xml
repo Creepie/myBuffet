@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/item_sale_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/purchase_item_date_placeholder"
@@ -59,7 +59,7 @@
         android:textSize="13sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/item_sale_date" />
 
     <TextView
         android:id="@+id/textView9"

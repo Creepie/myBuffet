@@ -1,6 +1,8 @@
 package com.ada.mybuffet.screens.detailShare.repo
 
 import android.util.Log
+import com.ada.mybuffet.screens.detailShare.model.DividendItem
+import com.ada.mybuffet.screens.detailShare.model.FeeItem
 import com.ada.mybuffet.screens.detailShare.model.Purchase
 import com.ada.mybuffet.screens.detailShare.model.SaleItem
 import com.ada.mybuffet.screens.myShares.model.ShareItem
@@ -87,6 +89,74 @@ class ShareDetailRepository : IShareDetailRepository {
             }
         }
 
+    override suspend fun getFees(stockId: String): Flow<Resource<MutableList<FeeItem>>> =
+        callbackFlow {
+            val userid = user!!.uid
+            val docRef = firestore.collection("users").document(userid).collection("shares")
+                .document(stockId).collection("fees")
+            val subscription = docRef.addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                } else if (snapshot != null) {
+                    Log.d(TAG, "Current data: available")
+
+                    val feeList = mutableListOf<FeeItem>()
+                    val documents = snapshot.documents
+                    documents.forEach { doc ->
+                        val feeItem = doc.toObject(FeeItem::class.java)
+                        if (feeItem != null && feeItem.amount.isNotEmpty()) {
+                            feeList.add(feeItem)
+                        }
+                    }
+
+                    // offer for flow (offer method is now deprecated, using trySend instead)
+                    trySend(Resource.Success(feeList)).isSuccess
+                } else {
+                    Log.d(TAG, "Current data: null")
+                }
+            }
+
+            // close flow channel if not in use to avoid leaks
+            awaitClose {
+                subscription.remove()
+            }
+        }
+
+    override suspend fun getDividends(stockId: String): Flow<Resource<MutableList<DividendItem>>> =
+        callbackFlow {
+            val userid = user!!.uid
+            val docRef = firestore.collection("users").document(userid).collection("shares")
+                .document(stockId).collection("dividends")
+            val subscription = docRef.addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                } else if (snapshot != null) {
+                    Log.d(TAG, "Current data: available")
+
+                    val dividendList = mutableListOf<DividendItem>()
+                    val documents = snapshot.documents
+                    documents.forEach { doc ->
+                        val dividendItem = doc.toObject(DividendItem::class.java)
+                        if (dividendItem != null && dividendItem.amount.isNotEmpty()) {
+                            dividendList.add(dividendItem)
+                        }
+                    }
+
+                    // offer for flow (offer method is now deprecated, using trySend instead)
+                    trySend(Resource.Success(dividendList)).isSuccess
+                } else {
+                    Log.d(TAG, "Current data: null")
+                }
+            }
+
+            // close flow channel if not in use to avoid leaks
+            awaitClose {
+                subscription.remove()
+            }
+        }
+
+
+
     override suspend fun <T: Any> deleteItem(
         stockId: String,
         item: T
@@ -95,11 +165,15 @@ class ShareDetailRepository : IShareDetailRepository {
         val itemId = when(item) {
             is Purchase -> item.id
             is SaleItem -> item.id
+            is FeeItem -> item.id
+            is DividendItem -> item.id
             else -> return  Resource.Failure(Exception())
         }
         val pathName = when(item) {
             is Purchase -> "purchases"
             is SaleItem -> "sales"
+            is FeeItem -> "fees"
+            is DividendItem -> "dividends"
             else -> return  Resource.Failure(Exception())
         }
         val docRef = firestore.collection("users").document(userid).collection("shares")
@@ -116,11 +190,15 @@ class ShareDetailRepository : IShareDetailRepository {
         val itemId = when(item) {
             is Purchase -> item.id
             is SaleItem -> item.id
+            is FeeItem -> item.id
+            is DividendItem -> item.id
             else -> return  Resource.Failure(Exception())
         }
         val pathName = when(item) {
             is Purchase -> "purchases"
             is SaleItem -> "sales"
+            is FeeItem -> "fees"
+            is DividendItem -> "dividends"
             else -> return  Resource.Failure(Exception())
         }
         val docRef = firestore.collection("users").document(userid).collection("shares")

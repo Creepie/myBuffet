@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ada.mybuffet.databinding.RecyclerViewItemPurchaseBinding
+import com.ada.mybuffet.databinding.RecyclerViewItemShareDetailSaleBinding
 import com.ada.mybuffet.screens.detailShare.model.SaleItem
 
 class ShareDetailSaleAdapter :  ListAdapter<SaleItem, ShareDetailSaleAdapter.ShareDetailViewHolder>(
@@ -13,7 +14,7 @@ class ShareDetailSaleAdapter :  ListAdapter<SaleItem, ShareDetailSaleAdapter.Sha
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShareDetailViewHolder {
-        val binding = RecyclerViewItemPurchaseBinding.inflate(
+        val binding = RecyclerViewItemShareDetailSaleBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -26,15 +27,16 @@ class ShareDetailSaleAdapter :  ListAdapter<SaleItem, ShareDetailSaleAdapter.Sha
         holder.bind(currentItem)
     }
 
-    class ShareDetailViewHolder(private val binding: RecyclerViewItemPurchaseBinding) :
+    class ShareDetailViewHolder(private val binding: RecyclerViewItemShareDetailSaleBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(saleItem: SaleItem) {
             binding.apply {
-                itemPurchaseAmount.text = saleItem.shareNumber.toString()
-                itemPurchaseValue.text = String.format("€ %.2f", saleItem.getValue())
-                itemPurchaseSharePrice.text = "€ ${saleItem.sharePrice}"
-                itemPurchaseFee.text = "€ ${saleItem.fees}"
+                itemSaleAmount.text = saleItem.shareNumber.toString()
+                itemSaleValue.text = String.format("€ %.2f", saleItem.getValue())
+                itemSaleSharePrice.text = "€ ${saleItem.sharePrice}"
+                itemSaleFee.text = "€ ${saleItem.fees}"
+                itemSaleDate.text = saleItem.getFormattedDate()
             }
         }
 

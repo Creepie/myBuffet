@@ -76,11 +76,17 @@
 
     <string name="share_detail_empty_purchase_message">no purchases yet</string>
     <string name="share_detail_empty_sale_message">no sales yet</string>
+    <string name="share_detail_empty_fees_message">no fees yet</string>
+    <string name="share_detail_empty_dividends_message">no dividends yet</string>
 
     <string name="share_detail_sale_title">Sales</string>
+    <string name="share_detail_dividend_title">Dividends</string>
+    <string name="share_detail_fee_title">Fees</string>
 
     <string name="share_detail_purchase_deleted">Purchase was deleted</string>
     <string name="share_detail_sale_deleted">Sale was deleted</string>
+    <string name="share_detail_dividend_deleted">Dividend was deleted</string>
+    <string name="share_detail_fee_deleted">Fee was deleted</string>
 
 
 
@@ -97,5 +103,27 @@
 
     <string name="add_item_sale_title">Add Share Sale</string>
     <string name="add_item_sale_subtitle">Share Sale Details</string>
+
+    <string name="add_item_fee_title">Add Fee</string>
+    <string name="add_item_fee_subtitle">Fee Details</string>
+    <string name="add_item_fee_amount_label">Fee Amount</string>
+    <string name="add_item_fee_description_label">Description</string>
+
+    <string name="add_item_dividend_title">Add Dividends</string>
+    <string name="add_item_dividend_subtitle">Dividends Detail</string>
+    <string name="add_item_dividend_amount_label">Total Dividend Amount</string>
+    <string name="add_item_dividend_number_label">Number of Dividends</string>
+
+    <string name="dividend_item_date_placeholder">01.01.2021</string>
+    <string name="dividend_item_amount_placeholder">€ 0.00</string>
+    <string name="dividend_item_number_placeholder">0</string>
+    <string name="dividend_item_number_label">Shares</string>
+
+    <string name="fee_item_date_placeholder">01.01.2021</string>
+    <string name="fee_item_amount_placeholder">€ 0.00</string>
+    <string name="fee_item_description_placeholder">0</string>
+    <string name="fee_item_description_label">Shares</string>
+
+
 
 </resources>

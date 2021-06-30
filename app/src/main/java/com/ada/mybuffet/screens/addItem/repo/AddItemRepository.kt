@@ -1,5 +1,7 @@
 package com.ada.mybuffet.screens.addItem.repo
 
+import com.ada.mybuffet.screens.detailShare.model.DividendItem
+import com.ada.mybuffet.screens.detailShare.model.FeeItem
 import com.ada.mybuffet.screens.detailShare.model.Purchase
 import com.ada.mybuffet.screens.detailShare.model.SaleItem
 import com.ada.mybuffet.utils.Resource
@@ -22,6 +24,8 @@ class AddItemRepository : IAddItemRepository {
         val pathName = when(item) {
             is Purchase -> "purchases"
             is SaleItem -> "sales"
+            is FeeItem -> "fees"
+            is DividendItem -> "dividends"
             else -> return  Resource.Failure(Exception())
         }
         val docRef = firestore.collection("users").document(userid).collection("shares")

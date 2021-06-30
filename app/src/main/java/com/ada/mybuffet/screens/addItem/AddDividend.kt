@@ -1,6 +1,5 @@
 package com.ada.mybuffet.screens.addItem
 
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
@@ -14,20 +13,20 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ada.mybuffet.R
-import com.ada.mybuffet.databinding.FragmentAddItemBinding
+import com.ada.mybuffet.databinding.FragmentAddDividendBinding
 import com.ada.mybuffet.databinding.FragmentAddSaleBinding
 import com.ada.mybuffet.screens.addItem.repo.AddItemRepository
 import com.ada.mybuffet.screens.addItem.viewModel.AddItemViewModel
 import com.ada.mybuffet.screens.addItem.viewModel.AddItemViewModelFactory
+import com.ada.mybuffet.screens.detailShare.model.DividendItem
 import com.ada.mybuffet.screens.detailShare.model.SaleItem
-import com.ada.mybuffet.screens.home.Home
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.Resource
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
-class AddSale : Fragment(R.layout.fragment_add_sale) {
-    private val args: AddSaleArgs by navArgs()
+class AddDividend : Fragment(R.layout.fragment_add_dividend) {
+    private val args: AddDividendArgs by navArgs()
     private val viewModel: AddItemViewModel by viewModels() {
         AddItemViewModelFactory(
             AddItemRepository(),
@@ -41,23 +40,15 @@ class AddSale : Fragment(R.layout.fragment_add_sale) {
         var shareItem = args.shareItem
 
         //Setup binding
-        val binding = FragmentAddSaleBinding.bind(view)
+        val binding = FragmentAddDividendBinding.bind(view)
 
         binding.apply {
-            //Set Symbol and name if passed in the argument
-            addItemSaleInputSymbol.setText(shareItem!!.stockSymbol)
-            addItemSaleInputSymbol.inputType = InputType.TYPE_NULL
-            addItemSaleInputSymbol.setTextColor(Color.GRAY)
-            addItemSaleInputName.setText(shareItem!!.stockName)
-            addItemSaleInputName.inputType = InputType.TYPE_NULL
-            addItemSaleInputName.setTextColor(Color.GRAY)
-
             //Set on click listeners
-            addItemSaleClose.setOnClickListener {
+            addItemDividendClose.setOnClickListener {
                 view.findNavController().popBackStack()
             }
 
-            addItemSaleSaveButton.setOnClickListener {
+            addItemDividendSaveButton.setOnClickListener {
                 handleSubmit(binding, viewModel, shareItem, view)
             }
         }
@@ -65,33 +56,26 @@ class AddSale : Fragment(R.layout.fragment_add_sale) {
 
 
     private fun handleSubmit(
-        binding: FragmentAddSaleBinding,
+        binding: FragmentAddDividendBinding,
         viewModel: AddItemViewModel,
         shareItem: ShareItem,
         view: View
     ) {
         binding.apply {
-            val symbol = addItemSaleInputSymbol.text.toString()
-            val name = addItemSaleInputName.text.toString()
-            val price = addItemSaleInputPrice.text.toString()
-            val numberString = addItemSaleInputNumber.text.toString()
-            val fees = addItemSaleInputFees.text.toString()
+            val amount = addItemDividendInputAmount.text.toString()
+            val numberString = addItemDividendInputNumber.text.toString()
 
-            if (symbol.isNotEmpty()
-                && name.isNotEmpty()
-                && price.isNotEmpty()
+            if (amount.isNotEmpty()
                 && numberString.isNotEmpty()
-                && fees.isNotEmpty()
             ) {
-                addItemSaleSaveButton.startAnimation()
+                addItemDividendSaveButton.startAnimation()
                 val number = numberString.toString().toInt()
-                val saleItem = SaleItem(
+                val dividendItem = DividendItem(
                     date = Date(),
-                    fees = fees,
-                    sharePrice = price,
-                    shareNumber = number
+                    amount = amount,
+                    number = number
                 )
-                viewModel.onFormSubmitted(saleItem, shareItem).observe(viewLifecycleOwner) {
+                viewModel.onFormSubmitted(dividendItem, shareItem).observe(viewLifecycleOwner) {
                     when (it) {
                         is Resource.Success -> {
                             val btnFillColor = activity?.let { it1 ->
@@ -99,14 +83,14 @@ class AddSale : Fragment(R.layout.fragment_add_sale) {
                                     it1.applicationContext, R.color.actionColor)
                             }
                             if (btnFillColor != null) {
-                                addItemSaleSaveButton.doneLoadingAnimation(btnFillColor, BitmapFactory.decodeResource(resources, R.drawable.ic_done_white_48dp))
+                                addItemDividendSaveButton.doneLoadingAnimation(btnFillColor, BitmapFactory.decodeResource(resources, R.drawable.ic_done_white_48dp))
                             }
                             Handler(Looper.getMainLooper()).postDelayed({
                                 view.findNavController().popBackStack()
                             }, 600)
                         }
                         is Resource.Failure -> {
-                            addItemSaleSaveButton.revertAnimation()
+                            addItemDividendSaveButton.revertAnimation()
                         }
                     }
                 }

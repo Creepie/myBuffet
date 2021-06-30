@@ -11,7 +11,7 @@ import java.lang.Exception
 
 class AddItemViewModel(private val shareDetailRepo: IAddItemRepository) : ViewModel() {
     fun <T : Any> onFormSubmitted(item: T, shareItem: ShareItem?) = liveData(Dispatchers.IO) {
-        if(shareItem != null) {
+        if(shareItem != null && shareItem.shareItemId.isNotEmpty()) {
             try {
                 emit(shareDetailRepo.addItem(shareItem.shareItemId, item))
             } catch (e: Exception) {
