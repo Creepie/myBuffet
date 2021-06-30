@@ -301,7 +301,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                     } else {
                         "(+"
                     }
-                    percentageText += String.format("%.2f)", percentage)
+                    percentageText += String.format("%.2f%%)", percentage)
                     binding.shareDetailStockPercentage.text = percentageText
                     if (percentage < 0.0) {
                         val textColor =

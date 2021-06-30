@@ -95,15 +95,6 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
                     shareNumber = number
                 )
                 if (shareItem == null) {
-                    Snackbar.make(
-                        requireView(),
-                        "Feature not implemented. Add purchases over the detail page" +
-                                "of an existing stock",
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                    addItemPurchaseSaveButton.revertAnimation()
-                    return
-
                     shareItem = ShareItem(
                         stockName = name,
                         stockSymbol = symbol
@@ -131,6 +122,11 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
                             }, 600)
                         }
                         is Resource.Failure -> {
+                            Snackbar.make(
+                                requireView(),
+                                "Stock Name could not be found",
+                                Snackbar.LENGTH_LONG
+                            ).show()
                             addItemPurchaseSaveButton.revertAnimation()
                         }
                     }

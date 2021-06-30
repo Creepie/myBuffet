@@ -234,6 +234,7 @@ class ShareDetailViewModel(
             emit(shareDetailRepo.addItem(shareItem.shareItemId, item))
         } catch (e: Exception) {
             emit(Resource.Failure<Exception>(e))
+
         }
 
     }
