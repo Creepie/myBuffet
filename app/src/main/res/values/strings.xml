@@ -129,5 +129,8 @@
 
 
     <string name="stocks_title">Stocks</string>
+    <string name="stocks_dividendReturn">Dividend return</string>
+    <string name="stocks_placeholder_dividendReturn_placeholder">+0.00 %</string>
+    <string name="stocks_dividendPerShare">Dividend p. share</string>
 
 </resources>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/layout_pill_bg">
+
+    <TextView
+        android:id="@+id/recycler_stock_item_tv_stock_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@string/font_roboto_regular"
+        android:text="@string/myShares_rv_placeholder_symbol"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/recycler_stock_item_tv_stock_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@string/font_roboto_medium"
+        android:text="@string/myShares_rv_placeholder_name"
+        android:textColor="@color/grayText"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/recycler_stock_item_tv_stock_symbol"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_stock_item_tv_stock_symbol" />
+
+    <TextView
+        android:id="@+id/recycler_stock_item_tv_stock_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@string/font_roboto_regular"
+        android:text="@string/myShares_placeholder_money"
+        android:textColor="@color/black"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/recycler_stock_item_img_share_price_up_down"
+        app:layout_constraintTop_toTopOf="@+id/recycler_stock_item_tv_stock_symbol" />
+
+    <TextView
+        android:id="@+id/recycler_stock_item_tv_stock_price_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@string/font_roboto_medium"
+        android:text="@string/myShares_placeholder_percent"
+        android:textColor="@color/sharePrice_profit"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toStartOf="@+id/recycler_stock_item_img_share_price_up_down"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_stock_item_tv_stock_price" />
+
+    <ImageView
+        android:id="@+id/recycler_stock_item_img_share_price_up_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_stock_item_tv_stock_price_percent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recycler_stock_item_tv_stock_price"
+        app:srcCompat="@drawable/ic_trending_up" />
+
+    <TextView
+        android:id="@+id/recycler_stock_item_tv_dividend_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="11dp"
+        android:fontFamily="@string/font_roboto_regular"
+        android:text="@string/myShares_placeholder_money"
+        android:textColor="@color/sharePrice_profit"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_stock_item_tv_stock_name" />
+
+    <TextView
+        android:id="@+id/recycler_stock_item_tv_dividend_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@string/font_roboto_medium"
+        android:text="@string/stocks_dividendPerShare"
+        android:textColor="@color/grayText"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_stock_item_tv_dividend_total" />
+
+    <ImageView
+        android:id="@+id/recycler_stock_item_img_total_holdings_up_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler_stock_item_tv_total_holdings_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/recycler_stock_item_tv_total_holdings_value"
+        app:srcCompat="@drawable/ic_trending_up" />
+
+    <TextView
+        android:id="@+id/recycler_stock_item_tv_total_holdings_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@string/font_roboto_regular"
+        android:text="@string/stocks_placeholder_dividendReturn_placeholder"
+        android:textColor="@color/sharePrice_profit"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/recycler_stock_item_img_total_holdings_up_down"
+        app:layout_constraintTop_toTopOf="@+id/recycler_stock_item_tv_dividend_total" />
+
+    <TextView
+        android:id="@+id/recycler_stock_item_tv_total_holdings_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@string/font_roboto_medium"
+        android:text="@string/stocks_dividendReturn"
+        android:textColor="@color/grayText"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toStartOf="@+id/recycler_stock_item_img_total_holdings_up_down"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_stock_item_tv_total_holdings_value" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

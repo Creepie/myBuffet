@@ -1,6 +1,6 @@
 package com.ada.mybuffet.repo
 
-class StockShare(
+data class StockShare(
     var name: String = "",
     var dividends: Dividends? = null,
     val symbol: String = "",
