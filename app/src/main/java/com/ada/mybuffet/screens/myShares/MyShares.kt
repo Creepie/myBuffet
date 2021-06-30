@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentMysharesBinding
+import com.ada.mybuffet.screens.detailShare.ShareDetailDirections
 import com.ada.mybuffet.screens.myShares.model.PortfolioValueByDate
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.screens.myShares.repo.MySharesDataProvider
@@ -392,6 +393,8 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
         //}
 
         btn_newShare.setOnClickListener {
+            val action = MySharesDirections.actionMySharesToAddItem(null)
+            findNavController().navigate(action)
         }
     }
 

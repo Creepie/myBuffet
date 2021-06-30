@@ -1,10 +1,14 @@
 package com.ada.mybuffet.screens.detailShare.model
 
+import android.os.Parcelable
 import android.util.Log
 import com.google.firebase.firestore.DocumentId
+import kotlinx.android.parcel.Parcelize
 import java.lang.NumberFormatException
+import java.text.SimpleDateFormat
 import java.util.Date
 
+@Parcelize
 data class Purchase (
     val date: Date? = null,
     val fees: String = "",
@@ -12,7 +16,7 @@ data class Purchase (
     val sharePrice: String ="",
     @DocumentId
     val id: String = "",
-        ) {
+        ) : Parcelable {
 
     fun getValue(): Double {
         try {
@@ -21,5 +25,15 @@ data class Purchase (
             Log.w("Purchase", "Errror occured while calculating the value of purchase $id", e)
         }
         return 0.00
+    }
+
+    fun getFormattedDate(): String {
+        val pattern = "dd.MM.yyyy"
+        val simpleDateFormat = SimpleDateFormat(pattern)
+        return if(date != null) {
+            simpleDateFormat.format(date)
+        } else {
+            "unknown"
+        }
     }
 }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_primary"
-    tools:context=".screens.addItem.AddPurchase">
+    tools:context=".screens.addItem.AddFee">
 
 
     <androidx.core.widget.NestedScrollView
@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content">
 
                 <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
-                    android:id="@+id/add_item_purchase_save_button"
+                    android:id="@+id/add_item_fee_save_button"
                     android:layout_width="wrap_content"
                     android:layout_height="30sp"
                     android:layout_marginTop="40dp"
@@ -39,7 +39,7 @@
                     app:spinning_bar_padding="6dp" />
 
                 <ImageButton
-                    android:id="@+id/add_item_purchase_close"
+                    android:id="@+id/add_item_fee_close"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="40dp"
@@ -55,12 +55,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:text="@string/add_item_purchase_title"
+                    android:text="@string/add_item_fee_title"
                     android:textColor="@color/black"
                     android:textSize="30sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/add_item_purchase_close" />
+                    app:layout_constraintTop_toBottomOf="@+id/add_item_fee_close" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -73,11 +73,11 @@
                 android:layout_marginBottom="12dp">
 
                 <TextView
-                    android:id="@+id/add_items_purchase_sub_title"
+                    android:id="@+id/add_items_fee_sub_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@string/font_roboto_black"
-                    android:text="@string/add_item_purchase_subtitle"
+                    android:text="@string/add_item_fee_subtitle"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
@@ -102,23 +102,23 @@
 
                     <TextView
                         android:id="@+id/textView8"
-                        android:fontFamily="@string/font_roboto_black"
-                        android:textColor="@color/grayText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/add_item_purchase_symbol_label" />
+                        android:fontFamily="@string/font_roboto_black"
+                        android:text="@string/add_item_fee_amount_label"
+                        android:textColor="@color/grayText" />
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/layout_pill_bg">
                         <EditText
-                            android:id="@+id/add_item_purchase_input_symbol"
+                            android:id="@+id/add_item_fee_input_amount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:background="@drawable/layout_pill_bg"
                             android:ems="10"
-                            android:inputType="textPersonName"
+                            android:inputType="numberDecimal"
                             android:padding="0dp"
                             android:textColor="#000000"
                             android:textSize="14sp"
@@ -131,18 +131,18 @@
 
                     <TextView
                         android:id="@+id/textView9"
-                        android:fontFamily="@string/font_roboto_black"
-                        android:textColor="@color/grayText"
-                        android:layout_marginTop="20dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/add_item_purchase_name_label" />
+                        android:layout_marginTop="20dp"
+                        android:fontFamily="@string/font_roboto_black"
+                        android:text="@string/add_item_fee_description_label"
+                        android:textColor="@color/grayText" />
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/layout_pill_bg">
                         <EditText
-                            android:id="@+id/add_item_purchase_input_name"
+                            android:id="@+id/add_item_fee_input_description"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
@@ -158,97 +158,6 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <TextView
-                        android:id="@+id/textView10"
-                        android:fontFamily="@string/font_roboto_black"
-                        android:textColor="@color/grayText"
-                        android:layout_marginTop="20dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_item_purchase_price_per_share_label" />
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/layout_pill_bg">
-                        <EditText
-                            android:id="@+id/add_item_purchase_input_price"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:background="@drawable/layout_pill_bg"
-                            android:ems="10"
-                            android:textSize="14sp"
-                            android:inputType="numberDecimal"
-                            android:padding="0dp"
-                            android:textColor="#000000"
-                            app:boxStrokeWidth="0dp"
-                            app:boxStrokeWidthFocused="0dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <TextView
-                        android:id="@+id/textView11"
-                        android:fontFamily="@string/font_roboto_black"
-                        android:textColor="@color/grayText"
-                        android:layout_marginTop="20dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_item_purchase_number_of_share_label" />
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/layout_pill_bg">
-                        <EditText
-                            android:id="@+id/add_item_purchase_input_number"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:background="@drawable/layout_pill_bg"
-                            android:ems="10"
-                            android:textSize="14sp"
-                            android:inputType="number"
-                            android:padding="0dp"
-                            android:textColor="#000000"
-                            app:boxStrokeWidth="0dp"
-                            app:boxStrokeWidthFocused="0dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <TextView
-                        android:id="@+id/textView12"
-                        android:fontFamily="@string/font_roboto_black"
-                        android:textColor="@color/grayText"
-                        android:layout_marginTop="20dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_item_purchase_fee_label" />
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/layout_pill_bg">
-                        <EditText
-                            android:id="@+id/add_item_purchase_input_fees"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:background="@drawable/layout_pill_bg"
-                            android:ems="10"
-                            android:textSize="14sp"
-                            android:inputType="numberDecimal"
-                            android:padding="0dp"
-                            android:textColor="#000000"
-                            app:boxStrokeWidth="0dp"
-                            app:boxStrokeWidthFocused="0dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
 
                 </LinearLayout>
 

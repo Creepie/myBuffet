@@ -7,15 +7,19 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.*
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentShareDetailBinding
+import com.ada.mybuffet.screens.detailShare.model.DividendItem
+import com.ada.mybuffet.screens.detailShare.model.FeeItem
 import com.ada.mybuffet.screens.detailShare.model.Purchase
 import com.ada.mybuffet.screens.detailShare.model.SaleItem
 import com.ada.mybuffet.screens.detailShare.repo.ShareDetailRepository
 import com.ada.mybuffet.screens.detailShare.viewModel.ShareDetailViewModel
 import com.ada.mybuffet.screens.detailShare.viewModel.ShareDetailViewModelFactory
+import com.ada.mybuffet.screens.myShares.MySharesDirections
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.Resource
 import com.google.android.material.snackbar.Snackbar
@@ -45,6 +49,8 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
         //Setup RecyclerView
         val shareDetailPurchaseAdapter = ShareDetailPurchaseAdapter()
         val shareDetailSaleAdapter = ShareDetailSaleAdapter()
+        val shareDetailFeeAdapter = ShareDetailFeeAdapter()
+        val shareDetailDividendAdapter = ShareDetailDividendAdapter()
 
 
         binding.apply {
@@ -82,6 +88,40 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                     })
             }
 
+            //Fees Recycler
+            shareDetailRecyclerViewFees.apply {
+                adapter = shareDetailFeeAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+                addItemDecoration(
+                    DividerItemDecoration(
+                        context,
+                        DividerItemDecoration.VERTICAL
+                    ).also { deco ->
+                        with(ShapeDrawable(RectShape())) {
+                            intrinsicHeight = (resources.displayMetrics.density * 8).toInt()
+                            alpha = 0
+                            deco.setDrawable(this)
+                        }
+                    })
+            }
+
+            //Dividends Recycler
+            shareDetailRecyclerViewDividends.apply {
+                adapter = shareDetailDividendAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+                addItemDecoration(
+                    DividerItemDecoration(
+                        context,
+                        DividerItemDecoration.VERTICAL
+                    ).also { deco ->
+                        with(ShapeDrawable(RectShape())) {
+                            intrinsicHeight = (resources.displayMetrics.density * 8).toInt()
+                            alpha = 0
+                            deco.setDrawable(this)
+                        }
+                    })
+            }
+
             //Delete To Swipe TouchHandler
             val simpleTouchHandler = object :
                 ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -98,6 +138,15 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                     val item = when (viewHolder) {
                         is ShareDetailSaleAdapter.ShareDetailViewHolder -> shareDetailSaleAdapter.currentList[viewHolder.adapterPosition]
                         is ShareDetailPurchaseAdapter.ShareDetailViewHolder -> shareDetailPurchaseAdapter.currentList[viewHolder.adapterPosition]
+                        is ShareDetailFeeAdapter.ShareDetailViewHolder -> shareDetailFeeAdapter.currentList[viewHolder.adapterPosition]
+                        is ShareDetailDividendAdapter.ShareDetailViewHolder -> shareDetailDividendAdapter.currentList[viewHolder.adapterPosition]
+                        else -> return
+                    }
+                    val text = when (viewHolder) {
+                        is ShareDetailSaleAdapter.ShareDetailViewHolder -> R.string.share_detail_sale_deleted
+                        is ShareDetailPurchaseAdapter.ShareDetailViewHolder -> R.string.share_detail_purchase_deleted
+                        is ShareDetailFeeAdapter.ShareDetailViewHolder -> R.string.share_detail_fee_deleted
+                        is ShareDetailDividendAdapter.ShareDetailViewHolder -> R.string.share_detail_dividend_deleted
                         else -> return
                     }
                     viewModel.onItemSwiped(item).observe(viewLifecycleOwner) {
@@ -106,7 +155,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                                 val deletedItem = it.data
                                 Snackbar.make(
                                     requireView(),
-                                    "Purchase delted",
+                                    text,
                                     Snackbar.LENGTH_LONG
                                 )
                                     .setAction("UNDO") {
@@ -123,6 +172,8 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
             //Subscribe to touch handler
             ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(shareDetailRecyclerViewPurchase)
             ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(shareDetailRecyclerViewSales)
+            ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(shareDetailRecyclerViewDividends)
+            ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(shareDetailRecyclerViewFees)
 
         }
 
@@ -156,6 +207,34 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
             }
         }
 
+        viewModel.fetchFeeItemList.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    val fees: List<FeeItem> = (it.data as List<FeeItem>)
+                    shareDetailFeeAdapter.submitList(fees)
+                    if (fees.isEmpty()) {
+                        binding.shareDetailRecyclerViewFeesEmptyMessage.visibility = View.VISIBLE
+                    } else {
+                        binding.shareDetailRecyclerViewFeesEmptyMessage.visibility = View.GONE
+                    }
+                }
+            }
+        }
+
+        viewModel.fetchDividendItemList.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    val dividends: List<DividendItem> = (it.data as List<DividendItem>)
+                    shareDetailDividendAdapter.submitList(dividends)
+                    if (dividends.isEmpty()) {
+                        binding.shareDetailRecyclerViewDividendsEmptyMessage.visibility = View.VISIBLE
+                    } else {
+                        binding.shareDetailRecyclerViewDividendsEmptyMessage.visibility = View.GONE
+                    }
+                }
+            }
+        }
+
         //TODO is it in the right place?
         //Set text
         binding.apply {
@@ -181,7 +260,23 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
             }
 
             shareDetailFabAddPurchase.setOnClickListener{
+                val action = ShareDetailDirections.actionShareDetailToAddItem(shareItem)
+                findNavController().navigate(action)
+            }
 
+            shareDetailFabAddSale.setOnClickListener{
+                val action = ShareDetailDirections.actionShareDetailToAddSale(shareItem)
+                findNavController().navigate(action)
+            }
+
+            shareDetailFabAddFees.setOnClickListener{
+                val action = ShareDetailDirections.actionShareDetailToAddFee(shareItem)
+                findNavController().navigate(action)
+            }
+
+            shareDetailFabAddDividends.setOnClickListener{
+                val action = ShareDetailDirections.actionShareDetailToAddDividend(shareItem)
+                findNavController().navigate(action)
             }
         }
     }

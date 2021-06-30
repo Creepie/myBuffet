@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_myShares_to_newShare"
             app:destination="@id/newShare" />
+        <action
+            android:id="@+id/action_myShares_to_addItem"
+            app:destination="@id/addItem" />
     </fragment>
     <fragment
         android:id="@+id/news"
@@ -45,6 +48,54 @@
         android:name="com.ada.mybuffet.screens.detailShare.ShareDetail"
         android:label="fragment_share_detail"
         tools:layout="@layout/fragment_share_detail" >
+        <argument
+            android:name="shareItem"
+            app:argType="com.ada.mybuffet.screens.myShares.model.ShareItem" />
+        <action
+            android:id="@+id/action_shareDetail_to_addItem"
+            app:destination="@id/addItem" />
+        <action
+            android:id="@+id/action_shareDetail_to_addSale"
+            app:destination="@id/addSale" />
+        <action
+            android:id="@+id/action_shareDetail_to_addFee"
+            app:destination="@id/addFee" />
+        <action
+            android:id="@+id/action_shareDetail_to_addDividend"
+            app:destination="@id/addDividend" />
+    </fragment>
+    <fragment
+        android:id="@+id/addItem"
+        android:name="com.ada.mybuffet.screens.addItem.AddPurchase"
+        android:label="AddItem"
+        tools:layout="@layout/fragment_add_item" >
+        <argument
+            android:name="shareItem"
+            app:argType="com.ada.mybuffet.screens.myShares.model.ShareItem"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/addSale"
+        android:name="com.ada.mybuffet.screens.addItem.AddSale"
+        android:label="AddSale" >
+        <argument
+            android:name="shareItem"
+            app:argType="com.ada.mybuffet.screens.myShares.model.ShareItem" />
+    </fragment>
+    <fragment
+        android:id="@+id/addFee"
+        android:name="com.ada.mybuffet.screens.addItem.AddFee"
+        android:label="fragment_add_fee"
+        tools:layout="@layout/fragment_add_fee" >
+        <argument
+            android:name="shareItem"
+            app:argType="com.ada.mybuffet.screens.myShares.model.ShareItem" />
+    </fragment>
+    <fragment
+        android:id="@+id/addDividend"
+        android:name="com.ada.mybuffet.screens.addItem.AddDividend"
+        android:label="fragment_add_dividend"
+        tools:layout="@layout/fragment_add_dividend" >
         <argument
             android:name="shareItem"
             app:argType="com.ada.mybuffet.screens.myShares.model.ShareItem" />
