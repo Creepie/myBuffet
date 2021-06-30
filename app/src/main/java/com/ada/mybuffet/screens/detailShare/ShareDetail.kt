@@ -5,6 +5,9 @@ import android.graphics.drawable.shapes.RectShape
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -12,17 +15,16 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.*
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentShareDetailBinding
-import com.ada.mybuffet.screens.detailShare.model.DividendItem
-import com.ada.mybuffet.screens.detailShare.model.FeeItem
-import com.ada.mybuffet.screens.detailShare.model.Purchase
-import com.ada.mybuffet.screens.detailShare.model.SaleItem
+import com.ada.mybuffet.screens.detailShare.model.*
 import com.ada.mybuffet.screens.detailShare.repo.ShareDetailRepository
 import com.ada.mybuffet.screens.detailShare.viewModel.ShareDetailViewModel
 import com.ada.mybuffet.screens.detailShare.viewModel.ShareDetailViewModelFactory
-import com.ada.mybuffet.screens.myShares.MySharesDirections
-import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.Resource
 import com.google.android.material.snackbar.Snackbar
+
+import android.view.animation.RotateAnimation
+import android.widget.ImageButton
+
 
 class ShareDetail : Fragment(R.layout.fragment_share_detail) {
 
@@ -31,10 +33,9 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
     private val viewModel: ShareDetailViewModel by viewModels() {
         ShareDetailViewModelFactory(
             ShareDetailRepository(),
-            args.shareItem.shareItemId
+            args.shareItem
         )
     }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -172,12 +173,14 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
             //Subscribe to touch handler
             ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(shareDetailRecyclerViewPurchase)
             ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(shareDetailRecyclerViewSales)
-            ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(shareDetailRecyclerViewDividends)
+            ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(
+                shareDetailRecyclerViewDividends
+            )
             ItemTouchHelper(simpleTouchHandler).attachToRecyclerView(shareDetailRecyclerViewFees)
 
         }
 
-        //Observe View Model
+        //Observe Purchase List
         viewModel.fetchPurchaseItemList.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -193,6 +196,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
             }
         }
 
+        //Observe Sale list
         viewModel.fetchSaleItemList.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -207,6 +211,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
             }
         }
 
+        //Observe Fee List
         viewModel.fetchFeeItemList.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
@@ -221,13 +226,15 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
             }
         }
 
+        //Observe Devidends List
         viewModel.fetchDividendItemList.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Success -> {
                     val dividends: List<DividendItem> = (it.data as List<DividendItem>)
                     shareDetailDividendAdapter.submitList(dividends)
                     if (dividends.isEmpty()) {
-                        binding.shareDetailRecyclerViewDividendsEmptyMessage.visibility = View.VISIBLE
+                        binding.shareDetailRecyclerViewDividendsEmptyMessage.visibility =
+                            View.VISIBLE
                     } else {
                         binding.shareDetailRecyclerViewDividendsEmptyMessage.visibility = View.GONE
                     }
@@ -235,7 +242,80 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
             }
         }
 
-        //TODO is it in the right place?
+        //Observe Overview Data-Changes
+        viewModel.overviewData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Success -> {
+                    val data = it.data
+
+                    //Spinner
+                    spinButton(data, binding.shareDetailRefreshButton)
+
+                    //TotalFees
+                    val totalFees = data.feeSum + data.purchaseFeeSum + data.saleFeeSum
+                    binding.shareDetailFeesValue.text = String.format("€ %.2f", totalFees)
+
+                    //Dividend
+                    binding.shareDetailDividendProfit.text =
+                        String.format("€ %.2f", data.dividendSum)
+
+                    //Investment Sum
+                    val investmentSum =
+                        data.feeSum + data.purchaseFeeSum + data.saleFeeSum + data.purchaseSum
+                    binding.shareDetailInvestmentSum.text = String.format("€ %.2f", investmentSum)
+
+                    //ExchangeBilance
+                    val exchangeBilance = calculateExchangeBalance(data)
+                    binding.shareDetailProfit.text = String.format("€ %.2f", exchangeBilance)
+                    if (exchangeBilance < 0.0) {
+                        val textColor =
+                            ContextCompat.getColor(binding.root.context, R.color.sharePrice_loss)
+                        binding.shareDetailProfit.setTextColor(textColor)
+                        binding.shareDetailExchangeTrend.setImageResource(R.drawable.ic_trending_down)
+                    } else {
+                        val textColor =
+                            ContextCompat.getColor(binding.root.context, R.color.sharePrice_profit)
+                        binding.shareDetailProfit.setTextColor(textColor)
+                        binding.shareDetailExchangeTrend.setImageResource(R.drawable.ic_trending_up)
+                    }
+
+                    //Value increase
+                    val valueIncrease = calculateProfit(data)
+                    binding.shareDetailStockValue.text = String.format("€ %.2f", valueIncrease)
+                    if (valueIncrease < 0.0) {
+                        val textColor =
+                            ContextCompat.getColor(binding.root.context, R.color.sharePrice_loss)
+                        binding.shareDetailStockValue.setTextColor(textColor)
+                        binding.shareDetailTotalTrending.setImageResource(R.drawable.ic_trending_down)
+                    } else {
+                        val textColor =
+                            ContextCompat.getColor(binding.root.context, R.color.sharePrice_profit)
+                        binding.shareDetailStockValue.setTextColor(textColor)
+                        binding.shareDetailTotalTrending.setImageResource(R.drawable.ic_trending_up)
+                    }
+
+                    //Value increse percentage
+                    val percentage = getPercentage(investmentSum, valueIncrease)
+                    var percentageText = if (percentage < 0) {
+                        "("
+                    } else {
+                        "(+"
+                    }
+                    percentageText += String.format("%.2f)", percentage)
+                    binding.shareDetailStockPercentage.text = percentageText
+                    if (percentage < 0.0) {
+                        val textColor =
+                            ContextCompat.getColor(binding.root.context, R.color.sharePrice_loss)
+                        binding.shareDetailStockPercentage.setTextColor(textColor)
+                    } else {
+                        val textColor =
+                            ContextCompat.getColor(binding.root.context, R.color.sharePrice_profit)
+                        binding.shareDetailStockPercentage.setTextColor(textColor)
+                    }
+                }
+            }
+        }
+
         //Set text
         binding.apply {
             shareDetailStockSign.text = shareItem.stockSymbol
@@ -259,22 +339,22 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                 it.animate().rotationBy(360f)
             }
 
-            shareDetailFabAddPurchase.setOnClickListener{
+            shareDetailFabAddPurchase.setOnClickListener {
                 val action = ShareDetailDirections.actionShareDetailToAddItem(shareItem)
                 findNavController().navigate(action)
             }
 
-            shareDetailFabAddSale.setOnClickListener{
+            shareDetailFabAddSale.setOnClickListener {
                 val action = ShareDetailDirections.actionShareDetailToAddSale(shareItem)
                 findNavController().navigate(action)
             }
 
-            shareDetailFabAddFees.setOnClickListener{
+            shareDetailFabAddFees.setOnClickListener {
                 val action = ShareDetailDirections.actionShareDetailToAddFee(shareItem)
                 findNavController().navigate(action)
             }
 
-            shareDetailFabAddDividends.setOnClickListener{
+            shareDetailFabAddDividends.setOnClickListener {
                 val action = ShareDetailDirections.actionShareDetailToAddDividend(shareItem)
                 findNavController().navigate(action)
             }
@@ -300,6 +380,78 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
         binding.shareViewFabLayout3.visibility = View.GONE
         binding.shareViewFabLayout4.visibility = View.GONE
         binding.shareDetailFabAdd.animate().rotationBy(-180F)
+    }
+
+
+    private fun calculateProfit(
+        data: OverviewData,
+    ): Double {
+        //If no current Worth is passed, return
+        if (data.currentWorth == 0.0) {
+            return 0.0
+        }
+
+        //Calculate how much money is still in the shares
+        //Can be negative, if the sales are bigger than the purchases -> in this case
+        //they are added not subtracted later on
+        val currentMoneyInShares = data.purchaseSum - data.saleSum
+
+        //Calculate how many shares are still owned
+        val currentAmountOfShares = data.purchaseCount - data.saleCount
+        if (currentAmountOfShares < 0) {
+            return 0.0
+        }
+
+        //Calculate the worth of the shares owned with the current price
+        val currentSharesWorth = currentAmountOfShares * data.currentWorth
+        //Subtract the money in the shares from the shares worth to get the profit
+        val currentSharesProfit = currentSharesWorth - currentMoneyInShares
+
+
+        return currentSharesProfit + data.dividendSum - data.saleFeeSum - data.feeSum - data.purchaseFeeSum
+    }
+
+
+    private fun calculateExchangeBalance(
+        data: OverviewData
+    ): Double {
+        if (data.currentWorth == 0.0) {
+            return 0.0
+        }
+
+        val pricePerPurchase = if (data.purchaseCount != 0) {
+            data.purchaseSum / data.purchaseCount
+        } else {
+            0.0
+        }
+
+        val stockHoldingAmount = data.purchaseCount - data.saleCount
+        if (stockHoldingAmount < 0) {
+            return 0.0
+        }
+
+        val oldHoldingsWorth = stockHoldingAmount * pricePerPurchase
+        val currentHoldingWorth = stockHoldingAmount * data.currentWorth
+        return currentHoldingWorth - oldHoldingsWorth
+    }
+
+    private fun getPercentage(investmentSum: Double, valueIncrease: Double): Double {
+        return if (valueIncrease == 0.0 || investmentSum == 0.0) {
+            0.0
+        } else {
+            (valueIncrease / investmentSum) * 100
+        }
+    }
+
+    private fun spinButton(data: OverviewData, button: ImageButton) {
+        var rotation = AnimationUtils.loadAnimation(activity, R.anim.rotate_indefinitly)
+        if (data.currentWorth == 0.0) {
+            button.startAnimation(rotation)
+        } else {
+            button.clearAnimation()
+        }
+
+
     }
 
 
