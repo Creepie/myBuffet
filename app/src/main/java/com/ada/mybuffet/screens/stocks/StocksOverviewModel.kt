@@ -11,7 +11,7 @@ import java.io.IOException
 class StocksOverviewModel {
 
     //this is the list of all supported stocks
-    var indexList = arrayListOf<String>(
+    var indexList = arrayListOf(
         "^GDAXI", "^DJI", "^NDX", "^STOXX50E"
     )
 
@@ -31,51 +31,100 @@ class StocksOverviewModel {
         startIndexes: StockIndexes,
         endIndex: StockIndexes,
         symbolList: ArrayList<IndexSymbols>
-    ): ArrayList<StockShare>{
+    ): ArrayList<StockShare> = withContext(Dispatchers.IO){
 
-        var stockShares = ArrayList<StockShare>()
-        val list = mutableListOf<Deferred<Boolean>>()
-        var time = System.currentTimeMillis()
+        val stockShares = ArrayList<StockShare>()
+        val scopeList = mutableListOf<Deferred<Boolean>>()
+        val time = System.currentTimeMillis()
+
         for (i in startIndexes.shareIndex..endIndex.shareIndex){
-            var symbol = symbolList[startIndexes.stockIndex].constituents[i]
 
-            var scope = CoroutineScope(Dispatchers.IO).async {
-                val scopeList = mutableListOf<Deferred<Int>>()
-                var share = StockShare(symbol = symbol)
-                //go into Scope for the divis
-                var scopeDivis = CoroutineScope(Dispatchers.IO).async {
-                    var dividends = loadDividend(symbol)
-                    share.dividends = dividends
-                    Log.d("LOG","$i divi rdy ${(System.currentTimeMillis()-time)}")
-                }
-                scopeList.add(scopeDivis)
-                //go into Scope for the current price
-                var scopeCurPrice = CoroutineScope(Dispatchers.IO).async {
-                    var price = loadCurrentPrice(symbol)
-                    share.curPrice = price?.c
-                    Log.d("LOG","$i curPrice rdy ${(System.currentTimeMillis()-time)}")
-                }
-                scopeList.add(scopeCurPrice)
-                //go into Scope for the name
-                var scopeName = CoroutineScope(Dispatchers.IO).async {
-                    var name = loadShareName(symbol)
-                    name.let {
-                        if (name?.result?.isNotEmpty() == true){
-                            share.name = name?.result?.get(0)?.description
-                        }
-                    }
-                    Log.d("LOG","$i name rdy ${(System.currentTimeMillis()-time)}")
-                }
-                Log.d("LOG","$i all scopes started ${(System.currentTimeMillis()-time)}")
-                scopeList.add(scopeName)
-                scopeList.awaitAll()
-                Log.d("LOG","$i all scopes done ${(System.currentTimeMillis()-time)}")
-                stockShares.add(share)
+            val symbol = symbolList[startIndexes.stockIndex].constituents[i]
+            val scope = async {
+                stockShares.add(getShare(symbol,time))
             }
-            list.add(scope)
+            scopeList.add(scope)
         }
-        list.awaitAll()
-        return stockShares
+        scopeList.awaitAll()
+        return@withContext stockShares
+    }
+
+
+    /**
+     * this method creates a stockShare, fetches data from api and add theme to the stockShare
+     * @param symbol is the symbol of the share
+     * @param time is to log when the function is done
+     * @return the filled stockShare
+     * @see StockShare
+     */
+    private suspend fun getShare(symbol: String, time: Long): StockShare = withContext(Dispatchers.IO){
+
+        val scopeList = mutableListOf<Deferred<Unit>>()
+        val share = StockShare(symbol = symbol)
+        //go into Scope for the divis
+        val scopeDividends = async {
+            share.dividends = getDividend(symbol,time)
+        }
+        scopeList.add(scopeDividends)
+        //go into Scope for the current price
+        val scopeCurPrice = async {
+            share.curPrice = getCurrentPrice(symbol,time)
+        }
+        scopeList.add(scopeCurPrice)
+        //go into Scope for the name
+        val scopeName = async {
+            share.name = getShareName(symbol,time)
+        }
+        Log.d("LOG","$symbol all scopes started ${(System.currentTimeMillis()-time)}")
+        scopeList.add(scopeName)
+        scopeList.awaitAll()
+        Log.d("LOG","$symbol all scopes done ${(System.currentTimeMillis()-time)}")
+        return@withContext share
+    }
+
+    /**
+     * this method gets the dividends of a symbol if api gets no result the list is empty
+     * @param symbol is the current symbol of the share
+     * @param time is to log when the function is done
+     * @return the dividends of a share
+     */
+    private suspend fun getDividend(symbol: String, time: Long): Dividends? = withContext(Dispatchers.IO){
+        val dividends = loadDividend(symbol)
+        Log.d("LOG","$symbol divi rdy ${(System.currentTimeMillis()-time)}")
+        return@withContext dividends
+    }
+
+    /**
+     * this method gets the current Price of a share if api gets no result the price is 0.0
+     * @param symbol is the current symbol of the share
+     * @param time is to log when the function is done
+     * @return the current price of the share
+     */
+    private suspend fun getCurrentPrice(symbol: String, time: Long): Double = withContext(Dispatchers.IO){
+        var curPrice = 0.0
+        val price = loadCurrentPrice(symbol)
+            if (price != null) {
+                curPrice = price.c
+            }
+        Log.d("LOG","$symbol curPrice rdy ${(System.currentTimeMillis()-time)}")
+        return@withContext curPrice
+    }
+
+    /**
+     * this method gets a shareName of a given symbol
+     * if api gets no result the string is empty
+     * @param symbol is the current symbol of the share
+     * @param time is to log when the function is done
+     * @return the name of the share
+     */
+    private suspend fun getShareName(symbol: String,time: Long): String = withContext(Dispatchers.IO){
+        var shareName = ""
+        val name = loadShareName(symbol)
+            if (name?.result?.isNotEmpty() == true){
+                shareName = name.result[0].description
+            }
+        Log.d("LOG","$symbol name rdy ${(System.currentTimeMillis()-time)}")
+        return@withContext shareName
     }
 
     /**
@@ -83,11 +132,11 @@ class StocksOverviewModel {
      * @return a list with stocks which contains a list with symbols in this stock
      */
    suspend fun loadIndexList(): ArrayList<IndexSymbols>{
-       var list = ArrayList<IndexSymbols>()
+       val list = ArrayList<IndexSymbols>()
        val scopeList = mutableListOf<Deferred<Boolean?>>()
        for(index in indexList){
-           var scope = CoroutineScope(Dispatchers.IO).async {
-               var data = loadIndex(index)
+           val scope = CoroutineScope(Dispatchers.IO).async {
+               val data = loadIndex(index)
                data?.let {
                    list.add(data)
                }
@@ -106,11 +155,11 @@ class StocksOverviewModel {
      */
     private suspend fun loadIndex(index: String): IndexSymbols?{
         return try {
-            var url = "https://finnhub.io/api/v1/index/constituents?symbol=${index}&token=c2vgcniad3i9mrpv9cmg"
+            val url = "https://finnhub.io/api/v1/index/constituents?symbol=${index}&token=c2vgcniad3i9mrpv9cmg"
             FinnhubApi.retrofitService.getIndexSymbols(url)
         } catch (networkError: IOException){
             Log.i("API", "fetchIndex Error with code: ${networkError.message}")
-            null;
+            null
         }
     }
 
@@ -168,9 +217,9 @@ class StocksOverviewModel {
      * @return a list of StockShare and the list represent one Stock like the DAX
      */
     suspend fun loadSharesFromFirebase(stockSymbol: String): ArrayList<StockShare>{
-        var list = ArrayList<StockShare>()
+        val list = ArrayList<StockShare>()
             val docRef = firestore.collection(stockSymbol)
-            var stocksList = docRef.get()
+            val stocksList = docRef.get()
                 .addOnSuccessListener { documents ->
                     documents.forEach { document ->
                         if (document != null){

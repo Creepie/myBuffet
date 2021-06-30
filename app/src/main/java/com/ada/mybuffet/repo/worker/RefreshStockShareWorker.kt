@@ -44,7 +44,6 @@ class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
             var newIndex = calcStartIndex(endIndex, list)
             //save the new start index on firebase (overwrite the old one)
             saveStartIndexToFirebase(newIndex)
-            var test = 0
         } catch (e: HttpException) {
             Log.i("WORKER_RUNNING", "Worker load shares on error")
             return Result.retry()
@@ -64,10 +63,10 @@ class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
     private fun calcEndIndex(startIndexes: StockIndexes, list: ArrayList<IndexSymbols>): StockIndexes{
         //todo calc end Index for index and shares
         var endIndex = StockIndexes(startIndexes.stockIndex, startIndexes.shareIndex)
-        if (startIndexes.shareIndex + 2 >= list[startIndexes.stockIndex].constituents.size){
+        if (startIndexes.shareIndex + 5 >= list[startIndexes.stockIndex].constituents.size){
           endIndex.shareIndex = list[startIndexes.stockIndex].constituents.size-1
         } else {
-          endIndex.shareIndex += 2
+          endIndex.shareIndex += 5
         }
         return endIndex
     }

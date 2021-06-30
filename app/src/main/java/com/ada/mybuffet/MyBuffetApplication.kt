@@ -45,27 +45,27 @@ class myBuffetApplication : Application() {
             .build()
 
         val repeatingStockSymbolRequest = PeriodicWorkRequestBuilder<RefreshStockSymbolWorker>(2, TimeUnit.HOURS)
-            .setConstraints(constraints).build()
+            .build()
 
         val repeatingStockShareRequest = PeriodicWorkRequestBuilder<RefreshStockShareWorker>(16, TimeUnit.MINUTES)
-            .setConstraints(constraints).build()
+            .build()
 
         //add here all your requests which are declared above
         val requests = ArrayList<PeriodicWorkRequest>()
         requests.add(repeatingStockSymbolRequest)
         requests.add(repeatingStockShareRequest)
 
-        WorkManager.getInstance().enqueue(requests)
+        //WorkManager.getInstance().enqueue(requests)
 
-       /* WorkManager.getInstance().enqueueUniquePeriodicWork(
+       WorkManager.getInstance().enqueueUniquePeriodicWork(
             RefreshStockSymbolWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            repeatingRequest)
+            repeatingStockSymbolRequest)
 
         WorkManager.getInstance().enqueueUniquePeriodicWork(
             RefreshStockShareWorker.WORK_NAME,
             ExistingPeriodicWorkPolicy.KEEP,
-            rep
-        )*/
+            repeatingStockShareRequest)
+
     }
 }

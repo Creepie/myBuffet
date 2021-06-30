@@ -24,8 +24,8 @@ class StocksOverviewViewModel(application: Application): AndroidViewModel(applic
 
     fun loadStockData(){
         CoroutineScope(Dispatchers.IO).launch {
-            _stocks.value  = model.loadSharesFromFirebase(model.indexList[1])
-            var x = 10
+            var x = model.loadSharesFromFirebase(model.indexList[1])
+            var y = 10
         }
     }
 
