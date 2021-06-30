@@ -17,6 +17,9 @@ class RefreshStockSymbolWorker(appContext: Context, params: WorkerParameters) :
         const val WORK_NAME = "com.ada.mybuffet.repo.worker.RefreshStockSymbolWorker.kt"
     }
 
+    /**
+     * this method loads all x Hours the list of stocks with the indexes in it and save theme on firebase
+     */
     override suspend fun doWork(): Result {
         Log.i("WORKER_RUNNING", "Worker Refresh Stock Symbol is running")
         val model = StocksOverviewModel()

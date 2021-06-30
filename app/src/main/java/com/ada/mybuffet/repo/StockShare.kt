@@ -1,9 +1,9 @@
 package com.ada.mybuffet.repo
 
 class StockShare(
-    var name: String? = null,
+    var name: String = "",
     var dividends: Dividends? = null,
-    val symbol: String,
-    var curPrice: Double? = null
+    val symbol: String = "",
+    var curPrice: Double? = 0.0
 ) {
 }

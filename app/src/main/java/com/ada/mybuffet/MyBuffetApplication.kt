@@ -13,11 +13,17 @@ import java.util.concurrent.TimeUnit
 class myBuffetApplication : Application() {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 
+    /**
+     * this method is called before the first screen is shown on the screen
+     */
     override fun onCreate() {
         super.onCreate()
         delayedInit()
     }
 
+    /**
+     * this method go into the CoroutineScope and start the setupRecurringWork method
+     */
     private fun delayedInit() {
         applicationScope.launch {
             Log.i("WORKER_RUNNING","delayedInit start")
@@ -25,6 +31,9 @@ class myBuffetApplication : Application() {
         }
     }
 
+    /**
+     * this method set up all the Worker Jobs and declare how often they should be done
+     */
     private fun setupRecurringWork(){
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
@@ -41,6 +50,7 @@ class myBuffetApplication : Application() {
         val repeatingStockShareRequest = PeriodicWorkRequestBuilder<RefreshStockShareWorker>(16, TimeUnit.MINUTES)
             .setConstraints(constraints).build()
 
+        //add here all your requests which are declared above
         val requests = ArrayList<PeriodicWorkRequest>()
         requests.add(repeatingStockSymbolRequest)
         requests.add(repeatingStockShareRequest)
