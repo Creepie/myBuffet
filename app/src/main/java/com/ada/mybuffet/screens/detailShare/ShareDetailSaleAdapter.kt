@@ -34,8 +34,8 @@ class ShareDetailSaleAdapter :  ListAdapter<SaleItem, ShareDetailSaleAdapter.Sha
             binding.apply {
                 itemSaleAmount.text = saleItem.shareNumber.toString()
                 itemSaleValue.text = String.format("€ %.2f", saleItem.getValue())
-                itemSaleSharePrice.text = "€ ${saleItem.sharePrice}"
-                itemSaleFee.text = "€ ${saleItem.fees}"
+                itemSaleSharePrice.text = String.format("€ %.2f", saleItem.sharePrice.toDouble())
+                itemSaleFee.text = String.format("€ %.2f", saleItem.fees.toDouble())
                 itemSaleDate.text = saleItem.getFormattedDate()
             }
         }

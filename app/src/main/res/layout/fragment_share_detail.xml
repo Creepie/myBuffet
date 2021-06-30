@@ -326,21 +326,14 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@string/font_roboto_regular"
                             android:text="@string/share_detail_total_investment_placeholder"
-                            android:textColor="@color/sharePrice_profit"
+                            android:textColor="@color/black"
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/share_detail_investment_trend"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:id="@+id/share_detail_investment_trend"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:src="@drawable/ic_trending_up"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -416,7 +409,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@string/font_roboto_regular"
                             android:text="@string/share_detail_exchange_profit_loss_placeholder"
-                            android:textColor="@color/sharePrice_profit"
+                            android:textColor="@color/sharePrice_loss"
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -427,7 +420,7 @@
                             android:id="@+id/share_detail_fees_trend"
                             android:layout_width="wrap_content"
                             android:layout_height="0dp"
-                            android:src="@drawable/ic_trending_up"
+                            android:src="@drawable/ic_trending_down"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -461,7 +454,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@string/font_roboto_regular"
                             android:text="@string/myShares_placeholder_money"
-                            android:textColor="@color/sharePrice_loss"
+                            android:textColor="@color/sharePrice_profit"
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -472,7 +465,7 @@
                             android:id="@+id/share_detail_dividend_trend"
                             android:layout_width="wrap_content"
                             android:layout_height="0dp"
-                            android:src="@drawable/ic_trending_down"
+                            android:src="@drawable/ic_trending_up"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />

@@ -31,7 +31,7 @@ class ShareDetailDividendAdapter :  ListAdapter<DividendItem, ShareDetailDividen
 
         fun bind(dividendItem: DividendItem) {
             binding.apply {
-                itemDividendAmount.text = "€ ${dividendItem.amount}"
+                itemDividendAmount.text = String.format("€ %.2f", dividendItem.amount.toDouble())
                 itemDividendNumber.text = dividendItem.number.toString()
                 itemDividendDate.text = dividendItem.getFormattedDate()
             }

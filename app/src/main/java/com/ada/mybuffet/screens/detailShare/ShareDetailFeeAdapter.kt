@@ -31,7 +31,7 @@ class ShareDetailFeeAdapter :  ListAdapter<FeeItem, ShareDetailFeeAdapter.ShareD
 
         fun bind(feeItem: FeeItem) {
             binding.apply {
-                itemFeeAmount.text = "€ ${feeItem.amount}"
+                itemFeeAmount.text = String.format("€ %.2f", feeItem.amount.toDouble())
                 itemFeeDescription.text = feeItem.description
                 itemFeeDate.text = feeItem.getFormattedDate()
             }

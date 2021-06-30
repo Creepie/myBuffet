@@ -31,8 +31,8 @@ class ShareDetailPurchaseAdapter :
             binding.apply {
                 itemPurchaseAmount.text = purchase.shareNumber.toString()
                 itemPurchaseValue.text = String.format("€ %.2f", purchase.getValue())
-                itemPurchaseSharePrice.text = "€ ${purchase.sharePrice}"
-                itemPurchaseFee.text = "€ ${purchase.fees}"
+                itemPurchaseSharePrice.text = String.format("€ %.2f", purchase.sharePrice.toDouble())
+                itemPurchaseFee.text = String.format("€ %.2f", purchase.fees.toDouble())
                 itemPurchaseDate.text = purchase.getFormattedDate()
             }
         }

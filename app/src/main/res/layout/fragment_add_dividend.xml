@@ -149,7 +149,7 @@
                             android:background="@drawable/layout_pill_bg"
                             android:ems="10"
                             android:textSize="14sp"
-                            android:inputType="textPersonName"
+                            android:inputType="number"
                             android:padding="0dp"
                             android:textColor="#000000"
                             app:boxStrokeWidth="0dp"
