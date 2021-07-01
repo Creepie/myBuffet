@@ -1,5 +1,7 @@
 package com.ada.mybuffet.screens.stocks
 
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RectShape
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.ada.mybuffet.R
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ada.mybuffet.databinding.FragmentStocksOverviewBinding
-import com.ada.mybuffet.features.NewsRecyclerAdapter
 import com.ada.mybuffet.repo.StockShare
-import com.ada.mybuffet.repo.SymbolPressResponse
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -47,9 +49,29 @@ class StocksOverview : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel
 
+        val stocksListAdapter = StocksListAdapter()
+
+        binding.apply {
+            stocksRecyclerViewStocks.apply {
+                adapter = stocksListAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+                addItemDecoration(
+                    DividerItemDecoration(
+                        context,
+                        DividerItemDecoration.VERTICAL
+                    ).also { deco ->
+                        with(ShapeDrawable(RectShape())) {
+                            intrinsicHeight = (resources.displayMetrics.density * 8).toInt()
+                            alpha = 0
+                            deco.setDrawable(this)
+                        }
+                    })
+            }
+        }
+
         val observer = Observer<MutableList<StockShare>> {
                 stockList -> println(stockList)
-            var x = 10
+            stocksListAdapter.submitList(stockList)
         }
 
         viewModel.stocks.observe(viewLifecycleOwner,observer)
@@ -58,7 +80,7 @@ class StocksOverview : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentStocksOverviewBinding.inflate(inflater,container,false)
         // Inflate the layout for this fragment
         return binding.root

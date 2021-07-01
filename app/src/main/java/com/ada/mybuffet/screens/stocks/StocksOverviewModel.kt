@@ -68,7 +68,9 @@ class StocksOverviewModel {
         scopeList.add(scopeDividends)
         //go into Scope for the current price
         val scopeCurPrice = async {
-            share.curPrice = getCurrentPrice(symbol,time)
+            var data = getCurrentPrice(symbol,time)
+            share.curPrice = data.first
+            share.prevClosePrice = data.second
         }
         scopeList.add(scopeCurPrice)
         //go into Scope for the name
@@ -100,11 +102,11 @@ class StocksOverviewModel {
      * @param time is to log when the function is done
      * @return the current price of the share
      */
-    private suspend fun getCurrentPrice(symbol: String, time: Long): Double = withContext(Dispatchers.IO){
-        var curPrice = 0.0
+    private suspend fun getCurrentPrice(symbol: String, time: Long): Pair<Double,Double> = withContext(Dispatchers.IO){
+        var curPrice = Pair(0.0,0.0)
         val price = loadCurrentPrice(symbol)
             if (price != null) {
-                curPrice = price.c
+                curPrice = Pair(price.c,price.pc)
             }
         Log.d("LOG","$symbol curPrice rdy ${(System.currentTimeMillis()-time)}")
         return@withContext curPrice

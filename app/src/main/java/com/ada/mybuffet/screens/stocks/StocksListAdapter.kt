@@ -29,9 +29,14 @@ class StocksListAdapter :  ListAdapter<StockShare, StocksListAdapter.StockDetail
     class StockDetailViewHolder(private val binding: RecyclerViewItemStockshareBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(dividendItem: StockShare) {
+        fun bind(share: StockShare) {
             binding.apply {
-                recyclerStockItemTvStockSymbol.text = dividendItem.symbol
+                recyclerStockItemTvStockSymbol.text = share.symbol
+                recyclerStockItemTvStockName.text = share.name
+                recyclerStockItemTvDividendTotal.text = share.getLastDividend().toString()
+                recyclerStockItemTvDividendPercent.text = "${share.getPercentDividend()} %"
+                recyclerStockItemTvStockPrice.text = share.curPrice.toString()
+                recyclerStockItemTvStockPricePercent.text = "(${share.getPercentStockPrice()} %)"
             }
         }
     }
