@@ -71,6 +71,7 @@ class StocksOverview : Fragment() {
 
         val observer = Observer<MutableList<StockShare>> {
                 stockList -> println(stockList)
+            stockList.sortByDescending { it.getPercentDividend()}
             stocksListAdapter.submitList(stockList)
         }
 

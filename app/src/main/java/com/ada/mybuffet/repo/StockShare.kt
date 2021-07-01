@@ -36,4 +36,17 @@ data class StockShare(
         }
     }
 
+    fun isPricePositive(): Boolean {
+        return curPrice > prevClosePrice
+    }
+
+    fun isDividendIncreasing(): Boolean {
+        val lastDividend = getLastDividend()
+        var previousDividend = 0.0
+        if (dividends?.data?.size ?: 0 > 2){
+           previousDividend = dividends?.data?.get((dividends?.data?.size ?: 0) -2)?.amount ?: 0.0
+        }
+        return lastDividend > previousDividend
+
+    }
 }

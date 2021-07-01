@@ -2,11 +2,13 @@ package com.ada.mybuffet.screens.stocks
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 
 import androidx.recyclerview.widget.RecyclerView
+import com.ada.mybuffet.R
 
 import com.ada.mybuffet.databinding.RecyclerViewItemStockshareBinding
 import com.ada.mybuffet.repo.StockShare
@@ -37,6 +39,26 @@ class StocksListAdapter :  ListAdapter<StockShare, StocksListAdapter.StockDetail
                 recyclerStockItemTvDividendPercent.text = "${share.getPercentDividend()} %"
                 recyclerStockItemTvStockPrice.text = share.curPrice.toString()
                 recyclerStockItemTvStockPricePercent.text = "(${share.getPercentStockPrice()} %)"
+
+                if (share.isPricePositive()){
+                    recyclerStockItemImgSharePriceUpDown.setImageResource(R.drawable.ic_trending_up)
+                    val textColor = ContextCompat.getColor(binding.root.context, R.color.sharePrice_profit)
+                    recyclerStockItemTvStockPricePercent.setTextColor(textColor)
+                } else {
+                    recyclerStockItemImgSharePriceUpDown.setImageResource(R.drawable.ic_trending_down)
+                    val textColor = ContextCompat.getColor(binding.root.context, R.color.sharePrice_loss)
+                    recyclerStockItemTvStockPricePercent.setTextColor(textColor)
+                }
+
+                if (share.isDividendIncreasing()){
+                    recyclerStockItemImgTotalHoldingsUpDown.setImageResource(R.drawable.ic_trending_up)
+                    val textColor = ContextCompat.getColor(binding.root.context, R.color.sharePrice_profit)
+                    recyclerStockItemTvDividendPercent.setTextColor(textColor)
+                } else {
+                    recyclerStockItemImgTotalHoldingsUpDown.setImageResource(R.drawable.ic_trending_down)
+                    val textColor = ContextCompat.getColor(binding.root.context, R.color.sharePrice_loss)
+                    recyclerStockItemTvDividendPercent.setTextColor(textColor)
+                }
             }
         }
     }
