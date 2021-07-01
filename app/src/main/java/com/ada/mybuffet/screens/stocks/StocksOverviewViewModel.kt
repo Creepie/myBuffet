@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.ada.mybuffet.repo.StockShare
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,8 +27,10 @@ class StocksOverviewViewModel(application: Application): AndroidViewModel(applic
         }
     }
 
-    fun chanceStockData(){
-
+    fun chanceStockData(position: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            _stocks.postValue(model.loadSharesFromFirebase(model.indexList[position]))
+        }
     }
 
 

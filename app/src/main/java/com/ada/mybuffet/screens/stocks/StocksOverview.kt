@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -52,6 +54,7 @@ class StocksOverview : Fragment() {
         val stocksListAdapter = StocksListAdapter()
 
         binding.apply {
+            //recycler
             stocksRecyclerViewStocks.apply {
                 adapter = stocksListAdapter
                 layoutManager = LinearLayoutManager(requireContext())
@@ -67,7 +70,28 @@ class StocksOverview : Fragment() {
                         }
                     })
             }
+            //spinner
+            stocksSPChooseStock.apply {
+                adapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,viewModel.model.map.keys.toList())
+
+            }
         }
+
+        binding.stocksSPChooseStock.onItemSelectedListener = object :
+        AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?, view: View?, position: Int, id: Long
+            ) {
+                viewModel.chanceStockData(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+        }
+
+
 
         val observer = Observer<MutableList<StockShare>> {
                 stockList -> println(stockList)

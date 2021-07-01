@@ -10,10 +10,10 @@ import java.io.IOException
 
 class StocksOverviewModel {
 
+    val map = mapOf("DAX" to "^GDAXI", "Dow Jones" to "^DJI", "Nasdaq 100" to "^NDX", "Euro Stoxx 50" to "^STOXX50E" )
+
     //this is the list of all supported stocks
-    var indexList = arrayListOf(
-        "^GDAXI", "^DJI", "^NDX", "^STOXX50E"
-    )
+    var indexList = map.values.toList()
 
     val firestore = Firebase.firestore
 
@@ -32,7 +32,6 @@ class StocksOverviewModel {
         endIndex: StockIndexes,
         symbolList: ArrayList<IndexSymbols>
     ): ArrayList<StockShare> = withContext(Dispatchers.IO){
-
         val stockShares = ArrayList<StockShare>()
         val scopeList = mutableListOf<Deferred<Boolean>>()
         val time = System.currentTimeMillis()
