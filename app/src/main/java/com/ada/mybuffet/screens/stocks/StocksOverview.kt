@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ada.mybuffet.databinding.FragmentStocksOverviewBinding
 import com.ada.mybuffet.repo.StockShare
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -49,7 +52,6 @@ class StocksOverview : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel
 
         val stocksListAdapter = StocksListAdapter()
 
@@ -72,7 +74,10 @@ class StocksOverview : Fragment() {
             }
             //spinner
             stocksSPChooseStock.apply {
-                adapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,viewModel.model.map.keys.toList())
+                var list = ArrayList<String>()
+                list.addAll(viewModel.model.map.keys.toList())
+                list.add("All")
+                adapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,list)
 
             }
         }
@@ -82,7 +87,14 @@ class StocksOverview : Fragment() {
             override fun onItemSelected(
                 parent: AdapterView<*>?, view: View?, position: Int, id: Long
             ) {
-                viewModel.chanceStockData(position)
+                if (viewModel.model.indexList.size == position){
+                    CoroutineScope(Dispatchers.IO).launch {
+                        viewModel.loadAllStocks()
+                    }
+                } else {
+                    viewModel.chanceStockData(position)
+                }
+
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
