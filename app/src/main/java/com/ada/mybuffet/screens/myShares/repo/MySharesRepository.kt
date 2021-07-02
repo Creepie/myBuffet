@@ -5,13 +5,13 @@ import com.ada.mybuffet.screens.myShares.model.PortfolioValueByDate
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.Resource
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -19,7 +19,6 @@ class MySharesRepository : IMySharesRepository {
 
     private val TAG = "MY_SHARES_REPOSITORY"
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val user = FirebaseAuth.getInstance().currentUser
 
 
     override suspend fun getShareItemsFromDB(): Flow<Resource<MutableList<ShareItem>>> = callbackFlow {
@@ -54,6 +53,39 @@ class MySharesRepository : IMySharesRepository {
         awaitClose{
             subscription.remove()
         }
+    }
+
+    override suspend fun getShareItemsAsListFromDB(): Resource<MutableList<ShareItem>> {
+        val currentUser = FirebaseAuth.getInstance().currentUser ?: return Resource.Failure(IllegalAccessException())
+
+        val shareItemList = mutableListOf<ShareItem>()
+        var returnValue: Resource<MutableList<ShareItem>> = Resource.Failure(IOException())
+
+        // create reference to the collection in firestore
+        val userid = currentUser.uid
+        val docRef = firestore.collection("users").document(userid).collection("shares")
+
+
+        // get data
+        val sharesResults = docRef
+            .get()
+            .addOnSuccessListener { documents ->
+                documents.forEach { doc ->
+                    val shareItem = doc.toObject(ShareItem::class.java)
+                    if (shareItem != null) {
+                        shareItemList.add(shareItem)
+                    }
+                }
+                returnValue = Resource.Success<MutableList<ShareItem>>(shareItemList)
+            }
+            .addOnFailureListener {
+                // could return a failure resource here
+                Log.d(TAG, "Could not retrieve share items as list")
+                returnValue = Resource.Failure(IOException())
+            }
+
+        sharesResults.await()
+        return returnValue
     }
 
     override suspend fun getProfitLossOverviewDataFromDB(): Flow<Resource<HashMap<String, BigDecimal>>> = callbackFlow {

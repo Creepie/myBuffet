@@ -15,6 +15,7 @@ data class ShareItem (
     val currentPricePercent: String = "",
     val totalDividends: String = "",
     val totalHoldings: String = "",
+    val totalShareNumber: Int = 0,
     val totalFees: String = "",
     val totalInvestment: String = ""
 ) : Parcelable {

@@ -12,6 +12,10 @@ class MySharesDataProvider(private val mySharesRepo: IMySharesRepository) : IMyS
         return mySharesRepo.getShareItemsFromDB()
     }
 
+    override suspend fun getShareItemsAsList(): Resource<MutableList<ShareItem>> {
+        return mySharesRepo.getShareItemsAsListFromDB()
+    }
+
     override suspend fun getTotalPortfolioValueHistory(): Flow<Resource<MutableList<PortfolioValueByDate>>> {
         return mySharesRepo.getTotalPortfolioValueHistoryFromDB()
     }

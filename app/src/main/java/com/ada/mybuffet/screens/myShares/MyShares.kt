@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -139,6 +140,7 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
 
         // enable touch gestures
         portfolioTotalChart.setTouchEnabled(true)
+        portfolioTotalChart.isHighlightPerTapEnabled = true
 
         // disable scaling and dragging
         portfolioTotalChart.isDragEnabled = false
@@ -165,11 +167,13 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
         // add listener
         portfolioTotalChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
             override fun onValueSelected(e: Entry, h: Highlight?) {
+                Log.i("Chart ", "onValueSelected");
                 val valueStr = e.y.toString()
                 binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(valueStr)
             }
 
             override fun onNothingSelected() {
+                Log.i("Chart ", "onNothingSelected");
                 binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(portfolioValueList.last().portfolioTotalValue)
             }
         })
