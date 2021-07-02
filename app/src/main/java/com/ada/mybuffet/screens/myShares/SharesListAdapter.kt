@@ -33,14 +33,12 @@ class SharesListAdapter(
 
                 if (isPricePositive()) {
                     binding.recyclerViewImgSharePriceUpDown.setImageResource(R.drawable.ic_trending_up)
-                    binding.recyclerViewImgTotalHoldingsUpDown.setImageResource(R.drawable.ic_trending_up)
 
                     val textColor = ContextCompat.getColor(holder.binding.root.context, R.color.sharePrice_profit)
                     binding.recyclerViewTvStockPrice.setTextColor(textColor)
                     binding.recyclerViewTvStockPricePercent.setTextColor(textColor)
                 } else {
                     binding.recyclerViewImgSharePriceUpDown.setImageResource(R.drawable.ic_trending_down)
-                    binding.recyclerViewImgTotalHoldingsUpDown.setImageResource(R.drawable.ic_trending_down)
 
                     val textColor = ContextCompat.getColor(holder.binding.root.context, R.color.sharePrice_loss)
                     binding.recyclerViewTvStockPrice.setTextColor(textColor)
@@ -50,9 +48,11 @@ class SharesListAdapter(
                 if (isInvestmentPositive()) {
                     val textColor = ContextCompat.getColor(holder.binding.root.context, R.color.sharePrice_profit)
                     binding.recyclerViewTvTotalHoldingsValue.setTextColor(textColor)
+                    binding.recyclerViewImgTotalHoldingsUpDown.setImageResource(R.drawable.ic_trending_up)
                 } else {
                     val textColor = ContextCompat.getColor(holder.binding.root.context, R.color.sharePrice_loss)
                     binding.recyclerViewTvTotalHoldingsValue.setTextColor(textColor)
+                    binding.recyclerViewImgTotalHoldingsUpDown.setImageResource(R.drawable.ic_trending_down)
                 }
                 binding.root.setOnClickListener{
                     listener.onCardClicked(sharesList[position])

@@ -8,6 +8,7 @@ import java.math.BigDecimal
 
 interface IMySharesRepository {
     suspend fun getShareItemsFromDB(): Flow<Resource<MutableList<ShareItem>>>
+    suspend fun getShareItemsAsListFromDB(): Resource<MutableList<ShareItem>>
     suspend fun getProfitLossOverviewDataFromDB(): Flow<Resource<HashMap<String, BigDecimal>>>
     suspend fun getTotalPortfolioValueHistoryFromDB(): Flow<Resource<MutableList<PortfolioValueByDate>>>
 }
