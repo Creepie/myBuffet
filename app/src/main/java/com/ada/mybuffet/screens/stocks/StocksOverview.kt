@@ -31,7 +31,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class StocksOverview : Fragment() {
-    var _binding: FragmentStocksOverviewBinding? = null
+    private var _binding: FragmentStocksOverviewBinding? = null
     val binding: FragmentStocksOverviewBinding get() = _binding!!
 
     private val viewModel: StocksOverviewViewModel by lazy {
@@ -74,7 +74,7 @@ class StocksOverview : Fragment() {
             }
             //spinner
             stocksSPChooseStock.apply {
-                var list = ArrayList<String>()
+                val list = ArrayList<String>()
                 list.addAll(viewModel.model.map.keys.toList())
                 list.add("All")
                 adapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,list)
@@ -94,13 +94,8 @@ class StocksOverview : Fragment() {
                 } else {
                     viewModel.chanceStockData(position)
                 }
-
             }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
 

@@ -156,8 +156,7 @@ class StocksOverviewModel {
      */
     private suspend fun loadIndex(index: String): IndexSymbols?{
         return try {
-            val url = "https://finnhub.io/api/v1/index/constituents?symbol=${index}&token=c2vgcniad3i9mrpv9cmg"
-            FinnhubApi.retrofitService.getIndexSymbols(url)
+            FinnhubApi.retrofitService.getIndexSymbols(index)
         } catch (networkError: IOException){
             Log.i("API", "fetchIndex Error with code: ${networkError.message}")
             null
@@ -173,7 +172,7 @@ class StocksOverviewModel {
     private suspend fun loadDividend(symbol: String): Dividends?{
         return try {
             val url = "https://finnhub.io/api/v1/stock/dividend2?symbol=${symbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
-            FinnhubApi.retrofitService.getDividends(url)
+            FinnhubApi.retrofitService.getDividends(symbol)
         } catch (networkError: IOException){
             Log.i("API", "fetchIndex Error with code: ${networkError.message}")
             null

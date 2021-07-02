@@ -6,6 +6,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
+import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.Url
 
 /**
@@ -15,10 +17,13 @@ import retrofit2.http.Url
 
 private const val Base_URL = "https://finnhub.io/api/v1/"
 
+private const val token = "c2vgcniad3i9mrpv9cmg"
+private const val sandboxToken = "sandbox_c2vgcniad3i9mrpv9cn0"
+
 private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
 private val retrofit = Retrofit.Builder()
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
     .baseUrl(Base_URL)
     .build()
 
@@ -63,14 +68,14 @@ interface FinnhubApiService{
      * this function is to get the symbols of company's in a specific index like DAX
      * in the request you can set the index you are looking for
      */
-    @GET
-    suspend fun getIndexSymbols(@Url url: String): IndexSymbols
+    @GET("index/constituents?token=$token")
+    suspend fun getIndexSymbols(@Query("symbol") index: String): IndexSymbols
 
     /**
      * this function is to get the dividends of a specific company
      */
-    @GET
-    suspend fun getDividends(@Url url: String): Dividends
+    @GET("stock/dividend2?token=$sandboxToken")
+    suspend fun getDividends(@Query("symbol") symbol: String): Dividends
 
 }
 
