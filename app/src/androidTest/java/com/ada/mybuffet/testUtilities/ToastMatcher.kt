@@ -1,4 +1,4 @@
-package com.ada.mybuffet
+package com.ada.mybuffet.testUtilities
 import android.os.IBinder
 
 import android.view.WindowManager

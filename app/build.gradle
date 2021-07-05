@@ -95,6 +95,10 @@ dependencies {
     // espresso
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0')
 
+    // recommended to put this in implementation because parts of the code are
+    // placed in the production code
+    implementation "androidx.test.espresso:espresso-idling-resource:3.1.0"
+
     // AndroidX Test - JVM testing
     testImplementation "androidx.test.ext:junit-ktx:1.1.2"
 
@@ -106,7 +110,6 @@ dependencies {
 
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0"
 
-    implementation "androidx.fragment:fragment-testing:1.3.4"
     androidTestImplementation 'androidx.test:rules:1.4.0'
 
 }

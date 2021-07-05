@@ -1,20 +1,19 @@
 package com.ada.mybuffet.screens.login
 
 
-import android.os.IBinder
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
-import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import com.ada.mybuffet.MainActivity
 import com.ada.mybuffet.R
-import com.ada.mybuffet.ToastMatcher
+import com.ada.mybuffet.testUtilities.SignedOutActivityTestRule
+import com.ada.mybuffet.testUtilities.ToastMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -28,9 +27,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class RegisterActivityTest {
 
-    @Rule
-    @JvmField
-    var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
+    @get:Rule
+    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+
+    @get: Rule
+    val signedOutActivityTestRule = SignedOutActivityTestRule()
 
     @Test
     fun testEmailTextView() {

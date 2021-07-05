@@ -12,6 +12,7 @@ import br.com.simplepass.loadingbutton.customViews.CircularProgressButton
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.ActivityLoginBinding
 import com.ada.mybuffet.screens.home.Home
+import com.ada.mybuffet.utils.EspressoIdlingResource
 import com.google.firebase.auth.FirebaseAuth
 
 class Login : AppCompatActivity() {
@@ -51,6 +52,10 @@ class Login : AppCompatActivity() {
             return
         }
 
+        // increment idling resource counter for UI testing
+        EspressoIdlingResource.increment()
+
+        // start button animation
         loginProgressButton.startAnimation()
 
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
@@ -61,14 +66,23 @@ class Login : AppCompatActivity() {
                 // add a short delay in order to briefly show the finished animation
                 // and then launch Home
                 Handler(Looper.getMainLooper()).postDelayed({
+                    // decrement idling resource counter for UI test
+                    EspressoIdlingResource.decrement()
+
+                    // perform intent
                     val i = Intent(this, Home::class.java)
                     startActivity(i)
                     finish()
                 }, 500)
             }
             .addOnFailureListener {
+                // decrement idling resource counter for UI test
+                EspressoIdlingResource.decrement()
+
+                // undo animation and reset button
                 loginProgressButton.revertAnimation()
 
+                // show toast message
                 Toast.makeText(applicationContext, applicationContext.getString(R.string.login_failure_message), Toast.LENGTH_SHORT).show()
                 return@addOnFailureListener
             }

@@ -1,20 +1,26 @@
-package com.ada.mybuffet
+package com.ada.mybuffet.screens.login
 
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.filters.LargeTest
-import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
+import com.ada.mybuffet.MainActivity
+import com.ada.mybuffet.R
+import com.ada.mybuffet.testUtilities.SignedOutActivityTestRule
+import com.ada.mybuffet.utils.EspressoIdlingResource
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
-import org.hamcrest.core.IsInstanceOf
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,9 +29,21 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class LoginActivityTest {
 
-    @Rule
-    @JvmField
-    var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
+    @get:Rule
+    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+
+    @get: Rule
+    val signedOutActivityTestRule = SignedOutActivityTestRule()
+
+    @Before
+    fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
+    }
+
+    @After
+    fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
+    }
 
     @Test
     fun loginActivityTest() {
@@ -103,10 +121,9 @@ class LoginActivityTest {
         )
         circularProgressButton.perform(click())
 
-        val frameLayout = onView(
-            allOf(IsInstanceOf.instanceOf(android.widget.FrameLayout::class.java), isDisplayed())
-        )
-        frameLayout.check(matches(isDisplayed()))
+
+        // check if we are on the home screen by matching the home screen id
+        onView(withId(R.id.home)).check(matches(isDisplayed()))
     }
     
     private fun childAtPosition(
