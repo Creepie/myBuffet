@@ -171,7 +171,6 @@ class StocksOverviewModel {
      */
     private suspend fun loadDividend(symbol: String): Dividends?{
         return try {
-            val url = "https://finnhub.io/api/v1/stock/dividend2?symbol=${symbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
             FinnhubApi.retrofitService.getDividends(symbol)
         } catch (networkError: IOException){
             Log.i("API", "fetchIndex Error with code: ${networkError.message}")

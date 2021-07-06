@@ -2,6 +2,7 @@ package com.ada.mybuffet.screens.stocks
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 
 import androidx.recyclerview.widget.DiffUtil
@@ -14,9 +15,9 @@ import com.ada.mybuffet.databinding.RecyclerViewItemStockshareBinding
 import com.ada.mybuffet.repo.StockShare
 
 
-class StocksListAdapter :  ListAdapter<StockShare, StocksListAdapter.StockDetailViewHolder>(
-    DiffCallback()
-) {
+class StocksListAdapter(
+   private val listener: StocksRecyclerViewClickListener
+) :  ListAdapter<StockShare, StocksListAdapter.StockDetailViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StockDetailViewHolder {
         val binding = RecyclerViewItemStockshareBinding.inflate(
@@ -24,11 +25,14 @@ class StocksListAdapter :  ListAdapter<StockShare, StocksListAdapter.StockDetail
             parent,
             false
         )
-        return StockDetailViewHolder(binding)
+        return StockDetailViewHolder(binding,listener)
     }
 
 
-    class StockDetailViewHolder(private val binding: RecyclerViewItemStockshareBinding) :
+
+
+    class StockDetailViewHolder(private val binding: RecyclerViewItemStockshareBinding,
+    private val listener: StocksRecyclerViewClickListener) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(share: StockShare) {
@@ -59,6 +63,9 @@ class StocksListAdapter :  ListAdapter<StockShare, StocksListAdapter.StockDetail
                     val textColor = ContextCompat.getColor(binding.root.context, R.color.sharePrice_loss)
                     recyclerStockItemTvDividendPercent.setTextColor(textColor)
                 }
+                root.setOnClickListener {
+                    listener.onCardClicked(share)
+                }
             }
         }
     }
@@ -75,4 +82,5 @@ class StocksListAdapter :  ListAdapter<StockShare, StocksListAdapter.StockDetail
         val curItem = getItem(position)
         holder.bind(curItem)
     }
+
 }

@@ -1,7 +1,7 @@
 package com.ada.mybuffet.screens.stocks
 
-import com.ada.mybuffet.screens.myShares.model.ShareItem
+import com.ada.mybuffet.repo.StockShare
 
 interface StocksRecyclerViewClickListener {
-    fun onCardClicked(shareItem: ShareItem)
+    fun onCardClicked(shareItem: StockShare)
 }
