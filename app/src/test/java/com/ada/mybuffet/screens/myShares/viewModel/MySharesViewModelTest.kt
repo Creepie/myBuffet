@@ -79,6 +79,20 @@ class MySharesViewModelTest {
             viewModel.fetchShareItemList.removeObserver(observer)
         }
 
+        repo.shareItemList.add(
+            ShareItem(
+                "fakeID5",
+                "FKE5",
+                "fakeStockName5",
+                "10.00",
+                "3.72",
+                "10.00",
+                "100.00",
+                10,
+                "5.00",
+                "90.00")
+        )
+
 
         /*
         val job = launch {
@@ -94,19 +108,7 @@ class MySharesViewModelTest {
             }
         }
 
-        repo.shareItemList.add(
-            ShareItem(
-                "fakeID5",
-                "FKE5",
-                "fakeStockName5",
-                "10.00",
-                "3.72",
-                "10.00",
-                "100.00",
-                10,
-                "5.00",
-                "90.00")
-        )
+
 
 
         shareItemList.forEach {
