@@ -1,15 +1,19 @@
 package com.ada.mybuffet.repo
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 import java.math.BigDecimal
 import java.math.RoundingMode
 
+@Parcelize
 data class StockShare(
     var name: String = "",
     var dividends: Dividends? = null,
     val symbol: String = "",
     var curPrice: Double = 0.0,
     var prevClosePrice: Double = 0.0
-) {
+): Parcelable {
 
     fun getLastDividend(): Double {
         return if (dividends == null || dividends!!.data.isEmpty()) {

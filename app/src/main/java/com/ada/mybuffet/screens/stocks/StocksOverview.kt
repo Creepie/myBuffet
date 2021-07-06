@@ -12,11 +12,11 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ada.mybuffet.databinding.FragmentStocksOverviewBinding
 import com.ada.mybuffet.repo.StockShare
-import com.ada.mybuffet.screens.myShares.model.ShareItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -110,7 +110,10 @@ class StocksOverview : Fragment(), StocksRecyclerViewClickListener {
         _binding = null
     }
 
-    override fun onCardClicked(shareItem: StockShare) {
-        Toast.makeText(binding.root.context,"${shareItem.symbol} clicked",Toast.LENGTH_SHORT).show()
+    override fun onCardClicked(stockShare: StockShare) {
+        //go to detail screen of the stock share
+        val action = StocksOverviewDirections.actionStocksToStocksDetail(stockShare)
+        findNavController().navigate(action)
+        Toast.makeText(binding.root.context,"${stockShare.symbol} clicked",Toast.LENGTH_SHORT).show()
     }
 }

@@ -40,7 +40,7 @@
     <string name="myShares_rv_label_dividend_profit">Dividend Profit</string>
     <string name="myShares_rv_label_total_holdings">Total Holdings</string>
     <string name="myShares_chart_empty_message">Not enough data available</string>
-  
+
     <string name="purchase_item_value_placeholder">€ 0.00</string>
     <string name="purchase_item_date_placeholder">01.01.2021</string>
     <string name="purchase_item_fees_placeholder">€ 0.00</string>
@@ -89,8 +89,6 @@
     <string name="share_detail_fee_deleted">Fee was deleted</string>
 
 
-
-
     <string name="add_item_purchase_title">Add Share Purchase</string>
     <string name="add_item_purchase_subtitle">Share Purchase Details</string>
     <string name="add_item_purchase_symbol_label">Symbol</string>
@@ -123,9 +121,6 @@
     <string name="fee_item_amount_placeholder">€ 0.00</string>
     <string name="fee_item_description_placeholder">0</string>
     <string name="fee_item_description_label">Shares</string>
-
-
-
 
 
     <string name="stocks_title">Stocks</string>

@@ -42,7 +42,11 @@
         android:id="@+id/stocks"
         android:name="com.ada.mybuffet.screens.stocks.StocksOverview"
         android:label="fragment_stocks_overview"
-        tools:layout="@layout/fragment_stocks_overview" />
+        tools:layout="@layout/fragment_stocks_overview" >
+        <action
+            android:id="@+id/action_stocks_to_stocksDetail"
+            app:destination="@id/stocksDetail" />
+    </fragment>
     <fragment
         android:id="@+id/shareDetail"
         android:name="com.ada.mybuffet.screens.detailShare.ShareDetail"
@@ -99,5 +103,14 @@
         <argument
             android:name="shareItem"
             app:argType="com.ada.mybuffet.screens.myShares.model.ShareItem" />
+    </fragment>
+    <fragment
+        android:id="@+id/stocksDetail"
+        android:name="com.ada.mybuffet.screens.stocksDetail.StocksDetail"
+        android:label="fragment_stocks_detail"
+        tools:layout="@layout/fragment_stocks_detail" >
+        <argument
+            android:name="stockShare"
+            app:argType="com.ada.mybuffet.repo.StockShare" />
     </fragment>
 </navigation>
