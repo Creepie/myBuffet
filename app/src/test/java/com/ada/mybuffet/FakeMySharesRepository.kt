@@ -127,6 +127,8 @@ class FakeMySharesRepository : IMySharesRepository {
         // offer for flow (offer method is now deprecated, using trySend instead)
         trySend(Resource.Success(profitLossOverviewData)).isSuccess
 
+        // close flow channel if not in use to avoid leaks
+        awaitClose{}
     }
 
     override suspend fun getTotalPortfolioValueHistoryFromDB(): Flow<Resource<MutableList<PortfolioValueByDate>>> = callbackFlow {
@@ -152,5 +154,8 @@ class FakeMySharesRepository : IMySharesRepository {
 
         // offer for flow (offer method is now deprecated, using trySend instead)
         trySend(Resource.Success(portfolioValueList)).isSuccess
+
+        // close flow channel if not in use to avoid leaks
+        awaitClose{}
     }
 }
