@@ -107,18 +107,6 @@
                         app:layout_constraintTop_toBottomOf="@+id/myShares_chart_total_portfolio_value">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/myShares_btn_chart_day"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@string/font_roboto_regular"
-                            android:text="@string/myShares_day"
-                            android:textSize="10sp"
-                            android:textStyle="bold"
-                            app:backgroundTint="@color/accent_1"
-                            app:cornerRadius="40dp" />
-
-                        <Button
                             android:id="@+id/myShares_btn_chart_week"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -127,11 +115,23 @@
                             android:text="@string/myShares_week"
                             android:textSize="10sp"
                             android:textStyle="bold"
+                            app:backgroundTint="@color/accent_1"
+                            app:cornerRadius="40dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/myShares_btn_chart_two_weeks"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@string/font_roboto_regular"
+                            android:text="@string/myShares_two_week"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
                             android:textColor="@color/accent_1"
                             android:backgroundTint="@color/background_primary"
                             app:cornerRadius="40dp" />
 
-                        <Button
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/myShares_btn_chart_month"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                             android:textColor="@color/accent_1"
                             app:cornerRadius="40dp" />
 
-                        <Button
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/myShares_btn_chart_year"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

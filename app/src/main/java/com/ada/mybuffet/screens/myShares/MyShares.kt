@@ -1,7 +1,6 @@
 package com.ada.mybuffet.screens.myShares
 
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
 import android.os.Bundle
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentMysharesBinding
-import com.ada.mybuffet.screens.detailShare.ShareDetailDirections
 import com.ada.mybuffet.screens.myShares.model.PortfolioValueByDate
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.screens.myShares.repo.MySharesDataProvider
@@ -29,7 +27,6 @@ import com.ada.mybuffet.screens.myShares.viewModel.MySharesViewModelFactory
 import com.ada.mybuffet.utils.MPChartCustomMarkerView
 import com.ada.mybuffet.utils.NumberFormatUtils
 import com.ada.mybuffet.utils.Resource
-import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -37,6 +34,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.math.BigDecimal
 import java.util.*
@@ -54,6 +52,8 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
+    private val TAG = "MY_SHARES_FRAGMENT"
+
     // set the _binding variable initially to null and
     // also when the view is destroyed again it has to be set to null
     private var _binding: FragmentMysharesBinding? = null
@@ -74,6 +74,12 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
     }
 
     private lateinit var portfolioTotalChart: LineChart
+    private lateinit var chartValueSelectedListener: MySharesChartSelectionListener
+
+    private var portfolioTotalValueList: MutableList<PortfolioValueByDate> = mutableListOf<PortfolioValueByDate>()
+
+    // regulates how many values are shown in the portfolio total chart (default 7=week)
+    private var chartValueDisplayLimit = 7
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -81,6 +87,7 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "Entered onCreate")
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -91,8 +98,25 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(TAG, "Entered onCreateView")
+
         _binding = FragmentMysharesBinding.inflate(inflater, container, false)
 
+        // setup for floating action button
+        val floatingActionButton = binding.mySharesFabAdd
+        floatingActionButton.setOnClickListener {
+            val action = MySharesDirections.actionMySharesToAddItem(null)
+            findNavController().navigate(action)
+        }
+
+        // init chart reference
+        portfolioTotalChart = binding.mySharesChartTotalPortfolioValue
+
+        // init value selected listener with empty list and assign it
+        chartValueSelectedListener = MySharesChartSelectionListener(binding, mutableListOf<PortfolioValueByDate>())
+        portfolioTotalChart.setOnChartValueSelectedListener(chartValueSelectedListener)
+
+        setupChartSelectionButtons()
         setupPortfolioTotalChartSettings()
         setupPortfolioTotalOverviewObserver()
         setupProfitLossOverview()
@@ -101,9 +125,57 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
         return binding.root
     }
 
-    private fun setupPortfolioTotalOverviewObserver() {
-        portfolioTotalChart = binding.mySharesChartTotalPortfolioValue
+    private fun setupChartSelectionButtons() {
+        val weekButton = binding.mySharesBtnChartWeek
+        val twoWeekButton = binding.mySharesBtnChartTwoWeeks
+        val monthButton = binding.mySharesBtnChartMonth
+        val yearButton = binding.mySharesBtnChartYear
 
+        weekButton.setOnClickListener {
+            updateChartWithNewValueLimitAndHideMarkerView(7)
+            highlightChartSelectionButtonAndUnhighlightOthers(weekButton, arrayListOf<MaterialButton>(twoWeekButton, monthButton, yearButton))
+        }
+
+        twoWeekButton.setOnClickListener {
+            updateChartWithNewValueLimitAndHideMarkerView(14)
+            highlightChartSelectionButtonAndUnhighlightOthers(twoWeekButton, arrayListOf<MaterialButton>(weekButton, monthButton, yearButton))
+        }
+
+        monthButton.setOnClickListener {
+            updateChartWithNewValueLimitAndHideMarkerView(31)
+            highlightChartSelectionButtonAndUnhighlightOthers(monthButton, arrayListOf<MaterialButton>(weekButton, twoWeekButton, yearButton))
+        }
+
+        yearButton.setOnClickListener {
+            updateChartWithNewValueLimitAndHideMarkerView(365)
+            highlightChartSelectionButtonAndUnhighlightOthers(yearButton, arrayListOf<MaterialButton>(weekButton, twoWeekButton, monthButton))
+        }
+    }
+
+    private fun updateChartWithNewValueLimitAndHideMarkerView(chartValueDisplayLimit: Int) {
+        this.chartValueDisplayLimit = chartValueDisplayLimit
+        updatePortfolioTotalChart()
+
+        // call to remove marker view and display latest item
+        chartValueSelectedListener.onNothingSelected()
+    }
+
+    private fun highlightChartSelectionButtonAndUnhighlightOthers(selectedButton: MaterialButton, unHighlightedButtons: ArrayList<MaterialButton>) {
+        val highlightedBackgroundColor = ContextCompat.getColor(binding.root.context, R.color.accent_1)
+        val highlightedTextColor = ContextCompat.getColor(binding.root.context, R.color.white)
+        val unHighlightedBackgroundColor = ContextCompat.getColor(binding.root.context, R.color.background_primary)
+        val unHighlightedTextColor = ContextCompat.getColor(binding.root.context, R.color.accent_1)
+
+        selectedButton.setBackgroundColor(highlightedBackgroundColor)
+        selectedButton.setTextColor(highlightedTextColor)
+
+        unHighlightedButtons.forEach { button ->
+            button.setBackgroundColor(unHighlightedBackgroundColor)
+            button.setTextColor(unHighlightedTextColor)
+        }
+    }
+
+    private fun setupPortfolioTotalOverviewObserver() {
         viewModel.fetchTotalPortfolioValueHistory.observe(viewLifecycleOwner, Observer { observedResource ->
             when (observedResource) {
                 is Resource.Loading -> {
@@ -117,7 +189,8 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
                     // hideProgress()
                     val portfolioValueList: MutableList<PortfolioValueByDate> = observedResource.data as MutableList<PortfolioValueByDate>
                     binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(portfolioValueList.last().portfolioTotalValue)
-                    setupPortfolioTotalChart(portfolioValueList)
+                    portfolioTotalValueList = portfolioValueList
+                    updatePortfolioTotalChart()
                 }
 
                 is Resource.Failure -> {
@@ -163,44 +236,31 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
         portfolioTotalChart.invalidate()
     }
 
-    private fun setupPortfolioTotalChart(portfolioValueList: MutableList<PortfolioValueByDate>) {
-        // add listener
-        portfolioTotalChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-            override fun onValueSelected(e: Entry, h: Highlight?) {
-                Log.i("Chart ", "onValueSelected");
-                val valueStr = e.y.toString()
-                binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(valueStr)
-            }
+    private fun updatePortfolioTotalChart() {
+        val limitedPortfolioValueList: MutableList<PortfolioValueByDate> = portfolioTotalValueList.takeLast(chartValueDisplayLimit) as MutableList<PortfolioValueByDate>
 
-            override fun onNothingSelected() {
-                Log.i("Chart ", "onNothingSelected");
-                binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(portfolioValueList.last().portfolioTotalValue)
-            }
-        })
+        // update value selected listener data
+        chartValueSelectedListener.updatePortfolioValueList(limitedPortfolioValueList)
 
-        // create a custom MarkerView (extend MarkerView) and specify the layout
-        // to use for it
-        // create a custom MarkerView (extend MarkerView) and specify the layout
-        // to use for it
+        // set marker view (displayed when clicking data points in chart)
         val mv = MPChartCustomMarkerView(
             context,
             R.layout.custom_marker_view,
-            portfolioValueList
+            limitedPortfolioValueList
         )
         mv.chartView = portfolioTotalChart // For bounds control
         portfolioTotalChart.marker = mv // Set the marker to the chart
 
 
         // add chart data
-        setPortfolioTotalChartData(portfolioValueList)
+        setPortfolioTotalChartData(limitedPortfolioValueList)
 
-        // refresh the drawing
+        // refresh the drawing of the chart
         portfolioTotalChart.invalidate()
     }
 
     private fun setPortfolioTotalChartData(portfolioValueList: MutableList<PortfolioValueByDate>) {
-
-
+        // convert to ArrayList of MPAndroidChart's Entry type
         val values = ArrayList<Entry>()
         portfolioValueList.forEachIndexed { index, element ->
             values.add(Entry(index.toFloat(), element.portfolioTotalValue.toFloat()))
@@ -252,6 +312,7 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
             portfolioTotalChart.data = data
         }
     }
+
 
 
     private fun setupProfitLossOverview() {
@@ -387,23 +448,12 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //var btn_detail = view.findViewById<Button>(R.id.myShares_bT_detail)
-        var btn_newShare = view.findViewById<FloatingActionButton>(R.id.myShares_fab_add)
-
-
-        //btn_detail.setOnClickListener {
-        //    findNavController().navigate(R.id.action_myShares_to_shareDetailScreen)
-        //}
-
-        btn_newShare.setOnClickListener {
-            val action = MySharesDirections.actionMySharesToAddItem(null)
-            findNavController().navigate(action)
-        }
+        Log.d(TAG, "Entered onViewCreated")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d(TAG, "Entered onDestroyView")
         _binding = null
     }
 
@@ -441,5 +491,28 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
     override fun onCardClicked(shareItem: ShareItem) {
         val action = MySharesDirections.actionMySharesToShareDetailScreen(shareItem)
         findNavController().navigate(action)
+    }
+}
+
+class MySharesChartSelectionListener(private val binding: FragmentMysharesBinding,
+                                     private var portfolioValueList: MutableList<PortfolioValueByDate>)
+    : OnChartValueSelectedListener {
+
+    override fun onValueSelected(e: Entry, h: Highlight?) {
+        Log.i("Chart ", "onValueSelected")
+        val valueStr = e.y.toString()
+        binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(valueStr)
+    }
+
+    override fun onNothingSelected() {
+        Log.i("Chart ", "onNothingSelected")
+        if (portfolioValueList.isEmpty()) {
+            return
+        }
+        binding.mySharesTvTotalPortfolioValue.text = NumberFormatUtils.toCurrencyString(portfolioValueList.last().portfolioTotalValue)
+    }
+
+    fun updatePortfolioValueList(portfolioValueList: MutableList<PortfolioValueByDate>) {
+        this.portfolioValueList = portfolioValueList
     }
 }
