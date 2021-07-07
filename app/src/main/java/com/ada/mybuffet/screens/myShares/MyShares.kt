@@ -154,10 +154,12 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
 
     private fun updateChartWithNewValueLimitAndHideMarkerView(chartValueDisplayLimit: Int) {
         this.chartValueDisplayLimit = chartValueDisplayLimit
-        updatePortfolioTotalChart()
 
         // call to remove marker view and display latest item
         chartValueSelectedListener.onNothingSelected()
+        portfolioTotalChart.highlightValue(null)
+
+        updatePortfolioTotalChart()
     }
 
     private fun highlightChartSelectionButtonAndUnhighlightOthers(selectedButton: MaterialButton, unHighlightedButtons: ArrayList<MaterialButton>) {
