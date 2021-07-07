@@ -27,6 +27,7 @@
     <string name="myShares_day">Day</string>
     <string name="myShares_week">Week</string>
     <string name="myShares_month">Month</string>
+    <string name="myShares_two_week">2 Week</string>
     <string name="myShares_year">Year</string>
     <string name="myShares_profit_loss_overview">Profit/Loss Overview</string>
     <string name="myShares_placeholder_percent">(+0.00%)</string>
