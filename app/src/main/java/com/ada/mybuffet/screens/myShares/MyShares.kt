@@ -239,6 +239,10 @@ class MyShares : Fragment(), MySharesRecyclerVIewClickListener {
     }
 
     private fun updatePortfolioTotalChart() {
+        if (portfolioTotalValueList.isEmpty()) {
+            return
+        }
+
         val limitedPortfolioValueList: MutableList<PortfolioValueByDate> = portfolioTotalValueList.takeLast(chartValueDisplayLimit) as MutableList<PortfolioValueByDate>
 
         // update value selected listener data
