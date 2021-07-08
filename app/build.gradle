@@ -40,8 +40,11 @@ android {
         exclude 'META-INF/*'
     }
 
-
-    //Needed for safe args
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 
 }
 
