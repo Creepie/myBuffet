@@ -1,5 +1,6 @@
 package com.ada.mybuffet.screens.stocksDetail
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,12 +9,16 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentStocksDetailBinding
+import com.ada.mybuffet.repo.Dividend
 import com.ada.mybuffet.repo.StockShare
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.ada.mybuffet.utils.NumberFormatUtils
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 
 /**
  * This class is the VIEW of the Stocks Detail
@@ -25,13 +30,28 @@ class StocksDetail : Fragment() {
     private var _binding: FragmentStocksDetailBinding? = null
     val binding: FragmentStocksDetailBinding get() = _binding!!
 
+    private lateinit var dividendHistoryChart: LineChart
+    private lateinit var chartValueSelectedListener: DividendsChartSelectionListener
+    private var chartValueDisplayLimit = 7
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val stockShare: StockShare = args.stockShare
 
-        binding.textView5.text = stockShare.name
+        binding.stocksDetailTVShareName.text = stockShare.name
+        binding.stocksDetailTVSymbol.text = stockShare.symbol
+
+        dividendHistoryChart = binding.stocksDetailChartDividend
+        chartValueSelectedListener = DividendsChartSelectionListener(binding,
+            stockShare.dividends?.data?.takeLast(chartValueDisplayLimit) as MutableList<Dividend>
+        )
+        chartValueSelectedListener.onNothingSelected()
+        dividendHistoryChart.setOnChartValueSelectedListener(chartValueSelectedListener)
+
+        setupDividendChartSettings()
+        setPortfolioTotalChartData(stockShare.dividends?.data?.takeLast(chartValueDisplayLimit) as MutableList<Dividend>)
+
     }
 
     override fun onCreateView(
@@ -43,5 +63,112 @@ class StocksDetail : Fragment() {
         return binding.root
     }
 
+    private fun setupDividendChartSettings() {
+        dividendHistoryChart = binding.stocksDetailChartDividend
 
+        // change no data placeholder
+        dividendHistoryChart.setNoDataText(getString(R.string.myShares_chart_empty_message))
+        dividendHistoryChart.setNoDataTextColor(Color.WHITE)
+
+        // remove description text
+        dividendHistoryChart.description.isEnabled = false
+
+        // enable touch gestures
+        dividendHistoryChart.setTouchEnabled(true)
+        dividendHistoryChart.isHighlightPerTapEnabled = true
+
+        // disable scaling and dragging
+        dividendHistoryChart.isDragEnabled = false
+        dividendHistoryChart.setScaleEnabled(false)
+        dividendHistoryChart.setPinchZoom(false)
+
+
+        // remove grid
+        dividendHistoryChart.setDrawGridBackground(false)
+
+        // remove axis descriptions and legend
+        dividendHistoryChart.xAxis.isEnabled = false
+        dividendHistoryChart.axisLeft.isEnabled = false
+        dividendHistoryChart.axisRight.isEnabled = false
+        dividendHistoryChart.legend.isEnabled = false
+
+        // set animation with duration
+        dividendHistoryChart.animateXY(100, 100)
+
+        // refresh the drawing
+        dividendHistoryChart.invalidate()
+    }
+
+    private fun setPortfolioTotalChartData(portfolioValueList: MutableList<Dividend>) {
+        // convert to ArrayList of MPAndroidChart's Entry type
+        val values = ArrayList<Entry>()
+        portfolioValueList.forEachIndexed { index, element ->
+            values.add(Entry(index.toFloat(), element.amount.toFloat()))
+        }
+
+        var lineDataSet: LineDataSet
+
+        if (dividendHistoryChart.data != null &&
+            dividendHistoryChart.data.dataSetCount > 0
+        ) {
+            lineDataSet = dividendHistoryChart.data.getDataSetByIndex(0) as LineDataSet
+            lineDataSet.values = values
+            lineDataSet.notifyDataSetChanged()
+            dividendHistoryChart.data.notifyDataChanged()
+            dividendHistoryChart.notifyDataSetChanged()
+        } else {
+            // create a dataset and give it a type
+            lineDataSet = LineDataSet(values, "LineDataSet")
+            lineDataSet.setDrawIcons(false)
+
+            // set line mode to cubic to round the edges
+            lineDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+            lineDataSet.cubicIntensity = 0.2f
+
+            // black lines and points
+            lineDataSet.color = Color.WHITE
+            lineDataSet.setCircleColor(Color.WHITE)
+
+            // line thickness and point size
+            lineDataSet.lineWidth = 1f
+            lineDataSet.circleRadius = 3f
+
+            // draw points as solid circles
+            lineDataSet.setDrawCircleHole(false)
+
+            // disable highlight lines
+            lineDataSet.setDrawHighlightIndicators(false)
+
+            // disable value drawing
+            lineDataSet.setDrawValues(false)
+
+            val dataSets: ArrayList<ILineDataSet> = ArrayList()
+            dataSets.add(lineDataSet) // add the data sets
+
+            // create a data object with the data sets
+            val data = LineData(dataSets)
+
+            // set data
+            dividendHistoryChart.data = data
+        }
+    }
+}
+
+
+class  DividendsChartSelectionListener(private val binding: FragmentStocksDetailBinding,
+                                       private var list: MutableList<Dividend>) : OnChartValueSelectedListener {
+
+    override fun onValueSelected(e: Entry, h: Highlight?) {
+        binding.stocksDetailTvAmount.text = NumberFormatUtils.toCurrencyString(e.y.toString())
+        binding.stocksDetailTvExDate.text = list[e.x.toInt()].exDate
+    }
+
+    override fun onNothingSelected() {
+        if (list.isEmpty()){
+            return
+        } else {
+            binding.stocksDetailTvAmount.text = NumberFormatUtils.toCurrencyString(list.last().amount.toString())
+            binding.stocksDetailTvExDate.text = list.last().exDate
+        }
+    }
 }
