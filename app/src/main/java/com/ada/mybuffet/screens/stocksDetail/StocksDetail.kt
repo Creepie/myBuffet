@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -22,16 +23,19 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 /**
  * This class is the VIEW of the Stocks Detail
  */
-class StocksDetail : Fragment() {
+class StocksDetail : BottomSheetDialogFragment() {
 
     private val viewModel: StocksDetailViewModel by lazy {
         ViewModelProvider(this).get(StocksDetailViewModel::class.java)
     }
 
+    //get the args from the StocksOverview (stockShare)
     private val args: StocksDetailArgs by navArgs()
 
     private var _binding: FragmentStocksDetailBinding? = null
@@ -41,33 +45,38 @@ class StocksDetail : Fragment() {
     private lateinit var chartValueSelectedListener: DividendsChartSelectionListener
     private var chartValueDisplayLimit = 7
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.loadCandleData("VOE.VI")
-
-        val observer = Observer<StockCandle>{
-            candle ->
-            val test = candle
-            //the api don't return the right values > maybe because sandbox > stop here
-        }
-
-        viewModel.candles.observe(viewLifecycleOwner,observer)
-
         val stockShare: StockShare = args.stockShare
+
+        val list = if (stockShare.dividends?.data?.size ?: 0 > 7){
+            stockShare.dividends?.data?.takeLast(chartValueDisplayLimit)
+        } else {
+            stockShare.dividends?.data
+        }
 
         binding.stocksDetailTVShareName.text = stockShare.name
         binding.stocksDetailTVSymbol.text = stockShare.symbol
 
         dividendHistoryChart = binding.stocksDetailChartDividend
-        chartValueSelectedListener = DividendsChartSelectionListener(binding,
-            stockShare.dividends?.data?.takeLast(chartValueDisplayLimit) as MutableList<Dividend>
-        )
+        chartValueSelectedListener = DividendsChartSelectionListener(binding, list as MutableList<Dividend>)
         chartValueSelectedListener.onNothingSelected()
         dividendHistoryChart.setOnChartValueSelectedListener(chartValueSelectedListener)
 
         setupDividendChartSettings()
-        setPortfolioTotalChartData(stockShare.dividends?.data?.takeLast(chartValueDisplayLimit) as MutableList<Dividend>)
+        setPortfolioTotalChartData(list)
+
+        viewModel.loadCandleData(stockShare.symbol)
+
+        val observer = Observer<StockCandle>{
+                candle ->
+            val test = candle
+            //the api don't return the right values > maybe because sandbox > stop here
+        }
+
+        viewModel.candles.observe(viewLifecycleOwner,observer)
 
     }
 
@@ -169,6 +178,11 @@ class StocksDetail : Fragment() {
             dividendHistoryChart.data = data
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
 
 
@@ -188,4 +202,5 @@ class  DividendsChartSelectionListener(private val binding: FragmentStocksDetail
             binding.stocksDetailTvExDate.text = list.last().exDate
         }
     }
+
 }

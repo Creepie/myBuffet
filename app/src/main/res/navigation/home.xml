@@ -104,7 +104,7 @@
             android:name="shareItem"
             app:argType="com.ada.mybuffet.screens.myShares.model.ShareItem" />
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/stocksDetail"
         android:name="com.ada.mybuffet.screens.stocksDetail.StocksDetail"
         android:label="fragment_stocks_detail"
@@ -112,5 +112,5 @@
         <argument
             android:name="stockShare"
             app:argType="com.ada.mybuffet.repo.StockShare" />
-    </fragment>
+    </dialog>
 </navigation>

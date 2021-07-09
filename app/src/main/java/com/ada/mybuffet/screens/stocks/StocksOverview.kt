@@ -2,6 +2,7 @@ package com.ada.mybuffet.screens.stocks
 
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
+import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -35,6 +36,8 @@ class StocksOverview : Fragment(), StocksRecyclerViewClickListener {
         ViewModelProvider(this).get(StocksOverviewViewModel::class.java)
     }
 
+    private var currentSpinnerPos = 0
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -66,33 +69,47 @@ class StocksOverview : Fragment(), StocksRecyclerViewClickListener {
                 adapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,list)
 
             }
+
+            stocksBtnRefresh.setOnClickListener {
+                loadStocks(currentSpinnerPos)
+                stocksBtnRefresh.visibility = View.INVISIBLE
+                stocksPBLoadingBar.visibility = View.VISIBLE
+            }
+
+            //set the spinner on Item Selected Listener
+            stocksSPChooseStock.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
+                ) {
+                    currentSpinnerPos = position
+                    loadStocks(position)
+                    stocksBtnRefresh.visibility = View.INVISIBLE
+                    stocksPBLoadingBar.visibility = View.VISIBLE
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+            }
         }
 
-        //set the spinner on Item Selected Listener
-        binding.stocksSPChooseStock.onItemSelectedListener = object :
-        AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long
-            ) {
-                if (viewModel.model.indexList.size == position){
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewModel.loadAllStocks()
-                    }
-                } else {
-                    viewModel.chanceStockData(position)
-                }
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
 
         //observe the data from the viewModel > if new data comes update the recycler
         val observer = Observer<MutableList<StockShare>> {
                 stockList -> println(stockList)
             stockList.sortByDescending { it.getPercentDividend()}
             stocksListAdapter.submitList(stockList)
+            binding.stocksPBLoadingBar.visibility = View.INVISIBLE
+            binding.stocksBtnRefresh.visibility = View.VISIBLE
         }
 
         viewModel.stocks.observe(viewLifecycleOwner,observer)
+    }
+
+    private fun loadStocks(position: Int){
+        if (viewModel.model.indexList.size == position){
+            viewModel.loadAllStocks()
+        } else {
+            viewModel.chanceStockData(position)
+        }
     }
 
     override fun onCreateView(
@@ -114,6 +131,5 @@ class StocksOverview : Fragment(), StocksRecyclerViewClickListener {
         //go to detail screen of the stock share
         val action = StocksOverviewDirections.actionStocksToStocksDetail(stockShare)
         findNavController().navigate(action)
-        Toast.makeText(binding.root.context,"${stockShare.symbol} clicked",Toast.LENGTH_SHORT).show()
     }
 }

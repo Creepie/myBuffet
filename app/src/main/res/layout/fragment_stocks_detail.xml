@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".screens.stocksDetail.StocksDetail">
 
     <LinearLayout
@@ -11,13 +11,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingHorizontal="10dp"
-        android:paddingTop="18dp">
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/stocksDetail_tV_shareName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:text="@string/myShares_rv_placeholder_symbol"
             android:textColor="@color/black" />
 

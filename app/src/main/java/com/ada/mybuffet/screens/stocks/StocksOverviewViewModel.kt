@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.ada.mybuffet.repo.StockShare
 import kotlinx.coroutines.*
 
@@ -31,17 +32,19 @@ class StocksOverviewViewModel(application: Application): AndroidViewModel(applic
         }
     }
 
-    suspend fun loadAllStocks(){
-        val scopeList = ArrayList<Deferred<Boolean>>()
-        var list = ArrayList<StockShare>()
-        for (stock in model.indexList){
-            val scope = CoroutineScope(Dispatchers.IO).async {
-                list.addAll(model.loadSharesFromFirebase(stock))
+    fun loadAllStocks(){
+        viewModelScope.launch {
+            val scopeList = ArrayList<Deferred<Boolean>>()
+            var list = ArrayList<StockShare>()
+            for (stock in model.indexList){
+                val scope = CoroutineScope(Dispatchers.IO).async {
+                    list.addAll(model.loadSharesFromFirebase(stock))
+                }
+                scopeList.add(scope)
             }
-            scopeList.add(scope)
+            scopeList.awaitAll()
+            list = list.distinctBy { it.symbol } as ArrayList<StockShare>
+            _stocks.postValue(list)
         }
-        scopeList.awaitAll()
-        list = list.distinctBy { it.symbol } as ArrayList<StockShare>
-        _stocks.postValue(list)
     }
 }

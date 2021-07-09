@@ -77,6 +77,9 @@ interface FinnhubApiService{
     @GET("stock/dividend2?token=$sandboxToken")
     suspend fun getDividends(@Query("symbol") symbol: String): Dividends
 
+    /**
+     * this function is to get candles of a specific company in a specific time range
+     */
     @GET("stock/candle?token=$sandboxToken&resolution=1")
     suspend fun getCandle(@Query("symbol") symbol: String,@Query("from") from: String, @Query("to") to: String): StockCandle
 
