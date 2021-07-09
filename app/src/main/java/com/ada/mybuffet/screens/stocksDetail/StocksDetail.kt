@@ -6,10 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentStocksDetailBinding
 import com.ada.mybuffet.repo.Dividend
+import com.ada.mybuffet.repo.StockCandle
 import com.ada.mybuffet.repo.StockShare
 import com.ada.mybuffet.utils.NumberFormatUtils
 import com.github.mikephil.charting.charts.LineChart
@@ -25,6 +28,10 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
  */
 class StocksDetail : Fragment() {
 
+    private val viewModel: StocksDetailViewModel by lazy {
+        ViewModelProvider(this).get(StocksDetailViewModel::class.java)
+    }
+
     private val args: StocksDetailArgs by navArgs()
 
     private var _binding: FragmentStocksDetailBinding? = null
@@ -36,6 +43,16 @@ class StocksDetail : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.loadCandleData("VOE.VI")
+
+        val observer = Observer<StockCandle>{
+            candle ->
+            val test = candle
+            //the api don't return the right values > maybe because sandbox > stop here
+        }
+
+        viewModel.candles.observe(viewLifecycleOwner,observer)
 
         val stockShare: StockShare = args.stockShare
 
