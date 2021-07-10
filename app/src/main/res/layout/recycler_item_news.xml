@@ -1,30 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:background="@drawable/layout_pill_bg"
+    >
 
-    <TextView
-        android:id="@+id/recycler_item_header"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="41dp"
-        android:layout_marginEnd="30dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<TextView
+    android:id="@+id/recycler_item_sub"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fontFamily="@string/font_roboto_regular"
+    android:text="@string/myShares_rv_placeholder_symbol"
+    android:textColor="@color/black"
+    android:textSize="13sp"
+    android:textStyle="bold"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/recycler_item_sub"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:layout_marginBottom="22dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/recycler_item_header"
-        app:layout_constraintTop_toBottomOf="@+id/recycler_item_header" />
+<TextView
+    android:id="@+id/recycler_item_header"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/myShares_rv_placeholder_name"
+    android:fontFamily="@string/font_roboto_medium"
+    android:textSize="10sp"
+    android:textColor="@color/grayText"
+    app:layout_constraintStart_toStartOf="@+id/recycler_item_sub"
+    app:layout_constraintTop_toBottomOf="@+id/recycler_item_sub" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

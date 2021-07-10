@@ -21,6 +21,18 @@
         <entry key="..\:/Users/paulp/AndroidStudioProjects/myBuffet/app/src/main/res/layout/recycler_view_item_myshares_stocks.xml" value="0.2536231884057971" />
         <entry key="..\:/Users/paulp/AndroidStudioProjects/myBuffet/app/src/main/res/layout/recycler_view_item_purchase.xml" value="0.4" />
         <entry key="..\:/Users/paulp/AndroidStudioProjects/myBuffet/app/src/main/res/layout/recycler_view_item_share_detail_sale.xml" value="0.2056159420289855" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/fragment_add_fee.xml" value="0.19375" />
+        <entry key="app/src/main/res/layout/fragment_new_share.xml" value="0.14635416666666667" />
+        <entry key="app/src/main/res/layout/fragment_news.xml" value="0.1111111111111111" />
+        <entry key="app/src/main/res/layout/fragment_stocks_overview.xml" value="0.19375" />
+        <entry key="app/src/main/res/layout/recycler_item_news.xml" value="0.19375" />
+        <entry key="app/src/main/res/layout/recycler_view_item_dividend.xml" value="0.14635416666666667" />
+        <entry key="app/src/main/res/layout/recycler_view_item_fee.xml" value="0.14635416666666667" />
+        <entry key="app/src/main/res/layout/recycler_view_item_myshares_stocks.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/recycler_view_item_purchase.xml" value="0.14635416666666667" />
+        <entry key="app/src/main/res/layout/recycler_view_item_share_detail_sale.xml" value="0.14635416666666667" />
+        <entry key="app/src/main/res/layout/recycler_view_item_stockshare.xml" value="0.19375" />
       </map>
     </option>
   </component>
