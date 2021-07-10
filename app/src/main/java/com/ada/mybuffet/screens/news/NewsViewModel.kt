@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.ada.mybuffet.features.NewsRecyclerAdapter
 import com.ada.mybuffet.repo.FinnhubApi
 import com.ada.mybuffet.repo.SymbolPressResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -21,16 +23,28 @@ class NewsViewModel (application: Application) : AndroidViewModel(application){
     val news: LiveData<MutableList<SymbolPressResponse>>
         get() = _news
 
+
+
     init {
         loadData()
     }
-
 
    fun loadData(){
        viewModelScope.launch {
            _news.value = model.loadAll()
        }
+   }
+
+
+
+
+    fun chanceStockData(position: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            _news.postValue(model.loadSharesFromFirebase(model.indexList[position]))
+        }
     }
+
+
 
 
 }

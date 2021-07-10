@@ -1,20 +1,25 @@
 package com.ada.mybuffet.screens.news
 
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.RectShape
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentNewsBinding
 import com.ada.mybuffet.features.NewsRecyclerAdapter
+import com.ada.mybuffet.repo.StockShare
 import com.ada.mybuffet.repo.SymbolPressResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,6 +54,87 @@ class News : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // refreshbutton
+        binding.newsBtnRefresh.setOnClickListener {
+            viewModel.loadData()
+        }
+
+       // binding.newsRecyclerViewStocks.layoutManager = LinearLayoutManager(activity)
+
+
+        val newsListAdapter = NewsListAdapter()
+
+        binding.apply {
+            //recycler
+
+            newsRecyclerViewStocks.apply {
+                adapter = newsListAdapter
+                layoutManager = LinearLayoutManager(requireContext())
+                addItemDecoration(
+                    DividerItemDecoration(
+                        context,
+                        DividerItemDecoration.VERTICAL
+                    ).also { deco ->
+                        with(ShapeDrawable(RectShape())) {
+                            intrinsicHeight = (resources.displayMetrics.density * 8).toInt()
+                            alpha = 0
+                            deco.setDrawable(this)
+                        }
+                    })
+            }
+
+            //spinner
+            newsSPChooseStock.apply {
+                val list = ArrayList<String>()
+                list.addAll(viewModel.model.map.keys.toList())
+                list.add("All")
+                adapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,list)
+            }
+
+        }
+
+
+        binding.newsSPChooseStock.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?, view: View?, position: Int, id: Long
+            ) {
+                if (viewModel.model.indexList.size == position){
+                    CoroutineScope(Dispatchers.IO).launch {
+                        viewModel.loadData()
+                    }
+                } else {
+                    viewModel.chanceStockData(position)
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+
+        val observer = Observer<MutableList<SymbolPressResponse>> {
+            newNews -> println(newNews)
+            newNews.sortBy { it.symbol }
+            newsListAdapter.submitList(newNews)
+
+
+            //  val adapter = NewsRecyclerAdapter(newNews)
+            // binding.newsRecycler.adapter = adapter
+          //  binding.newsRecyclerViewStocks.adapter = adapter
+
+        }
+
+
+        viewModel.news.observe(viewLifecycleOwner,observer)
+
+
+
+        /**
+         * -----------------------------------------------------------------------------------
+         */
+
+
+        /*
+       // binding.newsBtnRefresh.
         binding.newsBTLoadNews
 
         binding.newsBTLoadNews.setOnClickListener {
@@ -66,6 +152,8 @@ class News : Fragment() {
         }
 
         viewModel.news.observe(viewLifecycleOwner,observer)
+
+         */
 
     }
 
