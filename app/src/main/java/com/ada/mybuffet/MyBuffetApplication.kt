@@ -11,6 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
+/**
+ * @author Mario Eberth
+ * here all the Worker gets registered and fired every x minutes / hours
+ */
 class myBuffetApplication : Application() {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
 

@@ -8,6 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.ada.mybuffet.repo.StockShare
 import kotlinx.coroutines.*
 
+/**
+ * @author Mario Eberth
+ */
 class StocksOverviewViewModel(application: Application): AndroidViewModel(application) {
     var model = StocksOverviewModel()
 

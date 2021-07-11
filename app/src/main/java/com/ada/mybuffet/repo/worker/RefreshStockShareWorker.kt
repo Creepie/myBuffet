@@ -13,6 +13,11 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import retrofit2.HttpException
 
+/**
+ * @author Mario Eberth
+ * this worker creates shares from the stocks and save theme on Firebase
+ * for one share we need 3 api calls > so need to schedule the work for more shares
+ */
 class RefreshStockShareWorker(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params) {
     val firestore = Firebase.firestore

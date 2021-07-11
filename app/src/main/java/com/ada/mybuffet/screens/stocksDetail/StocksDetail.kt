@@ -27,6 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 /**
+ * @author Mario Eberth
  * This class is the VIEW of the Stocks Detail
  */
 class StocksDetail : BottomSheetDialogFragment() {

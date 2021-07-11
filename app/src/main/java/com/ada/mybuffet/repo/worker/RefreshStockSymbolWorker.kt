@@ -10,6 +10,10 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import retrofit2.HttpException
 
+/**
+ * @author Mario Eberth
+ * this worker refresh the symbols of the stocks if a stock gets kicked out of an stock and so on
+ */
 class RefreshStockSymbolWorker(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params) {
 

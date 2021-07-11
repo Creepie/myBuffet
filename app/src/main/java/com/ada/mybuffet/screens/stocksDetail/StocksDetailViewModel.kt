@@ -9,6 +9,9 @@ import com.ada.mybuffet.repo.StockCandle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * @author Mario Eberth
+ */
 class StocksDetailViewModel(application: Application): AndroidViewModel(application) {
     var model = StocksDetailModel()
 
@@ -22,6 +25,7 @@ class StocksDetailViewModel(application: Application): AndroidViewModel(applicat
 
     fun loadCandleData(symbol: String){
         viewModelScope.launch {
+            //hardcoded from / to > stop working here because the api dont crawl the right data with the sandbox key
             var test = model.loadCandle(symbol,"1615298999","1615302599")
             _candles.postValue(test)
         }

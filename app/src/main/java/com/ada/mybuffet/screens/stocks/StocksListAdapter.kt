@@ -14,7 +14,9 @@ import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.RecyclerViewItemStockshareBinding
 import com.ada.mybuffet.repo.StockShare
 
-
+/**
+ * @author Mario Eberth
+ */
 class StocksListAdapter(
    private val listener: StocksRecyclerViewClickListener
 ) :  ListAdapter<StockShare, StocksListAdapter.StockDetailViewHolder>(DiffCallback()) {

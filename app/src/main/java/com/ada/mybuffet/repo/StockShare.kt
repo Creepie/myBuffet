@@ -6,6 +6,10 @@ import kotlinx.android.parcel.RawValue
 import java.math.BigDecimal
 import java.math.RoundingMode
 
+/**
+ * @author Mario Eberth
+ * this class is to load a StockShare from firebase which is used to display on the stocks UI
+ */
 @Parcelize
 data class StockShare(
     var name: String = "",

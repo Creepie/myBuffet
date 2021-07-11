@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
+ * @author Mario Eberth
  * This class is the VIEW for the Stocks
  */
 class StocksOverview : Fragment(), StocksRecyclerViewClickListener {

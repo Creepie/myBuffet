@@ -11,8 +11,10 @@ import retrofit2.http.Query
 import retrofit2.http.Url
 
 /**
+ * @author Mario Eberth
  * API KEY SANDBOX (60 Calls / min)
- * sandbox_c2vgcniad3i9mrpv9cn0
+ * Sandbox: sandbox_c2vgcniad3i9mrpv9cn0
+ * normal: c2vgcniad3i9mrpv9cmg
  */
 
 private const val Base_URL = "https://finnhub.io/api/v1/"

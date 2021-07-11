@@ -8,6 +8,12 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
 
+/**
+ * @author Mario Eberth
+ * this class is the Model of the Stocks Overview
+ * at least the most methods are used with the workManager the UI only need the loadSharesFromFirebase method
+ * (because of the api limit i have to schedule the api calls to get the job done)
+ */
 class StocksOverviewModel {
 
     val map = mapOf("DAX" to "^GDAXI", "Dow Jones" to "^DJI", "Nasdaq 100" to "^NDX", "Euro Stoxx 50" to "^STOXX50E" )
