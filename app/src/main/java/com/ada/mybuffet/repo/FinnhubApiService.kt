@@ -52,12 +52,6 @@ interface FinnhubApiService{
     @GET
     suspend fun getPressNews(@Url url: String): SymbolPressResponse
 
-    /**
-     * this function is to get candles of a share in a specific time range
-     * https://finnhub.io/docs/api/stock-candles
-     */
-    @GET
-    suspend fun getStockCandles(@Url url: String): SymbolCandles
 
     /**
      * this function is to get the current exchangeRate
