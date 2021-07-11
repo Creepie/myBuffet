@@ -59,9 +59,11 @@ class StocksDetail : BottomSheetDialogFragment() {
 
         binding.stocksDetailTVShareName.text = stockShare.name
         binding.stocksDetailTVSymbol.text = stockShare.symbol
+        binding.stocksDetailTvPercent.text = "( ${stockShare.getPercentDividend()} %)"
+
 
         dividendHistoryChart = binding.stocksDetailChartDividend
-        chartValueSelectedListener = DividendsChartSelectionListener(binding, list as MutableList<Dividend>)
+        chartValueSelectedListener = DividendsChartSelectionListener(binding, list as MutableList<Dividend>,stockShare)
         chartValueSelectedListener.onNothingSelected()
         dividendHistoryChart.setOnChartValueSelectedListener(chartValueSelectedListener)
 
@@ -187,11 +189,12 @@ class StocksDetail : BottomSheetDialogFragment() {
 
 
 class  DividendsChartSelectionListener(private val binding: FragmentStocksDetailBinding,
-                                       private var list: MutableList<Dividend>) : OnChartValueSelectedListener {
+                                       private var list: MutableList<Dividend>, private var stockShare: StockShare) : OnChartValueSelectedListener {
 
     override fun onValueSelected(e: Entry, h: Highlight?) {
         binding.stocksDetailTvAmount.text = NumberFormatUtils.toCurrencyString(e.y.toString())
         binding.stocksDetailTvExDate.text = list[e.x.toInt()].exDate
+        binding.stocksDetailTvPercent.text = "( ${stockShare.getPercentDividendOfIndex(list[e.x.toInt()].exDate)} %)"
     }
 
     override fun onNothingSelected() {

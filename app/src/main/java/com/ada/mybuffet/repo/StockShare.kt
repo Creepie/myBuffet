@@ -32,6 +32,19 @@ data class StockShare(
         return BigDecimal(percent).setScale(2,RoundingMode.HALF_EVEN).toDouble()
     }
 
+    fun getPercentDividendOfIndex(exDate: String): Double {
+        var amount = 0.0
+        val findAmount = dividends?.data?.findLast { it.exDate == exDate }?.amount
+        if (findAmount != null){
+            amount = findAmount
+        }
+        var percent = 0.0
+        if (curPrice != 0.0){
+            percent= amount / curPrice *100
+        }
+        return BigDecimal(percent).setScale(2,RoundingMode.HALF_EVEN).toDouble()
+    }
+
     fun getPercentStockPrice() :Double {
         return if (prevClosePrice != 0.0){
             BigDecimal(curPrice / prevClosePrice).setScale(2,RoundingMode.HALF_EVEN).toDouble()
