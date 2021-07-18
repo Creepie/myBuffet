@@ -69,14 +69,18 @@
 
             <Spinner
                 android:id="@+id/stocks_sP_chooseStock"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp" />
+                android:layout_marginTop="18dp"
+                android:background="@drawable/spinner_bakground"
+                android:popupBackground="@drawable/spinner_dropview_background"
+                />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="16dp"
+                android:layout_marginTop="20dp"
                 app:cardBackgroundColor="@color/background_card"
                 app:cardCornerRadius="12dp">
 
