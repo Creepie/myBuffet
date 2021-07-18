@@ -41,11 +41,15 @@ class AddItemRepository : IAddItemRepository {
             }
             else -> return Resource.Failure(Exception())
         }
-        updateStock(shareItem = stockItem, item = item)
-        val docRef = firestore.collection("users").document(userid).collection("shares")
-            .document(stockItem.shareItemId).collection(pathName)
-        docRef.add(item).await()
-        return Resource.Success(item)
+        val result = updateStock(shareItem = stockItem, item = item)
+        if(result) {
+            val docRef = firestore.collection("users").document(userid).collection("shares")
+                .document(stockItem.shareItemId).collection(pathName)
+            docRef.add(item).await()
+            return Resource.Success(item)
+        } else {
+            return Resource.Failure(Exception())
+        }
     }
 
 
@@ -131,13 +135,13 @@ class AddItemRepository : IAddItemRepository {
     private suspend fun updateStock(
         shareItem: ShareItem,
         item: Any
-    ) {
+    ) : Boolean {
         val userid = user!!.uid
         val stockDocRef = firestore.collection("users").document(userid).collection("shares")
             .document(shareItem.shareItemId)
 
         val dataSnapshot = stockDocRef.get().await()
-        val stockItem = dataSnapshot.toObject(ShareItem::class.java) ?: return
+        val stockItem = dataSnapshot.toObject(ShareItem::class.java) ?: return false
 
         when (item) {
             is Purchase -> {
@@ -171,7 +175,7 @@ class AddItemRepository : IAddItemRepository {
                 val sale = item as SaleItem
                 var newShareNumber: Int = stockItem.totalShareNumber - sale.shareNumber
                 if (newShareNumber < 0) {
-                    newShareNumber = 0
+                    return false
                 }
                 val newTotalHoldings: Double = stockItem.currentPrice.toDouble() * newShareNumber
                 val newTotalInvestment: Double =
@@ -218,7 +222,8 @@ class AddItemRepository : IAddItemRepository {
                     newTotalInvestment.toString(),
                 )
             }
-            else -> return
+            else -> return false
         }
+        return true
     }
 }

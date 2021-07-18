@@ -7,9 +7,6 @@ object StockCalculationUtils {
 
     }
 
-    //sale number + amount
-    //purchase number + amount
-
     fun calculateProfit(
         data: OverviewData,
     ): Double {

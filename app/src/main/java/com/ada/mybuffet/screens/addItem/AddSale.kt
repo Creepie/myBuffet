@@ -77,12 +77,18 @@ class AddSale : Fragment(R.layout.fragment_add_sale) {
             val numberString = addItemSaleInputNumber.text.toString()
             val fees = addItemSaleInputFees.text.toString()
 
-            if (symbol.isNotEmpty()
-                && name.isNotEmpty()
-                && price.isNotEmpty()
-                && numberString.isNotEmpty()
-                && fees.isNotEmpty()
+            if (symbol.isEmpty()
+                || name.isEmpty()
+                || price.isEmpty()
+                || numberString.isEmpty()
+                || fees.isEmpty()
             ) {
+                Snackbar.make(
+                    requireView(),
+                    "All Fields have to be filled",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            } else {
                 addItemSaleSaveButton.startAnimation()
                 val number = numberString.toString().toInt()
                 val saleItem = SaleItem(
@@ -107,15 +113,14 @@ class AddSale : Fragment(R.layout.fragment_add_sale) {
                         }
                         is Resource.Failure -> {
                             addItemSaleSaveButton.revertAnimation()
+                            Snackbar.make(
+                                requireView(),
+                                "You can't have more Sales than Purchases",
+                                Snackbar.LENGTH_LONG
+                            ).show()
                         }
                     }
                 }
-            } else {
-                Snackbar.make(
-                    requireView(),
-                    "All Fields have to be filled",
-                    Snackbar.LENGTH_LONG
-                ).show()
             }
         }
     }

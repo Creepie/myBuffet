@@ -31,7 +31,7 @@
     <string name="myShares_year">Year</string>
     <string name="myShares_profit_loss_overview">Profit/Loss Overview</string>
     <string name="myShares_placeholder_percent">(+0.00%)</string>
-    <string name="myShares_exchange_profit_loss">Exchange Profit/Loss</string>
+    <string name="myShares_exchange_profit_loss">Holdings Value Change</string>
     <string name="myShares_dividend_profit">Dividend Profit</string>
     <string name="myShares_fees">Fees</string>
     <string name="myShares_stocks">Stocks</string>
@@ -61,7 +61,7 @@
     <string name="share_detail_total_investment_placeholder">€ 0.00</string>
     <string name="share_detail_total_investment_label">Total Investment Sum</string>
 
-    <string name="share_detail_exchange_profit_loss_label">Exchange Profit/Loss</string>
+    <string name="share_detail_exchange_profit_loss_label">Holdings Value Change</string>
     <string name="share_detail_exchange_profit_loss_placeholder">€ 0.00</string>
 
     <string name="share_detail_dividend_profit_label">Dividend Profit</string>
