@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentStocksOverviewBinding
 import com.ada.mybuffet.repo.StockShare
 import kotlinx.coroutines.CoroutineScope
@@ -65,9 +66,11 @@ class StocksOverview : Fragment(), StocksRecyclerViewClickListener {
             //spinner
             stocksSPChooseStock.apply {
                 val list = ArrayList<String>()
+                val arrayAdapter = ArrayAdapter(context, R.layout.spinner_item ,list)
                 list.addAll(viewModel.model.map.keys.toList())
                 list.add("All")
-                adapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,list)
+                adapter = arrayAdapter
+
 
             }
 
