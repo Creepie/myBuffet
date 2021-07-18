@@ -156,54 +156,175 @@ class ShareDetailRepository : IShareDetailRepository {
         }
 
 
-
-    override suspend fun <T: Any> deleteItem(
+    override suspend fun <T : Any> deleteItem(
         stockId: String,
         item: T
     ): Resource<T> {
         val userid = user!!.uid
-        val itemId = when(item) {
+        val itemId = when (item) {
             is Purchase -> item.id
             is SaleItem -> item.id
             is FeeItem -> item.id
             is DividendItem -> item.id
-            else -> return  Resource.Failure(Exception())
+            else -> return Resource.Failure(Exception())
         }
-        val pathName = when(item) {
+        val pathName = when (item) {
             is Purchase -> "purchases"
             is SaleItem -> "sales"
             is FeeItem -> "fees"
             is DividendItem -> "dividends"
-            else -> return  Resource.Failure(Exception())
+            else -> return Resource.Failure(Exception())
         }
+        updateStock(stockId, item, false)
         val docRef = firestore.collection("users").document(userid).collection("shares")
             .document(stockId).collection(pathName).document(itemId)
         docRef.delete().await()
         return Resource.Success(item)
     }
 
-    override suspend fun <T: Any> addItem(
+    override suspend fun <T : Any> addItem(
         stockId: String,
         item: T
     ): Resource<T> {
         val userid = user!!.uid
-        val itemId = when(item) {
+        val itemId = when (item) {
             is Purchase -> item.id
             is SaleItem -> item.id
             is FeeItem -> item.id
             is DividendItem -> item.id
-            else -> return  Resource.Failure(Exception())
+            else -> return Resource.Failure(Exception())
         }
-        val pathName = when(item) {
+        val pathName = when (item) {
             is Purchase -> "purchases"
             is SaleItem -> "sales"
             is FeeItem -> "fees"
             is DividendItem -> "dividends"
-            else -> return  Resource.Failure(Exception())
+            else -> return Resource.Failure(Exception())
         }
+        updateStock(stockId, item, true)
         val docRef = firestore.collection("users").document(userid).collection("shares")
             .document(stockId).collection(pathName).document(itemId)
         docRef.set(item).await()
         return Resource.Success(item)
+    }
+
+    private suspend fun updateStock(
+        stockId: String,
+        item: Any,
+        added: Boolean
+    ) {
+        val userid = user!!.uid
+        val stockDocRef = firestore.collection("users").document(userid).collection("shares")
+            .document(stockId)
+
+        val dataSnapshot = stockDocRef.get().await()
+        val stockItem = dataSnapshot.toObject(ShareItem::class.java) ?: return
+
+        when (item) {
+            is Purchase -> {
+                val purchase = item as Purchase
+                val newShareNumber = calculate(
+                    stockItem.totalShareNumber.toDouble(),
+                    purchase.shareNumber.toDouble(),
+                    added
+                )
+                val newTotalInvestment =
+                    calculate(
+                        calculate(
+                            stockItem.totalInvestment.toDouble(),
+                            purchase.shareNumber * purchase.sharePrice.toDouble(),
+                            added
+                        ), purchase.fees.toDouble(), added
+                    )
+                val newTotalHoldings = stockItem.currentPrice.toDouble() * newShareNumber
+                val newTotalFees =
+                    calculate(
+                        stockItem.totalFees.toDouble(),
+                        purchase.fees.toDouble(),
+                        added
+                    )
+                stockDocRef.update(
+                    "totalInvestment",
+                    newTotalInvestment.toString(),
+                    "totalHoldings",
+                    newTotalHoldings.toString(),
+                    "totalShareNumber",
+                    newShareNumber,
+                    "totalFees",
+                    newTotalFees.toString()
+                )
+            }
+            is SaleItem -> {
+                val sale = item as SaleItem
+                var newShareNumber = calculate(
+                    stockItem.totalShareNumber.toDouble(),
+                    sale.shareNumber.toDouble(),
+                    !added
+                )
+                if (newShareNumber < 0) {
+                    newShareNumber = 0.0
+                }
+                val newTotalInvestment =
+                    calculate(
+                        stockItem.totalInvestment.toDouble(), sale.fees.toDouble(), added
+                    )
+                val newTotalHoldings = stockItem.currentPrice.toDouble() * newShareNumber
+                val newTotalFees =
+                    calculate(
+                        stockItem.totalFees.toDouble(),
+                        sale.fees.toDouble(),
+                        added
+                    )
+                stockDocRef.update(
+                    "totalHoldings",
+                    newTotalHoldings.toString(),
+                    "totalShareNumber",
+                    newShareNumber,
+                    "totalFees",
+                    newTotalFees.toString(),
+                    "totalInvestment",
+                    newTotalInvestment.toString(),
+                )
+            }
+            is FeeItem -> {
+                val feeItem = item as FeeItem
+                val newTotalInvestment =
+                    calculate(
+                        stockItem.totalInvestment.toDouble(),
+                        feeItem.amount.toDouble(),
+                        added
+                    )
+                val newTotalFees: Double =
+                    calculate(stockItem.totalFees.toDouble(), feeItem.amount.toDouble(), added)
+                stockDocRef.update(
+                    "totalInvestment",
+                    newTotalInvestment.toString(),
+                    "totalFees",
+                    newTotalFees.toString()
+                )
+            }
+            is DividendItem -> {
+                val dividendItem = item as DividendItem
+                val newTotalInvestment =
+                    calculate(
+                        stockItem.totalDividends.toDouble(),
+                        dividendItem.amount.toDouble(),
+                        added
+                    )
+                stockDocRef.update(
+                    "totalDividends",
+                    newTotalInvestment.toString(),
+                )
+            }
+            else -> return
+        }
+    }
+
+    private fun calculate(x: Double, y: Double, add: Boolean): Double {
+        return if (add) {
+            x + y
+        } else {
+            x - y
+        }
     }
 }

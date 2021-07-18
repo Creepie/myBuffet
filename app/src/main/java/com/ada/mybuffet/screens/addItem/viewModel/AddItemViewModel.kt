@@ -15,7 +15,7 @@ class AddItemViewModel(private val shareDetailRepo: IAddItemRepository) : ViewMo
     fun <T : Any> onFormSubmitted(item: T, shareItem: ShareItem?) = liveData(Dispatchers.IO) {
         if(shareItem != null && shareItem.shareItemId.isNotEmpty()) {
             try {
-                emit(shareDetailRepo.addItem(shareItem.shareItemId, item))
+                emit(shareDetailRepo.addItem(shareItem, item))
             } catch (e: Exception) {
                 emit(Resource.Failure<Exception>(e))
             }
