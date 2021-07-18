@@ -120,7 +120,6 @@ class AddItemRepository : IAddItemRepository {
                 totalHoldings = "0",
                 totalFees = "0",
                 totalInvestment = "0",
-                totalShareNumber = 0
             )
 
         } catch (networkError: IOException) {
@@ -149,6 +148,10 @@ class AddItemRepository : IAddItemRepository {
                     stockItem.totalInvestment.toDouble() + purchase.shareNumber * purchase.sharePrice.toDouble() + purchase.fees.toDouble()
                 val newTotalHoldings: Double = stockItem.currentPrice.toDouble() * newShareNumber
                 val newTotalFees: Double = stockItem.totalFees.toDouble() + purchase.fees.toDouble()
+                val newTotalPurchaseNumber: Int =
+                    stockItem.totalPurchaseNumber + purchase.shareNumber
+                val newTotalPurchaseAmount: Double =
+                    stockItem.totalPurchaseAmount.toDouble() + purchase.shareNumber * purchase.sharePrice.toDouble()
                 stockDocRef.update(
                     "totalInvestment",
                     newTotalInvestment.toString(),
@@ -157,7 +160,11 @@ class AddItemRepository : IAddItemRepository {
                     "totalShareNumber",
                     newShareNumber,
                     "totalFees",
-                    newTotalFees.toString()
+                    newTotalFees.toString(),
+                    "totalPurchaseNumber",
+                    newTotalPurchaseNumber,
+                    "totalPurchaseAmount",
+                    newTotalPurchaseAmount.toString()
                 )
             }
             is SaleItem -> {
@@ -170,6 +177,10 @@ class AddItemRepository : IAddItemRepository {
                 val newTotalInvestment: Double =
                     stockItem.totalInvestment.toDouble() + sale.fees.toDouble()
                 val newTotalFees: Double = stockItem.totalFees.toDouble() + sale.fees.toDouble()
+                val newTotalSaleNumber: Int =
+                    stockItem.totalSaleNumber + sale.shareNumber
+                val newTotalSaleAmount: Double =
+                    stockItem.totalSaleAmount.toDouble() + sale.shareNumber * sale.sharePrice.toDouble()
                 stockDocRef.update(
                     "totalHoldings",
                     newTotalHoldings.toString(),
@@ -179,7 +190,11 @@ class AddItemRepository : IAddItemRepository {
                     newTotalFees.toString(),
                     "totalInvestment",
                     newTotalInvestment.toString(),
-                )
+                    "totalSaleNumber",
+                    newTotalSaleNumber,
+                    "totalSaleAmount",
+                    newTotalSaleAmount.toString()
+                    )
             }
             is FeeItem -> {
                 val feeItem = item as FeeItem

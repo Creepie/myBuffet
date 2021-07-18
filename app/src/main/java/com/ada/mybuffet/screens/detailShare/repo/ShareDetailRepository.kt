@@ -243,6 +243,18 @@ class ShareDetailRepository : IShareDetailRepository {
                         purchase.fees.toDouble(),
                         added
                     )
+                val newTotalPurchaseNumber: Int =
+                    calculate(
+                        stockItem.totalPurchaseNumber.toDouble(),
+                        purchase.shareNumber.toDouble(),
+                        added
+                    ).toInt()
+                val newTotalPurchaseAmount: Double =
+                    calculate(
+                        stockItem.totalPurchaseAmount.toDouble(),
+                        purchase.shareNumber * purchase.sharePrice.toDouble(),
+                        added
+                    )
                 stockDocRef.update(
                     "totalInvestment",
                     newTotalInvestment.toString(),
@@ -251,7 +263,11 @@ class ShareDetailRepository : IShareDetailRepository {
                     "totalShareNumber",
                     newShareNumber,
                     "totalFees",
-                    newTotalFees.toString()
+                    newTotalFees.toString(),
+                    "totalPurchaseNumber",
+                    newTotalPurchaseNumber,
+                    "totalPurchaseAmount",
+                    newTotalPurchaseAmount.toString()
                 )
             }
             is SaleItem -> {
@@ -275,6 +291,18 @@ class ShareDetailRepository : IShareDetailRepository {
                         sale.fees.toDouble(),
                         added
                     )
+                val newTotalSaleNumber: Double =
+                    calculate(
+                        stockItem.totalSaleNumber.toDouble(),
+                        sale.shareNumber.toDouble(),
+                        added
+                    )
+                val newTotalSaleAmount: Double =
+                    calculate(
+                        stockItem.totalSaleAmount.toDouble(),
+                        sale.shareNumber * sale.sharePrice.toDouble(),
+                        added
+                    )
                 stockDocRef.update(
                     "totalHoldings",
                     newTotalHoldings.toString(),
@@ -284,6 +312,10 @@ class ShareDetailRepository : IShareDetailRepository {
                     newTotalFees.toString(),
                     "totalInvestment",
                     newTotalInvestment.toString(),
+                    "totalSaleNumber",
+                    newTotalSaleNumber.toInt(),
+                    "totalSaleAmount",
+                    newTotalSaleAmount.toString()
                 )
             }
             is FeeItem -> {
