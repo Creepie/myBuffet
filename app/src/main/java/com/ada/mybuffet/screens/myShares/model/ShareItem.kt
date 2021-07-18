@@ -17,7 +17,11 @@ data class ShareItem (
     val totalHoldings: String = "",
     val totalShareNumber: Int = 0,
     val totalFees: String = "",
-    val totalInvestment: String = ""
+    val totalInvestment: String = "",
+    val totalSaleNumber: Int = 0,
+    val totalPurchaseNumber: Int = 0,
+    val totalPurchaseAmount: String = "0",
+    val totalSaleAmount: String = "0",
 ) : Parcelable {
     public fun isPricePositive(): Boolean {
         return try {

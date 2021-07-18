@@ -1,9 +1,11 @@
 package com.ada.mybuffet.screens.myShares.repo
 
 import android.util.Log
+import com.ada.mybuffet.screens.detailShare.model.OverviewData
 import com.ada.mybuffet.screens.myShares.model.PortfolioValueByDate
 import com.ada.mybuffet.screens.myShares.model.ShareItem
 import com.ada.mybuffet.utils.Resource
+import com.ada.mybuffet.utils.StockCalculationUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -21,42 +23,45 @@ class MySharesRepository : IMySharesRepository {
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
 
-    override suspend fun getShareItemsFromDB(): Flow<Resource<MutableList<ShareItem>>> = callbackFlow {
-        // create reference to the collection in firestore
-        val userid = FirebaseAuth.getInstance().currentUser!!.uid
-        val docRef = firestore.collection("users").document(userid).collection("shares")
+    override suspend fun getShareItemsFromDB(): Flow<Resource<MutableList<ShareItem>>> =
+        callbackFlow {
+            // create reference to the collection in firestore
+            val userid = FirebaseAuth.getInstance().currentUser!!.uid
+            val docRef = firestore.collection("users").document(userid).collection("shares")
 
-        // create subscription which listens to database changes
-        val subscription = docRef.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-            } else if (snapshot != null) {
-                Log.d(TAG, "Listen successful")
+            // create subscription which listens to database changes
+            val subscription = docRef.addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                } else if (snapshot != null) {
+                    Log.d(TAG, "Listen successful")
 
-                val shareItemList = mutableListOf<ShareItem>()
-                val documents = snapshot.documents
-                documents.forEach { doc ->
-                    val shareItem = doc.toObject(ShareItem::class.java)
-                    if (shareItem != null) {
-                        shareItemList.add(shareItem)
+                    val shareItemList = mutableListOf<ShareItem>()
+                    val documents = snapshot.documents
+                    documents.forEach { doc ->
+                        val shareItem = doc.toObject(ShareItem::class.java)
+                        if (shareItem != null) {
+                            shareItemList.add(shareItem)
+                        }
                     }
-                }
 
-                // offer for flow (offer method is now deprecated, using trySend instead)
-                trySend(Resource.Success(shareItemList)).isSuccess
-            } else {
-                Log.d(TAG, "Current data: null")
+                    // offer for flow (offer method is now deprecated, using trySend instead)
+                    trySend(Resource.Success(shareItemList)).isSuccess
+                } else {
+                    Log.d(TAG, "Current data: null")
+                }
+            }
+
+            // close flow channel if not in use to avoid leaks
+            awaitClose {
+                subscription.remove()
             }
         }
 
-        // close flow channel if not in use to avoid leaks
-        awaitClose{
-            subscription.remove()
-        }
-    }
-
     override suspend fun getShareItemsAsListFromDB(): Resource<MutableList<ShareItem>> {
-        val currentUser = FirebaseAuth.getInstance().currentUser ?: return Resource.Failure(IllegalAccessException())
+        val currentUser = FirebaseAuth.getInstance().currentUser ?: return Resource.Failure(
+            IllegalAccessException()
+        )
 
         val shareItemList = mutableListOf<ShareItem>()
         var returnValue: Resource<MutableList<ShareItem>> = Resource.Failure(IOException())
@@ -88,6 +93,134 @@ class MySharesRepository : IMySharesRepository {
         return returnValue
     }
 
+    override suspend fun getProfitLossOverviewDataFromDB(): Flow<Resource<HashMap<String, BigDecimal>>> =
+        callbackFlow {
+            // create reference to the collection in firestore
+            val userid = FirebaseAuth.getInstance().currentUser!!.uid
+            val docRef = firestore.collection("users").document(userid).collection("shares")
+
+            // create subscription which listens to database changes
+            val subscription = docRef.addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                } else if (snapshot != null) {
+                    Log.d(TAG, "Listen successful")
+
+                    var profitLossOverviewData = hashMapOf<String, BigDecimal>(
+                        "totalProfit" to BigDecimal.ZERO,
+                        "profitPercentage" to BigDecimal.ZERO,
+                        "exchangeProfitLoss" to BigDecimal.ZERO,
+                        "dividendProfit" to BigDecimal.ZERO,
+                        "totalInvestment" to BigDecimal.ZERO,
+                        "fees" to BigDecimal.ZERO
+                    )
+
+                    val documents = snapshot.documents
+                    var profit = 0.0
+                    var exchangeBalance = 0.0
+                    var totalInvestment = 0.0
+                    documents.forEach { doc ->
+                        val totalHoldingsStr = doc.getString("totalHoldings")
+                        val totalInvestmentStr = doc.getString("totalInvestment")
+                        val totalFeesStr = doc.getString("totalFees")
+                        val totalDividendsStr = doc.getString("totalDividends")
+                        val totalPurchaseNumberStr = doc.getDouble("totalPurchaseNumber")
+                        val totalPurchaseAmountStr = doc.getString("totalPurchaseAmount")
+                        val totalSaleNumberStr = doc.getDouble("totalSaleNumber")
+                        val totalSaleAmountStr = doc.getString("totalSaleAmount")
+                        val currentWorthStr = doc.getString("currentPrice")
+
+                        if (totalHoldingsStr != null
+                            && totalInvestmentStr != null
+                            && totalFeesStr != null
+                            && totalDividendsStr != null
+                            && totalPurchaseNumberStr != null
+                            && totalPurchaseAmountStr != null
+                            && totalSaleNumberStr != null
+                            && totalSaleAmountStr != null
+                            && currentWorthStr != null
+                        ) {
+                            val totalFees = BigDecimal(totalFeesStr)
+                            val totalDividends = BigDecimal(totalDividendsStr)
+
+                            profitLossOverviewData["dividendProfit"] =
+                                profitLossOverviewData["dividendProfit"]!!.plus(totalDividends)
+                            profitLossOverviewData["fees"] =
+                                profitLossOverviewData["fees"]!!.plus(totalFees)
+
+                            val overviewData = OverviewData(
+                                purchaseCount = totalPurchaseNumberStr.toInt(),
+                                purchaseSum = totalPurchaseAmountStr.toDouble(),
+                                saleCount = totalSaleNumberStr.toInt(),
+                                saleSum = totalSaleAmountStr.toDouble(),
+                                feeSum = totalFeesStr.toDouble(),
+                                dividendSum = totalDividendsStr.toDouble(),
+                                currentWorth = currentWorthStr.toDouble()
+                            )
+                            totalInvestment += totalInvestmentStr.toDouble()
+                            exchangeBalance += StockCalculationUtils.calculateExchangeBalance(overviewData)
+                            profit += StockCalculationUtils.calculateProfit(overviewData)
+                        }
+                    }
+
+                    val profitPercentage = StockCalculationUtils.getProfitPercentage(totalInvestment, profit)
+
+                    profitLossOverviewData["totalProfit"] = profit.toBigDecimal()
+                    profitLossOverviewData["profitPercentage"] = profitPercentage.toBigDecimal()
+                    profitLossOverviewData["exchangeProfitLoss"] = exchangeBalance.toBigDecimal()
+
+                    // offer for flow (offer method is now deprecated, using trySend instead)
+                    trySend(Resource.Success(profitLossOverviewData)).isSuccess
+                } else {
+                    Log.d(TAG, "Current data: null")
+                }
+            }
+
+            // close flow channel if not in use to avoid leaks
+            awaitClose {
+                subscription.remove()
+            }
+        }
+
+    override suspend fun getTotalPortfolioValueHistoryFromDB(): Flow<Resource<MutableList<PortfolioValueByDate>>> =
+        callbackFlow {
+            // create reference to the collection in firestore
+            val userid = FirebaseAuth.getInstance().currentUser!!.uid
+            val docRef =
+                firestore.collection("users").document(userid).collection("portfolioValueHistory")
+
+            // create subscription which listens to database changes
+            val subscription = docRef
+                .orderBy("date", Query.Direction.ASCENDING)
+                .addSnapshotListener { snapshot, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                    } else if (snapshot != null) {
+                        Log.d(TAG, "Listen successful")
+
+                        val portfolioValueList = mutableListOf<PortfolioValueByDate>()
+                        val documents = snapshot.documents
+                        documents.forEach { doc ->
+                            val portfolioValueItem = doc.toObject(PortfolioValueByDate::class.java)
+                            if (portfolioValueItem != null) {
+                                portfolioValueList.add(portfolioValueItem)
+                            }
+                        }
+
+                        // offer for flow (offer method is now deprecated, using trySend instead)
+                        trySend(Resource.Success(portfolioValueList)).isSuccess
+                    } else {
+                        Log.d(TAG, "Current data: null")
+                    }
+                }
+
+            // close flow channel if not in use to avoid leaks
+            awaitClose {
+                subscription.remove()
+            }
+        }
+
+    /*
     override suspend fun getProfitLossOverviewDataFromDB(): Flow<Resource<HashMap<String, BigDecimal>>> = callbackFlow {
         // create reference to the collection in firestore
         val userid = FirebaseAuth.getInstance().currentUser!!.uid
@@ -151,40 +284,5 @@ class MySharesRepository : IMySharesRepository {
             subscription.remove()
         }
     }
-
-    override suspend fun getTotalPortfolioValueHistoryFromDB(): Flow<Resource<MutableList<PortfolioValueByDate>>> = callbackFlow {
-        // create reference to the collection in firestore
-        val userid = FirebaseAuth.getInstance().currentUser!!.uid
-        val docRef = firestore.collection("users").document(userid).collection("portfolioValueHistory")
-
-        // create subscription which listens to database changes
-        val subscription = docRef
-            .orderBy("date", Query.Direction.ASCENDING)
-            .addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-            } else if (snapshot != null) {
-                Log.d(TAG, "Listen successful")
-
-                val portfolioValueList = mutableListOf<PortfolioValueByDate>()
-                val documents = snapshot.documents
-                documents.forEach { doc ->
-                    val portfolioValueItem = doc.toObject(PortfolioValueByDate::class.java)
-                    if (portfolioValueItem != null) {
-                        portfolioValueList.add(portfolioValueItem)
-                    }
-                }
-
-                // offer for flow (offer method is now deprecated, using trySend instead)
-                trySend(Resource.Success(portfolioValueList)).isSuccess
-            } else {
-                Log.d(TAG, "Current data: null")
-            }
-        }
-
-        // close flow channel if not in use to avoid leaks
-        awaitClose{
-            subscription.remove()
-        }
-    }
+     */
 }
