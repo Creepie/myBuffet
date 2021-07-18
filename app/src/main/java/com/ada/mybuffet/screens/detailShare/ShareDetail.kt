@@ -24,6 +24,7 @@ import com.google.android.material.snackbar.Snackbar
 
 import android.view.animation.RotateAnimation
 import android.widget.ImageButton
+import com.ada.mybuffet.utils.StockCalculationUtils
 
 
 class ShareDetail : Fragment(R.layout.fragment_share_detail) {
@@ -265,7 +266,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                     binding.shareDetailInvestmentSum.text = String.format("€ %.2f", investmentSum)
 
                     //ExchangeBilance
-                    val exchangeBilance = calculateExchangeBalance(data)
+                    val exchangeBilance = StockCalculationUtils.calculateExchangeBalance(data)
                     binding.shareDetailProfit.text = String.format("€ %.2f", exchangeBilance)
                     if (exchangeBilance < 0.0) {
                         val textColor =
@@ -280,7 +281,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                     }
 
                     //Value increase
-                    val valueIncrease = calculateProfit(data)
+                    val valueIncrease = StockCalculationUtils.calculateProfit(data)
                     binding.shareDetailStockValue.text = String.format("€ %.2f", valueIncrease)
                     if (valueIncrease < 0.0) {
                         val textColor =
@@ -295,7 +296,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                     }
 
                     //Value increse percentage
-                    val percentage = getPercentage(investmentSum, valueIncrease)
+                    val percentage = StockCalculationUtils.getProfitPercentage(investmentSum, valueIncrease)
                     var percentageText = if (percentage < 0) {
                         "("
                     } else {
@@ -380,67 +381,6 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
         binding.shareViewFabLayout3.visibility = View.GONE
         binding.shareViewFabLayout4.visibility = View.GONE
         binding.shareDetailFabAdd.animate().rotationBy(-180F)
-    }
-
-
-    private fun calculateProfit(
-        data: OverviewData,
-    ): Double {
-        //If no current Worth is passed, return
-        if (data.currentWorth == 0.0) {
-            return 0.0
-        }
-
-        //Calculate how much money is still in the shares
-        //Can be negative, if the sales are bigger than the purchases -> in this case
-        //they are added not subtracted later on
-        val currentMoneyInShares = data.purchaseSum - data.saleSum
-
-        //Calculate how many shares are still owned
-        val currentAmountOfShares = data.purchaseCount - data.saleCount
-        if (currentAmountOfShares < 0) {
-            return 0.0
-        }
-
-        //Calculate the worth of the shares owned with the current price
-        val currentSharesWorth = currentAmountOfShares * data.currentWorth
-        //Subtract the money in the shares from the shares worth to get the profit
-        val currentSharesProfit = currentSharesWorth - currentMoneyInShares
-
-
-        return currentSharesProfit + data.dividendSum - data.saleFeeSum - data.feeSum - data.purchaseFeeSum
-    }
-
-
-    private fun calculateExchangeBalance(
-        data: OverviewData
-    ): Double {
-        if (data.currentWorth == 0.0) {
-            return 0.0
-        }
-
-        val pricePerPurchase = if (data.purchaseCount != 0) {
-            data.purchaseSum / data.purchaseCount
-        } else {
-            0.0
-        }
-
-        val stockHoldingAmount = data.purchaseCount - data.saleCount
-        if (stockHoldingAmount < 0) {
-            return 0.0
-        }
-
-        val oldHoldingsWorth = stockHoldingAmount * pricePerPurchase
-        val currentHoldingWorth = stockHoldingAmount * data.currentWorth
-        return currentHoldingWorth - oldHoldingsWorth
-    }
-
-    private fun getPercentage(investmentSum: Double, valueIncrease: Double): Double {
-        return if (valueIncrease == 0.0 || investmentSum == 0.0) {
-            0.0
-        } else {
-            (valueIncrease / investmentSum) * 100
-        }
     }
 
     private fun spinButton(data: OverviewData, button: ImageButton) {
