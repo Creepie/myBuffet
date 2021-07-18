@@ -8,7 +8,7 @@ import java.math.BigDecimal
 @Parcelize
 data class ShareItem (
     @DocumentId
-    val shareItemId: String = "",
+    var shareItemId: String = "",
     val stockSymbol: String = "",
     val stockName: String = "",
     val currentPrice: String = "",

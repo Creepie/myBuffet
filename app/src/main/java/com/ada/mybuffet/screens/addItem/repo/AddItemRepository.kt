@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
+import java.util.*
 import kotlin.Exception
 
 class AddItemRepository : IAddItemRepository {
@@ -21,19 +22,28 @@ class AddItemRepository : IAddItemRepository {
 
 
     override suspend fun <T : Any> addItem(
-        stockId: String,
+        stockItem: ShareItem,
         item: T
     ): Resource<T> {
         val userid = user!!.uid
         val pathName = when (item) {
-            is Purchase -> "purchases"
-            is SaleItem -> "sales"
-            is FeeItem -> "fees"
-            is DividendItem -> "dividends"
+            is Purchase -> {
+                "purchases"
+            }
+            is SaleItem -> {
+                "sales"
+            }
+            is FeeItem -> {
+                "fees"
+            }
+            is DividendItem -> {
+                "dividends"
+            }
             else -> return Resource.Failure(Exception())
         }
+        updateStock(shareItem = stockItem, item = item)
         val docRef = firestore.collection("users").document(userid).collection("shares")
-            .document(stockId).collection(pathName)
+            .document(stockItem.shareItemId).collection(pathName)
         docRef.add(item).await()
         return Resource.Success(item)
     }
@@ -43,31 +53,31 @@ class AddItemRepository : IAddItemRepository {
         stockSymbol: String,
         item: Purchase
     ): Resource<Purchase> {
-
-        //Check if document exists
-        val documentId = getDocumentId(stockSymbol)
-        if (documentId != null) {
-            return addItem(documentId, item)
-        }
-
         //Search for Stock with finhub
         val stockItem = getStock(stockSymbol, item)
         if (stockItem != null) {
-            val stockId = createStockEntry(stockItem)
-            return addItem(stockId, item)
+            //Check if document exists
+            val stock = getDocument(stockItem.stockSymbol)
+            return if (stock != null) {
+                addItem(stock, item)
+            } else {
+                val stockId = createStockEntry(stockItem)
+                stockItem.shareItemId = stockId
+                addItem(stockItem, item)
+            }
         }
         //no result
         return Resource.Failure(Exception())
     }
 
-    private suspend fun getDocumentId(stockSymbol: String): String? {
+    private suspend fun getDocument(stockSymbol: String): ShareItem? {
         val userid = user!!.uid
 
         val docRef = firestore.collection("users").document(userid).collection("shares")
             .whereEqualTo("stockSymbol", stockSymbol)
         val dataSnapshot = docRef.get().await()
         return if (dataSnapshot.documents.isNotEmpty()) {
-            dataSnapshot.documents[0].id
+            dataSnapshot.documents[0].toObject(ShareItem::class.java)
         } else {
             null
         }
@@ -94,23 +104,106 @@ class AddItemRepository : IAddItemRepository {
             val getPriceUrl =
                 "https://finnhub.io/api/v1/quote?symbol=${stockResult.symbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
             val price = FinnhubApi.retrofitService.getCurrentPrice(getPriceUrl)
+            val currentPrice = price.c
+            val previousPrice = price.pc
+            val pricePercentage = (1 - (previousPrice / currentPrice)) * 100
+            val percentageString = "%.2f".format(Locale.ENGLISH, pricePercentage)
             val totalInvestment =
                 item.fees.toDouble() + (item.shareNumber * item.sharePrice.toDouble())
-            val totalHolding = (item.shareNumber * item.sharePrice.toDouble())
+            val totalHolding = (item.shareNumber * currentPrice)
             return ShareItem(
                 stockSymbol = stockResult.symbol,
                 stockName = stockResult.description,
-                currentPrice = price.c.toString(),
-                currentPricePercent = "0",
+                currentPrice = currentPrice.toString(),
+                currentPricePercent = percentageString,
                 totalDividends = "0",
-                totalHoldings = totalHolding.toString(),
-                totalFees = item.fees.toString(),
-                totalInvestment = totalInvestment.toString()
+                totalHoldings = "0",
+                totalFees = "0",
+                totalInvestment = "0",
+                totalShareNumber = 0
             )
 
         } catch (networkError: IOException) {
             Log.i("API_ADD_STOCK", "fetchNews Error with code: ${networkError.message}")
             return null;
+        }
+    }
+
+    private suspend fun updateStock(
+        shareItem: ShareItem,
+        item: Any
+    ) {
+        val userid = user!!.uid
+        val stockDocRef = firestore.collection("users").document(userid).collection("shares")
+            .document(shareItem.shareItemId)
+
+        val dataSnapshot = stockDocRef.get().await()
+        val stockItem = dataSnapshot.toObject(ShareItem::class.java) ?: return
+
+        when (item) {
+            is Purchase -> {
+                val purchase = item as Purchase
+                val newShareNumber: Double =
+                    stockItem.totalShareNumber.toDouble() + purchase.shareNumber
+                val newTotalInvestment: Double =
+                    stockItem.totalInvestment.toDouble() + purchase.shareNumber * purchase.sharePrice.toDouble() + purchase.fees.toDouble()
+                val newTotalHoldings: Double = stockItem.currentPrice.toDouble() * newShareNumber
+                val newTotalFees: Double = stockItem.totalFees.toDouble() + purchase.fees.toDouble()
+                stockDocRef.update(
+                    "totalInvestment",
+                    newTotalInvestment.toString(),
+                    "totalHoldings",
+                    newTotalHoldings.toString(),
+                    "totalShareNumber",
+                    newShareNumber,
+                    "totalFees",
+                    newTotalFees.toString()
+                )
+            }
+            is SaleItem -> {
+                val sale = item as SaleItem
+                var newShareNumber: Int = stockItem.totalShareNumber - sale.shareNumber
+                if (newShareNumber < 0) {
+                    newShareNumber = 0
+                }
+                val newTotalHoldings: Double = stockItem.currentPrice.toDouble() * newShareNumber
+                val newTotalInvestment: Double =
+                    stockItem.totalInvestment.toDouble() + sale.fees.toDouble()
+                val newTotalFees: Double = stockItem.totalFees.toDouble() + sale.fees.toDouble()
+                stockDocRef.update(
+                    "totalHoldings",
+                    newTotalHoldings.toString(),
+                    "totalShareNumber",
+                    newShareNumber,
+                    "totalFees",
+                    newTotalFees.toString(),
+                    "totalInvestment",
+                    newTotalInvestment.toString(),
+                )
+            }
+            is FeeItem -> {
+                val feeItem = item as FeeItem
+                val newTotalInvestment: Double =
+                    stockItem.totalInvestment.toDouble() + feeItem.amount.toDouble()
+                val newTotalFees: Double =
+                    stockItem.totalFees.toDouble() + feeItem.amount.toDouble()
+                stockDocRef.update(
+                    "totalInvestment",
+                    newTotalInvestment.toString(),
+                    "totalFees",
+                    newTotalFees.toString()
+                )
+            }
+            is DividendItem -> {
+                val dividendItem = item as DividendItem
+                val newTotalInvestment: Double =
+                    stockItem.totalDividends.toDouble() + dividendItem.amount.toDouble()
+                stockDocRef.update(
+                    "totalDividends",
+                    newTotalInvestment.toString(),
+                )
+            }
+            else -> return
         }
     }
 }
