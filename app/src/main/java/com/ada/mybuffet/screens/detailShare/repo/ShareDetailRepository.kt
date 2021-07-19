@@ -1,6 +1,7 @@
 package com.ada.mybuffet.screens.detailShare.repo
 
 import android.util.Log
+import com.ada.mybuffet.repo.SymbolPrice
 import com.ada.mybuffet.screens.detailShare.model.DividendItem
 import com.ada.mybuffet.screens.detailShare.model.FeeItem
 import com.ada.mybuffet.screens.detailShare.model.Purchase
@@ -14,7 +15,6 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
-import java.lang.Exception
 import java.util.*
 
 class ShareDetailRepository : IShareDetailRepository {
@@ -175,7 +175,8 @@ class ShareDetailRepository : IShareDetailRepository {
             is DividendItem -> "dividends"
             else -> return Resource.Failure(Exception())
         }
-        updateStock(stockId, item, false)
+        val result = updateStock(stockId, item, false)
+        if(!result) {return  Resource.Failure(Exception())}
         val docRef = firestore.collection("users").document(userid).collection("shares")
             .document(stockId).collection(pathName).document(itemId)
         docRef.delete().await()
@@ -212,17 +213,22 @@ class ShareDetailRepository : IShareDetailRepository {
         stockId: String,
         item: Any,
         added: Boolean
-    ) {
+    ) : Boolean {
         val userid = user!!.uid
         val stockDocRef = firestore.collection("users").document(userid).collection("shares")
             .document(stockId)
 
         val dataSnapshot = stockDocRef.get().await()
-        val stockItem = dataSnapshot.toObject(ShareItem::class.java) ?: return
+        val stockItem = dataSnapshot.toObject(ShareItem::class.java) ?: return false
 
         when (item) {
             is Purchase -> {
                 val purchase = item as Purchase
+                if(!added) {
+                    if((stockItem.totalPurchaseNumber - purchase.shareNumber) < stockItem.totalSaleNumber) {
+                        return false
+                    }
+                }
                 val newShareNumber = calculate(
                     stockItem.totalShareNumber.toDouble(),
                     purchase.shareNumber.toDouble(),
@@ -348,8 +354,26 @@ class ShareDetailRepository : IShareDetailRepository {
                     newTotalInvestment.toString(),
                 )
             }
-            else -> return
+            else -> return false
         }
+        return true
+    }
+
+    override suspend fun updatePriceInDB(stockId: String, price: SymbolPrice) {
+        val currentPrice = price.c;
+        val previousPrice = price.pc;
+        val pricePercentage = (1-(previousPrice/currentPrice))*100
+        val userid = user!!.uid
+        val stockDocRef = firestore.collection("users").document(userid).collection("shares")
+            .document(stockId)
+        val currentPriceStr = String.format(Locale.ENGLISH, "%.2f",currentPrice)
+        val currentPricePercentStr = String.format(Locale.ENGLISH, "%.2f",pricePercentage)
+        stockDocRef.update(
+            "currentPrice",
+            currentPriceStr,
+            "currentPricePercent",
+            currentPricePercentStr,
+        )
     }
 
     private fun calculate(x: Double, y: Double, add: Boolean): Double {

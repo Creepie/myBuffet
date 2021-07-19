@@ -94,10 +94,11 @@ class RefreshPortfolioTotalsWorker(appContext: Context, params: WorkerParameters
                             return Result.retry()
                         }
 
-                        val priceDiffPercentage = currentPriceBigDecimal
-                            .multiply(BigDecimal(100))
-                            .divide(previousPriceBigDecimal, 2, RoundingMode.HALF_UP)
-                            .minus(BigDecimal(100))
+                        val priceDiffPercentage =
+                            BigDecimal(1).minus(
+                                previousPriceBigDecimal.divide(currentPriceBigDecimal)
+                            ).multiply(BigDecimal(100))
+
 
 
                         // format and round values in order to store them in the database

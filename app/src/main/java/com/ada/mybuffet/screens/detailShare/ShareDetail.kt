@@ -166,6 +166,16 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                                     }
                                     .show()
                             }
+                            is Resource.Failure -> {
+                                if(item is Purchase) {
+                                    shareDetailPurchaseAdapter.notifyItemChanged(viewHolder.adapterPosition)
+                                    Snackbar.make(
+                                        requireView(),
+                                        "Purchase could not be delted, to many sales exist",
+                                        Snackbar.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
                         }
                     }
 
