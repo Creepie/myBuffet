@@ -1,6 +1,8 @@
 package com.ada.mybuffet.screens.myShares.model
 
 import android.os.Parcelable
+import com.ada.mybuffet.screens.detailShare.model.OverviewData
+import com.ada.mybuffet.utils.StockCalculationUtils
 import com.google.firebase.firestore.DocumentId
 import kotlinx.android.parcel.Parcelize
 import java.math.BigDecimal
@@ -34,6 +36,24 @@ data class ShareItem (
     }
 
     public fun isInvestmentPositive(): Boolean {
+        return try {
+            val overviewData = OverviewData(
+                purchaseCount = totalPurchaseNumber.toInt(),
+                purchaseSum = totalPurchaseAmount.toDouble(),
+                saleCount = totalSaleNumber.toInt(),
+                saleSum = totalSaleAmount.toDouble(),
+                feeSum = totalFees.toDouble(),
+                dividendSum = totalDividends.toDouble(),
+                currentWorth = currentPrice.toDouble()
+            )
+            val exchangeBalance = StockCalculationUtils.calculateExchangeBalance(overviewData)
+            exchangeBalance > 0
+        } catch (e: Exception) {
+            true
+        }
+    }
+
+    public fun oldIsInvestmentPositive(): Boolean {
         return try {
             val holdings = BigDecimal(totalHoldings)
             val investment = BigDecimal(totalInvestment)

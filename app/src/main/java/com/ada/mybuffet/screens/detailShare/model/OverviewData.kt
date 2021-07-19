@@ -10,4 +10,5 @@ data class OverviewData(
     val feeSum: Double = 0.0,
     val dividendSum: Double = 0.0,
     val currentWorth: Double = 0.0,
+    val currentWorthPercentage: Double = 0.0,
 )

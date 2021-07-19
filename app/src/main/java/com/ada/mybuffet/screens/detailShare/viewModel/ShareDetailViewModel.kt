@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import com.ada.mybuffet.repo.SymbolPrice
 import com.ada.mybuffet.screens.detailShare.model.*
 import com.ada.mybuffet.screens.detailShare.repo.IShareDetailRepository
 import com.ada.mybuffet.screens.myShares.model.ShareItem
@@ -77,7 +78,7 @@ class ShareDetailViewModel(
             Log.i("API_CURRENT_WORTH","4. View Model API Call successful")
             if (symbolPrice != null) {
                 Log.i("API_CURRENT_WORTH","5. View Model API Call not null")
-                emit(Resource.Success<Double>(symbolPrice.c))
+                emit(Resource.Success<SymbolPrice>(symbolPrice))
             } else {
                 emit(Resource.Failure<Exception>(Exception()))
             }
@@ -100,10 +101,12 @@ class ShareDetailViewModel(
         var dividendSum = 0.0
 
         var currentWorth = 0.0
-
+        var currentWorthPercentage = 0.0
         addSource(fetchCurrentHoldingsWorth) {
             if (it is Resource.Success) {
-                currentWorth = (it.data as Double)
+                val price = (it.data as SymbolPrice)
+                currentWorth = price.c
+                currentWorthPercentage = (1-(price.pc/price.c))*100
 
                 value = Resource.Success(
                     OverviewData(
@@ -115,7 +118,8 @@ class ShareDetailViewModel(
                         saleCount = saleCount,
                         feeSum = feeSum,
                         dividendSum = dividendSum,
-                        currentWorth = currentWorth
+                        currentWorth = currentWorth,
+                        currentWorthPercentage = currentWorthPercentage
                     )
                 )
             }
@@ -142,7 +146,8 @@ class ShareDetailViewModel(
                         saleCount = saleCount,
                         feeSum = feeSum,
                         dividendSum = dividendSum,
-                        currentWorth = currentWorth
+                        currentWorth = currentWorth,
+                        currentWorthPercentage = currentWorthPercentage
                     )
                 )
             }
@@ -168,7 +173,8 @@ class ShareDetailViewModel(
                         saleCount = saleCount,
                         feeSum = feeSum,
                         dividendSum = dividendSum,
-                        currentWorth = currentWorth
+                        currentWorth = currentWorth,
+                        currentWorthPercentage = currentWorthPercentage
                     )
                 )
             }
@@ -190,7 +196,8 @@ class ShareDetailViewModel(
                         saleCount = saleCount,
                         feeSum = feeSum,
                         dividendSum = dividendSum,
-                        currentWorth = currentWorth
+                        currentWorth = currentWorth,
+                        currentWorthPercentage = currentWorthPercentage
                     )
                 )
             }
@@ -212,7 +219,8 @@ class ShareDetailViewModel(
                         saleCount = saleCount,
                         feeSum = feeSum,
                         dividendSum = dividendSum,
-                        currentWorth = currentWorth
+                        currentWorth = currentWorth,
+                        currentWorthPercentage = currentWorthPercentage
                     )
                 )
             }

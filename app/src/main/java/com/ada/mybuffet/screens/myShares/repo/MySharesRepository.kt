@@ -220,8 +220,7 @@ class MySharesRepository : IMySharesRepository {
             }
         }
 
-    /*
-    override suspend fun getProfitLossOverviewDataFromDB(): Flow<Resource<HashMap<String, BigDecimal>>> = callbackFlow {
+    private suspend fun oldGetProfitLossOverviewDataFromDB(): Flow<Resource<HashMap<String, BigDecimal>>> = callbackFlow {
         // create reference to the collection in firestore
         val userid = FirebaseAuth.getInstance().currentUser!!.uid
         val docRef = firestore.collection("users").document(userid).collection("shares")
@@ -284,5 +283,4 @@ class MySharesRepository : IMySharesRepository {
             subscription.remove()
         }
     }
-     */
 }

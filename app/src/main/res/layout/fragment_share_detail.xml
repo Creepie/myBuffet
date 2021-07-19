@@ -223,14 +223,40 @@
                     android:id="@+id/share_detail_back_button"
                     android:layout_width="40dp"
                     android:layout_height="35dp"
-                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="3dp"
                     android:background="?android:selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_flat_back_arrow"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:tint="@android:color/black"
                     android:tint="@android:color/black"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/share_detail_stock_sign"
+                    app:tint="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/share_detail_stock_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@string/font_roboto_regular"
+                    android:text="@string/share_detail_price_placeholder"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/share_detail_stock_sign"
+                    app:layout_constraintTop_toBottomOf="@+id/share_detail_stock_sign" />
+
+                <TextView
+                    android:id="@+id/share_detail_stock_price_percentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@string/font_roboto_regular"
+                    android:text="@string/share_detail_percentage_placeholder"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/share_detail_stock_price"
+                    app:layout_constraintTop_toTopOf="@+id/share_detail_stock_price" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -337,13 +363,99 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/share_detail_pill_dividend_profit"
+                        android:id="@+id/share_detail_total_sales"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/layout_pill_bg"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/share_detail_pill_exchange_profit_loss">
+
+                        <TextView
+                            android:id="@+id/share_detail_total_sales_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@string/font_roboto_regular"
+                            android:text="@string/share_detail_total_sales_label"
+                            android:textColor="@color/black"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/share_detail_total_sales_placeholder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@string/font_roboto_regular"
+                            android:text="@string/share_detail_total_investment_placeholder"
+                            android:textColor="@color/black"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/share_detail_total_holdings"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/layout_pill_bg"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/share_detail_total_sales">
+
+                        <TextView
+                            android:id="@+id/share_detail_total_holdings_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@string/font_roboto_regular"
+                            android:text="@string/share_detail_total_holdings_label"
+                            android:textColor="@color/black"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/share_detail_total_holdings_placeholder"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@string/font_roboto_regular"
+                            android:text="@string/share_detail_total_investment_placeholder"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/sharePrice_profit"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/share_detail_exchange_trend"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.473" />
+
+                        <ImageView
+                            android:id="@+id/share_detail_exchange_trend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="0dp"
+                            android:src="@drawable/ic_trending_up"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/share_detail_pill_dividend_profit"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/layout_pill_bg"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/share_detail_total_holdings">
 
                         <TextView
                             android:id="@+id/share_detail_stock__exchange_label"
@@ -368,17 +480,9 @@
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/share_detail_exchange_trend"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:id="@+id/share_detail_exchange_trend"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:src="@drawable/ic_trending_up"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -413,17 +517,9 @@
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/share_detail_fees_trend"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:id="@+id/share_detail_fees_trend"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:src="@drawable/ic_trending_down"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -458,17 +554,9 @@
                             android:textSize="13sp"
                             android:textStyle="bold"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toStartOf="@+id/share_detail_dividend_trend"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <ImageView
-                            android:id="@+id/share_detail_dividend_trend"
-                            android:layout_width="wrap_content"
-                            android:layout_height="0dp"
-                            android:src="@drawable/ic_trending_up"
-                            app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

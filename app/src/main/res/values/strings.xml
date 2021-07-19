@@ -54,15 +54,19 @@
 
     <string name="share_detail_stock_default">ABC</string>
     <string name="share_detail_purchases">Purchases</string>
-    <string name="share_detail_holdings_overview">Holdings Overview</string>
+    <string name="share_detail_price_placeholder">€ 0.00</string>
+    <string name="share_detail_percentage_placeholder">(+0.00%)</string>
+    <string name="share_detail_holdings_overview">Profit/Loss Overview</string>
     <string name="share_detail_holdings_value_placeholder">€ 0.00</string>
     <string name="share_detail_holdings_value_percentage_placeholder">(+0.00%)</string>
 
     <string name="share_detail_total_investment_placeholder">€ 0.00</string>
     <string name="share_detail_total_investment_label">Total Investment Sum</string>
+    <string name="share_detail_total_holdings_label">Total Holdings</string>
+    <string name="share_detail_total_sales_label">Total Sales Sum</string>
 
     <string name="share_detail_exchange_profit_loss_label">Holdings Value Change</string>
-    <string name="share_detail_exchange_profit_loss_placeholder">€ 0.00</string>
+    <string name="share_detail_exchange_profit_loss_placeholder">0.00 €</string>
 
     <string name="share_detail_dividend_profit_label">Dividend Profit</string>
     <string name="share_detail_dividend_profit_placeholder">€ 0.00</string>
