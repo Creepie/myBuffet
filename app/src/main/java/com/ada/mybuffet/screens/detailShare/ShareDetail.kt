@@ -252,9 +252,33 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                     //Spinner
                     spinButton(data, binding.shareDetailRefreshButton)
 
+                    //stock price
+                    val stockPrice = data.currentWorth
+                    binding.shareDetailStockPrice.text = String.format("€ %.2f", stockPrice)
+
+                    //stock price percentage
+                    val stockPricePercentage = data.currentWorthPercentage
+                    var pricePercentageText = if (stockPricePercentage < 0) {
+                        val textColor =
+                            ContextCompat.getColor(binding.root.context, R.color.sharePrice_loss)
+                        binding.shareDetailStockPricePercentage.setTextColor(textColor)
+                        "("
+                    } else {
+                        val textColor =
+                            ContextCompat.getColor(binding.root.context, R.color.sharePrice_profit)
+                        binding.shareDetailStockPricePercentage.setTextColor(textColor)
+                        "(+"
+                    }
+                    pricePercentageText += String.format("%.2f%%)", stockPricePercentage)
+                    binding.shareDetailStockPricePercentage.text = pricePercentageText
+
                     //TotalFees
                     val totalFees = data.feeSum + data.purchaseFeeSum + data.saleFeeSum
                     binding.shareDetailFeesValue.text = String.format("€ %.2f", totalFees)
+
+                    //Total Sales
+                    val totalSales = data.saleSum
+                    binding.shareDetailTotalSalesPlaceholder.text = String.format("€ %.2f", totalSales)
 
                     //Dividend
                     binding.shareDetailDividendProfit.text =
@@ -266,17 +290,25 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                     binding.shareDetailInvestmentSum.text = String.format("€ %.2f", investmentSum)
 
                     //ExchangeBilance
+                    var totalHoldings = data.currentWorth * (data.purchaseCount - data.saleCount)
+                    if(totalHoldings < 0) {
+                        totalHoldings = 0.0
+                    }
                     val exchangeBilance = StockCalculationUtils.calculateExchangeBalance(data)
-                    binding.shareDetailProfit.text = String.format("€ %.2f", exchangeBilance)
+                    binding.shareDetailTotalHoldingsPlaceholder.text = String.format("€ %.2f", totalHoldings)
                     if (exchangeBilance < 0.0) {
+                        binding.shareDetailProfit.text = String.format("- € %.2f", exchangeBilance * (-1))
                         val textColor =
                             ContextCompat.getColor(binding.root.context, R.color.sharePrice_loss)
                         binding.shareDetailProfit.setTextColor(textColor)
                         binding.shareDetailExchangeTrend.setImageResource(R.drawable.ic_trending_down)
+                        binding.shareDetailTotalHoldingsPlaceholder.setTextColor(textColor)
                     } else {
+                        binding.shareDetailProfit.text = String.format("+ € %.2f", exchangeBilance)
                         val textColor =
                             ContextCompat.getColor(binding.root.context, R.color.sharePrice_profit)
                         binding.shareDetailProfit.setTextColor(textColor)
+                        binding.shareDetailTotalHoldingsPlaceholder.setTextColor(textColor)
                         binding.shareDetailExchangeTrend.setImageResource(R.drawable.ic_trending_up)
                     }
 
@@ -367,7 +399,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
         binding.shareViewFabLayout2.visibility = View.VISIBLE
         binding.shareViewFabLayout3.visibility = View.VISIBLE
         binding.shareViewFabLayout4.visibility = View.VISIBLE
-        binding.shareDetailFabAdd.animate().rotationBy(180F)
+        binding.shareDetailFabAdd.animate().rotationBy(135F)
         binding.shareViewFabLayout1.animate().translationY(-200f)
         binding.shareViewFabLayout2.animate().translationY(-350f)
         binding.shareViewFabLayout3.animate().translationY(-500f)
@@ -380,7 +412,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
         binding.shareViewFabLayout2.visibility = View.GONE
         binding.shareViewFabLayout3.visibility = View.GONE
         binding.shareViewFabLayout4.visibility = View.GONE
-        binding.shareDetailFabAdd.animate().rotationBy(-180F)
+        binding.shareDetailFabAdd.animate().rotationBy(-135F)
     }
 
     private fun spinButton(data: OverviewData, button: ImageButton) {

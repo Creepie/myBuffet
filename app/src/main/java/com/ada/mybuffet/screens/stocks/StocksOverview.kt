@@ -2,15 +2,15 @@ package com.ada.mybuffet.screens.stocks
 
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
-import android.opengl.Visibility
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import android.widget.ImageButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -19,9 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentStocksOverviewBinding
 import com.ada.mybuffet.repo.StockShare
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * @author Mario Eberth
