@@ -13,6 +13,7 @@ interface IShareDetailRepository {
     suspend fun getSales(stockId: String): Flow<Resource<MutableList<SaleItem>>>
     suspend fun getFees(stockId: String): Flow<Resource<MutableList<FeeItem>>>
     suspend fun getDividends(stockId: String): Flow<Resource<MutableList<DividendItem>>>
+    suspend fun getCurrentPrice(symbol: String) : SymbolPrice?
 
     suspend fun <T: Any> deleteItem(stockId: String, item: T) : Resource<T>
     suspend fun <T: Any> addItem(stockId: String, item: T) : Resource<T>

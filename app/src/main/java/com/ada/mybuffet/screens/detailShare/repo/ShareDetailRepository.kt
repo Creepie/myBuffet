@@ -1,6 +1,7 @@
 package com.ada.mybuffet.screens.detailShare.repo
 
 import android.util.Log
+import com.ada.mybuffet.repo.FinnhubApi
 import com.ada.mybuffet.repo.SymbolPrice
 import com.ada.mybuffet.screens.detailShare.model.DividendItem
 import com.ada.mybuffet.screens.detailShare.model.FeeItem
@@ -15,6 +16,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
+import java.io.IOException
 import java.util.*
 
 class ShareDetailRepository : IShareDetailRepository {
@@ -154,6 +156,15 @@ class ShareDetailRepository : IShareDetailRepository {
                 subscription.remove()
             }
         }
+
+    override suspend fun getCurrentPrice(symbol: String) : SymbolPrice?{
+        val url = "https://finnhub.io/api/v1/quote?symbol=${symbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
+        return try {
+            FinnhubApi.retrofitService.getCurrentPrice(url)
+        } catch (networkError: IOException) {
+            null
+        }
+    }
 
 
     override suspend fun <T : Any> deleteItem(

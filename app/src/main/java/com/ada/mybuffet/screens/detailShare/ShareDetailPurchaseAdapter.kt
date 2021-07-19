@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ada.mybuffet.databinding.RecyclerViewItemPurchaseBinding
 import com.ada.mybuffet.screens.detailShare.model.Purchase
 
+/**
+ * @author Paul Pfisterer
+ * Adapter for the purchase recycler view
+ */
 class ShareDetailPurchaseAdapter :
     ListAdapter<Purchase, ShareDetailPurchaseAdapter.ShareDetailViewHolder>(DiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShareDetailViewHolder {
@@ -26,7 +30,7 @@ class ShareDetailPurchaseAdapter :
 
     class ShareDetailViewHolder(private val binding: RecyclerViewItemPurchaseBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
+        //Values are set here
         fun bind(purchase: Purchase) {
             binding.apply {
                 itemPurchaseAmount.text = purchase.shareNumber.toString()

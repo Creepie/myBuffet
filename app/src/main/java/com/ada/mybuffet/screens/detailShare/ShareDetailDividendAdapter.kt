@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ada.mybuffet.databinding.RecyclerViewItemDividendBinding
 import com.ada.mybuffet.screens.detailShare.model.DividendItem
 
+/**
+ * @author Paul Pfisterer
+ * Adapter for the dividend recycler view
+ */
 class ShareDetailDividendAdapter :  ListAdapter<DividendItem, ShareDetailDividendAdapter.ShareDetailViewHolder>(
     DiffCallback()
 ) {
@@ -28,7 +32,7 @@ class ShareDetailDividendAdapter :  ListAdapter<DividendItem, ShareDetailDividen
 
     class ShareDetailViewHolder(private val binding: RecyclerViewItemDividendBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
+        //Values are set here
         fun bind(dividendItem: DividendItem) {
             binding.apply {
                 itemDividendAmount.text = String.format("€ %.2f", dividendItem.amount.toDouble())

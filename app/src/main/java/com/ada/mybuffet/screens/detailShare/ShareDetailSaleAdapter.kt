@@ -9,6 +9,10 @@ import com.ada.mybuffet.databinding.RecyclerViewItemPurchaseBinding
 import com.ada.mybuffet.databinding.RecyclerViewItemShareDetailSaleBinding
 import com.ada.mybuffet.screens.detailShare.model.SaleItem
 
+/**
+ * @author Paul Pfisterer
+ * Adapter for the sale recycler view
+ */
 class ShareDetailSaleAdapter :  ListAdapter<SaleItem, ShareDetailSaleAdapter.ShareDetailViewHolder>(
     DiffCallback()
 ) {
@@ -29,7 +33,7 @@ class ShareDetailSaleAdapter :  ListAdapter<SaleItem, ShareDetailSaleAdapter.Sha
 
     class ShareDetailViewHolder(private val binding: RecyclerViewItemShareDetailSaleBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
+        //Values are set here
         fun bind(saleItem: SaleItem) {
             binding.apply {
                 itemSaleAmount.text = saleItem.shareNumber.toString()

@@ -96,7 +96,7 @@ class RefreshPortfolioTotalsWorker(appContext: Context, params: WorkerParameters
 
                         val priceDiffPercentage =
                             BigDecimal(1).minus(
-                                previousPriceBigDecimal.divide(currentPriceBigDecimal)
+                                previousPriceBigDecimal.divide(currentPriceBigDecimal, 2, RoundingMode.HALF_UP)
                             ).multiply(BigDecimal(100))
 
 
