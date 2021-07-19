@@ -79,6 +79,7 @@ class ShareDetailViewModel(
             if (symbolPrice != null) {
                 Log.i("API_CURRENT_WORTH","5. View Model API Call not null")
                 emit(Resource.Success<SymbolPrice>(symbolPrice))
+                shareDetailRepo.updatePriceInDB(shareItem.shareItemId, symbolPrice)
             } else {
                 emit(Resource.Failure<Exception>(Exception()))
             }
