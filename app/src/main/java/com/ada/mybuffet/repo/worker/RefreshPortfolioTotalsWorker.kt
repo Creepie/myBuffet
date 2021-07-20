@@ -2,24 +2,16 @@ package com.ada.mybuffet.repo.worker
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ada.mybuffet.repo.FinnhubApi
-import com.ada.mybuffet.repo.SymbolPrice
-import com.ada.mybuffet.screens.detailShare.model.ShareDetailModel
-import com.ada.mybuffet.screens.myShares.model.PortfolioValueByDate
 import com.ada.mybuffet.screens.myShares.repo.MySharesDataProvider
 import com.ada.mybuffet.screens.myShares.repo.MySharesRepository
-import com.ada.mybuffet.screens.stocks.StocksOverviewModel
-import com.ada.mybuffet.utils.NumberFormatUtils
 import com.ada.mybuffet.utils.Resource
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import retrofit2.HttpException
-import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -28,9 +20,6 @@ class RefreshPortfolioTotalsWorker(appContext: Context, params: WorkerParameters
 
     private val firestore = Firebase.firestore
     private val dataProvider = MySharesDataProvider(MySharesRepository())
-
-    // used to get stock price
-    private val shareDetailModel = ShareDetailModel()
 
     companion object {
         const val WORK_NAME = "com.ada.mybuffet.repo.worker.RefreshPortfolioTotalsWorker.kt"
@@ -63,7 +52,7 @@ class RefreshPortfolioTotalsWorker(appContext: Context, params: WorkerParameters
                     val totalHoldingsBeforeUpdate = shareItem.totalHoldings
 
                     try {
-                        val currentPriceSymbol = shareDetailModel.getCurrentPrice(shareItem.stockSymbol)
+                        val currentPriceSymbol =  FinnhubApi.retrofitService.getCurrentPrice(shareItem.stockSymbol)
                         if (currentPriceSymbol == null) {
                             Log.i("PORTFOLIO_WORKER_RUNNING", "Could not get stock price")
                             return Result.retry()
@@ -96,7 +85,7 @@ class RefreshPortfolioTotalsWorker(appContext: Context, params: WorkerParameters
 
                         val priceDiffPercentage =
                             BigDecimal(1).minus(
-                                previousPriceBigDecimal.divide(currentPriceBigDecimal)
+                                previousPriceBigDecimal.divide(currentPriceBigDecimal, 2, RoundingMode.HALF_UP)
                             ).multiply(BigDecimal(100))
 
 
@@ -121,7 +110,7 @@ class RefreshPortfolioTotalsWorker(appContext: Context, params: WorkerParameters
 
                         // increment total portfolio value
                         totalPortfolioValue = totalPortfolioValue.plus(totalHoldings)
-                    } catch (e: HttpException) {
+                    } catch (e: Exception) {
                         Log.i("PORTFOLIO_WORKER_RUNNING", "Refresh Stock on failure")
                         return Result.retry()
                     }

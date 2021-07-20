@@ -93,6 +93,14 @@ class MySharesRepository : IMySharesRepository {
         return returnValue
     }
 
+    /**
+     * @author Pinsker Harald, Paul Pfisterer
+     * Returns a map with all values need for the profit/loss overview of the whole portfolio
+     * All stock overview documents of the user are gotten from the database
+     * For each stock, a OverviewData object is created. With the OverviewData, the profit
+     * and the value change of the current holdings is calculated.
+     * The values of each stock are added and returned as a map
+     */
     override suspend fun getProfitLossOverviewDataFromDB(): Flow<Resource<HashMap<String, BigDecimal>>> =
         callbackFlow {
             // create reference to the collection in firestore

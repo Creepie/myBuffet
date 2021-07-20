@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ada.mybuffet.databinding.RecyclerViewItemFeeBinding
 import com.ada.mybuffet.screens.detailShare.model.FeeItem
 
+/**
+ * @author Paul Pfisterer
+ * Adapter for the fees recycler view
+ */
 class ShareDetailFeeAdapter :  ListAdapter<FeeItem, ShareDetailFeeAdapter.ShareDetailViewHolder>(
     DiffCallback()
 ) {
@@ -28,7 +32,7 @@ class ShareDetailFeeAdapter :  ListAdapter<FeeItem, ShareDetailFeeAdapter.ShareD
 
     class ShareDetailViewHolder(private val binding: RecyclerViewItemFeeBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
+        //Values are set here
         fun bind(feeItem: FeeItem) {
             binding.apply {
                 itemFeeAmount.text = String.format("€ %.2f", feeItem.amount.toDouble())

@@ -92,6 +92,7 @@
     <string name="share_detail_sale_deleted">Sale was deleted</string>
     <string name="share_detail_dividend_deleted">Dividend was deleted</string>
     <string name="share_detail_fee_deleted">Fee was deleted</string>
+    <string name="share_detail_cant_be_deleted">Purchase could not be delted, to many sales exist</string>
 
 
     <string name="add_item_purchase_title">Add Share Purchase</string>

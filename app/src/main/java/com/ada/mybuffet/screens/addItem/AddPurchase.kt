@@ -21,14 +21,21 @@ import com.ada.mybuffet.screens.addItem.viewModel.AddItemViewModelFactory
 import com.ada.mybuffet.screens.detailShare.model.Purchase
 import com.ada.mybuffet.screens.detailShare.repo.ShareDetailRepository
 import com.ada.mybuffet.screens.myShares.model.ShareItem
+import com.ada.mybuffet.utils.DatabaseException
+import com.ada.mybuffet.utils.InvalidSalePurchaseBalanceException
 import com.ada.mybuffet.utils.Resource
+import com.ada.mybuffet.utils.StockNotFound
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
-
+/**
+ * @author Paul Pfisterer
+ * View for the Add Purchase Screen
+ */
 class AddPurchase : Fragment(R.layout.fragment_add_item) {
-
+    //Arguments passed via the navigation, includes the shareItem
     private val args: AddPurchaseArgs by navArgs()
+    //Lazy creation of the View model via the Factory with the required arguments
     private val viewModel: AddItemViewModel by viewModels() {
         AddItemViewModelFactory(
             AddItemRepository(),
@@ -38,8 +45,8 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Get Argument
-        var shareItem = args.shareItem
+        //Get Argument. If the view was opend from the start page, the shareItem is null
+        val shareItem = args.shareItem
 
         //Setup binding
         val binding = FragmentAddItemBinding.bind(view)
@@ -47,10 +54,10 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
         binding.apply {
             //Set Symbol and name if passed in the argument
             if (shareItem != null) {
-                addItemPurchaseInputSymbol.setText(shareItem!!.stockSymbol)
+                addItemPurchaseInputSymbol.setText(shareItem.stockSymbol)
                 addItemPurchaseInputSymbol.inputType = InputType.TYPE_NULL
                 addItemPurchaseInputSymbol.setTextColor(Color.GRAY)
-                addItemPurchaseInputName.setText(shareItem!!.stockName)
+                addItemPurchaseInputName.setText(shareItem.stockName)
                 addItemPurchaseInputName.inputType = InputType.TYPE_NULL
                 addItemPurchaseInputName.setTextColor(Color.GRAY)
             }
@@ -65,7 +72,12 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
         }
     }
 
-
+    /**
+     * This function is invoked, when the form is submitted
+     * The input is validated.
+     * If everythings correct, call the onFormSubmitted method of the ViewModel
+     * If not, display a Snackbar with an error message
+     */
     private fun handleSubmit(
         binding: FragmentAddItemBinding,
         viewModel: AddItemViewModel,
@@ -73,19 +85,21 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
         view: View
     ) {
         binding.apply {
+            //Get the input
             var shareItem = shareItemVal
             val symbol = addItemPurchaseInputSymbol.text.toString()
             val name = addItemPurchaseInputName.text.toString()
             val price = addItemPurchaseInputPrice.text.toString()
             val numberString = addItemPurchaseInputNumber.text.toString()
             val fees = addItemPurchaseInputFees.text.toString()
-
+            //Check if everything is filled out
             if (symbol.isNotEmpty()
                 && name.isNotEmpty()
                 && price.isNotEmpty()
                 && numberString.isNotEmpty()
                 && fees.isNotEmpty()
             ) {
+                //Valid Input, start Animation, Create purchaseItem
                 addItemPurchaseSaveButton.startAnimation()
                 val number = numberString.toString().toInt()
                 val purchaseItem = Purchase(
@@ -94,15 +108,19 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
                     sharePrice = price,
                     shareNumber = number
                 )
+                //Create shareItem, where the id is set to null
                 if (shareItem == null) {
                     shareItem = ShareItem(
                         stockName = name,
                         stockSymbol = symbol
                     )
                 }
+                //Call the method of the view model with the purchaseItem and the shareItem
+                //The shareItems id is null -> this will invoke the createPurchaseWithoutId method
                 viewModel.onFormSubmitted(purchaseItem, shareItem).observe(viewLifecycleOwner) {
                     when (it) {
                         is Resource.Success -> {
+                            //Animate Success
                             val btnFillColor = activity?.let { it1 ->
                                 ContextCompat.getColor(
                                     it1.applicationContext, R.color.actionColor
@@ -117,21 +135,31 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
                                     )
                                 )
                             }
+                            //Navigate back, with delay for animation to be fully experienced
                             Handler(Looper.getMainLooper()).postDelayed({
                                 view.findNavController().popBackStack()
                             }, 600)
                         }
                         is Resource.Failure -> {
-                            Snackbar.make(
-                                requireView(),
-                                "Stock Name could not be found",
-                                Snackbar.LENGTH_LONG
-                            ).show()
+                            //End Animation
                             addItemPurchaseSaveButton.revertAnimation()
+                            //Display Snackbar, depending on the error
+                            val exception: Exception = it.throwable as Exception
+                            if (exception is StockNotFound) {
+                                Snackbar.make(
+                                    requireView(), exception.message!!, Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                            if (exception is DatabaseException) {
+                                Snackbar.make(
+                                    requireView(), exception.message!!, Snackbar.LENGTH_LONG
+                                ).show()
+                            }
                         }
                     }
                 }
             } else {
+                //Invalid Input, Display error snackbar
                 Snackbar.make(
                     requireView(),
                     "All Fields have to be filled",

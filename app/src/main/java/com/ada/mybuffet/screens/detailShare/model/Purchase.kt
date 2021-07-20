@@ -8,6 +8,10 @@ import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
 import java.util.Date
 
+/**
+ *  * @author Paul Pfisterer
+ * Represents one Purchase in the database
+ */
 @Parcelize
 data class Purchase (
     val date: Date? = null,
@@ -18,6 +22,9 @@ data class Purchase (
     val id: String = "",
         ) : Parcelable {
 
+    /**
+     * Get the value of the purchase by multiplying the count with the share price
+     */
     fun getValue(): Double {
         try {
             return sharePrice.toDouble() * shareNumber
@@ -27,6 +34,9 @@ data class Purchase (
         return 0.00
     }
 
+    /**
+     * Get a formatted string representation of the date
+     */
     fun getFormattedDate(): String {
         val pattern = "dd.MM.yyyy"
         val simpleDateFormat = SimpleDateFormat(pattern)

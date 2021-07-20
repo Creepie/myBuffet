@@ -6,6 +6,10 @@ import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ *  * @author Paul Pfisterer
+ * Represents one Sale in the database
+ */
 data class SaleItem(
     val date: Date? = null,
     val fees: String = "",
@@ -14,6 +18,9 @@ data class SaleItem(
     @DocumentId
     val id: String = "",
 ) {
+    /**
+     * Get the value of the sale by multiplying the count with the share price
+     */
     fun getValue(): Double {
         try {
             return sharePrice.toDouble() * shareNumber
@@ -23,6 +30,9 @@ data class SaleItem(
         return 0.00
     }
 
+    /**
+     * Get a formatted string representation of the date
+     */
     fun getFormattedDate(): String {
         val pattern = "dd.MM.yyyy"
         val simpleDateFormat = SimpleDateFormat(pattern)
