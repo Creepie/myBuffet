@@ -147,17 +147,13 @@ class AddItemRepository : IAddItemRepository {
     private suspend fun getStock(symbol: String, item: Purchase): ShareItem {
         try {
             //Search for Stock with symbol
-            val getNameUrl =
-                "https://finnhub.io/api/v1/search?q=${symbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
-            val stockList = FinnhubApi.retrofitService.getName(getNameUrl)
+            val stockList = FinnhubApi.retrofitService.getName(symbol)
             if (stockList.count == 0) {
                 throw StockNotFound("A stock with this symbol could not be found")
             }
             //If found, get the price and create a ShareITem
             val stockResult = stockList.result[0]
-            val getPriceUrl =
-                "https://finnhub.io/api/v1/quote?symbol=${stockResult.symbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
-            val price = FinnhubApi.retrofitService.getCurrentPrice(getPriceUrl)
+            val price = FinnhubApi.retrofitService.getCurrentPrice(stockResult.symbol)
             val currentPrice = price.c
             val previousPrice = price.pc
             val pricePercentage = (1 - (previousPrice / currentPrice)) * 100

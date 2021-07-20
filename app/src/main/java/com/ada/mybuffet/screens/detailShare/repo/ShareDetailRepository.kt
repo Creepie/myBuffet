@@ -189,10 +189,8 @@ class ShareDetailRepository : IShareDetailRepository {
      * Gets the current price of a stock with the passed symbol
      */
     override suspend fun getCurrentPrice(symbol: String): SymbolPrice? {
-        val url =
-            "https://finnhub.io/api/v1/quote?symbol=${symbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
         return try {
-            FinnhubApi.retrofitService.getCurrentPrice(url)
+            FinnhubApi.retrofitService.getCurrentPrice(symbol)
         } catch (networkError: IOException) {
             null
         }

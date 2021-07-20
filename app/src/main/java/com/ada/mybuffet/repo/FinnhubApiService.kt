@@ -35,15 +35,15 @@ interface FinnhubApiService{
      * this function is to get the right name of the share
      * https://finnhub.io/docs/api/symbol-search
      */
-    @GET
-    suspend fun getName(@Url url: String): SymbolLookupResponse
+    @GET("search?token=$token")
+    suspend fun getName(@Query("q") symbol: String): SymbolLookupResponse
 
     /**
      * this function is to get the current price of the share
      * https://finnhub.io/docs/api/quote
      */
-    @GET
-    suspend fun getCurrentPrice(@Url url: String): SymbolPrice
+    @GET("quote?token=$token")
+    suspend fun getCurrentPrice(@Query("symbol") symbol: String): SymbolPrice
 
     /**
      * this function is to get press releases of a share

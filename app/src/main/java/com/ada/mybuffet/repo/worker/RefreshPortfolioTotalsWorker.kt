@@ -52,8 +52,7 @@ class RefreshPortfolioTotalsWorker(appContext: Context, params: WorkerParameters
                     val totalHoldingsBeforeUpdate = shareItem.totalHoldings
 
                     try {
-                        val url = "https://finnhub.io/api/v1/quote?symbol=${shareItem.stockSymbol}&token=sandbox_c2vgcniad3i9mrpv9cn0"
-                        val currentPriceSymbol =  FinnhubApi.retrofitService.getCurrentPrice(url)
+                        val currentPriceSymbol =  FinnhubApi.retrofitService.getCurrentPrice(shareItem.stockSymbol)
                         if (currentPriceSymbol == null) {
                             Log.i("PORTFOLIO_WORKER_RUNNING", "Could not get stock price")
                             return Result.retry()
