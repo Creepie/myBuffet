@@ -350,17 +350,17 @@ class ShareDetailRepository : IShareDetailRepository {
                 //the stock overview is updated in the db with the calculated values
                 stockDocRef.update(
                     "totalInvestment",
-                    newTotalInvestment.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalInvestment),
                     "totalHoldings",
-                    newTotalHoldings.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalHoldings),
                     "totalShareNumber",
-                    newShareNumber,
+                    String.format(Locale.ENGLISH, "%.2f", newShareNumber),
                     "totalFees",
-                    newTotalFees.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalFees),
                     "totalPurchaseNumber",
-                    newTotalPurchaseNumber,
+                    String.format(Locale.ENGLISH, "%.2f", newTotalPurchaseNumber),
                     "totalPurchaseAmount",
-                    newTotalPurchaseAmount.toString()
+                    String.format(Locale.ENGLISH, "%.2f", newTotalPurchaseAmount),
                 )
             }
             is SaleItem -> {
@@ -400,17 +400,17 @@ class ShareDetailRepository : IShareDetailRepository {
                 //the stock overview is updated in the db with the calculated values
                 stockDocRef.update(
                     "totalHoldings",
-                    newTotalHoldings.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalHoldings),
                     "totalShareNumber",
-                    newShareNumber,
+                    String.format(Locale.ENGLISH, "%.2f", newShareNumber),
                     "totalFees",
-                    newTotalFees.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalFees),
                     "totalInvestment",
-                    newTotalInvestment.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalInvestment),
                     "totalSaleNumber",
-                    newTotalSaleNumber.toInt(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalSaleNumber),
                     "totalSaleAmount",
-                    newTotalSaleAmount.toString()
+                    String.format(Locale.ENGLISH, "%.2f", newTotalSaleAmount),
                 )
             }
             is FeeItem -> {
@@ -427,15 +427,15 @@ class ShareDetailRepository : IShareDetailRepository {
                 //the stock overview is updated in the db with the calculated values
                 stockDocRef.update(
                     "totalInvestment",
-                    newTotalInvestment.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalInvestment),
                     "totalFees",
-                    newTotalFees.toString()
+                    String.format(Locale.ENGLISH, "%.2f", newTotalFees)
                 )
             }
             is DividendItem -> {
                 val dividendItem = item as DividendItem
                 //new values are calculated
-                val newTotalInvestment =
+                val newTotalDividends =
                     calculate(
                         stockItem.totalDividends.toDouble(),
                         dividendItem.amount.toDouble(),
@@ -444,7 +444,7 @@ class ShareDetailRepository : IShareDetailRepository {
                 //the stock overview is updated in the db with the calculated values
                 stockDocRef.update(
                     "totalDividends",
-                    newTotalInvestment.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalDividends)
                 )
             }
             else -> throw DatabaseException("Item could not be added")

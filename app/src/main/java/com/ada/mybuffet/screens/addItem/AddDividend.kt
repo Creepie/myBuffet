@@ -111,6 +111,10 @@ class AddDividend : Fragment(R.layout.fragment_add_dividend) {
                         is Resource.Failure -> {
                             //End Animation
                             addItemDividendSaveButton.revertAnimation()
+                            addItemDividendSaveButton.background = ContextCompat.getDrawable(
+                                binding.root.context,
+                                R.drawable.btn_background_blue
+                            )
                             //Display Snackbar, depending on the error
                             val exception: Exception = it.throwable as Exception
                             if (exception is DatabaseException) {

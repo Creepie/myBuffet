@@ -109,6 +109,10 @@ class AddFee : Fragment(R.layout.fragment_add_fee) {
                         is Resource.Failure -> {
                             //End Animation
                             addItemFeeSaveButton.revertAnimation()
+                            addItemFeeSaveButton.background = ContextCompat.getDrawable(
+                                binding.root.context,
+                                R.drawable.btn_background_blue
+                            )
                             //Display Snackbar, depending on the error
                             val exception: Exception = it.throwable as Exception
                             if (exception is DatabaseException) {
