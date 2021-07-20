@@ -21,10 +21,7 @@ import com.ada.mybuffet.screens.addItem.viewModel.AddItemViewModelFactory
 import com.ada.mybuffet.screens.detailShare.model.Purchase
 import com.ada.mybuffet.screens.detailShare.repo.ShareDetailRepository
 import com.ada.mybuffet.screens.myShares.model.ShareItem
-import com.ada.mybuffet.utils.DatabaseException
-import com.ada.mybuffet.utils.InvalidSalePurchaseBalanceException
-import com.ada.mybuffet.utils.Resource
-import com.ada.mybuffet.utils.StockNotFound
+import com.ada.mybuffet.utils.*
 import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
@@ -156,6 +153,11 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
                                 ).show()
                             }
                             if (exception is DatabaseException) {
+                                Snackbar.make(
+                                    requireView(), exception.message!!, Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                            if (exception is StockRestrictedAccess) {
                                 Snackbar.make(
                                     requireView(), exception.message!!, Snackbar.LENGTH_LONG
                                 ).show()
