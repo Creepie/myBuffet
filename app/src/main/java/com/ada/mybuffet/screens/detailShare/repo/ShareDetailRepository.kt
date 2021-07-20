@@ -28,10 +28,8 @@ import java.util.*
 class ShareDetailRepository : IShareDetailRepository {
     //firestore instance
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-
     //firestore user
     private val user = FirebaseAuth.getInstance().currentUser
-
     //tag for logging
     private val TAG = "SHARE_DETAIL_REPOSITORY"
 
@@ -287,6 +285,8 @@ class ShareDetailRepository : IShareDetailRepository {
      * a change in one of the collections(sale, fee, dividend, purchase) occurs
      * The added boolean, indicates whether the item was added or deleted and is passed to the
      * calculate function
+     * In case of a deletion of a purchase, it is also checked if its valid (less sales than purchases)
+     * if not, an Exception is thrown
      */
     private suspend fun updateStock(
         stockId: String,

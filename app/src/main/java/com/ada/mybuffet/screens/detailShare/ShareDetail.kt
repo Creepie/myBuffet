@@ -179,7 +179,7 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                                             .observe(viewLifecycleOwner) {}
                                     }.show()
                             }
-                            //On failure, display snackbar, and undo swipping by refreshing
+                            //On failure, display snackbar, and undo swiping by refreshing
                             is Resource.Failure -> {
                                 val exception: Exception = it.throwable as Exception
                                 if (exception is InvalidSalePurchaseBalanceException) {
