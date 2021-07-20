@@ -8,10 +8,7 @@ import com.ada.mybuffet.screens.detailShare.model.FeeItem
 import com.ada.mybuffet.screens.detailShare.model.Purchase
 import com.ada.mybuffet.screens.detailShare.model.SaleItem
 import com.ada.mybuffet.screens.myShares.model.ShareItem
-import com.ada.mybuffet.utils.DatabaseException
-import com.ada.mybuffet.utils.InvalidSalePurchaseBalanceException
-import com.ada.mybuffet.utils.Resource
-import com.ada.mybuffet.utils.StockNotFound
+import com.ada.mybuffet.utils.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -154,7 +151,11 @@ class AddItemRepository : IAddItemRepository {
             }
             //If found, get the price and create a ShareITem
             val stockResult = stockList.result[0]
-            val price = FinnhubApi.retrofitService.getCurrentPrice(stockResult.symbol)
+            val price = try {
+                FinnhubApi.retrofitService.getCurrentPrice(stockResult.symbol)
+            } catch (e: Exception) {
+                throw StockRestrictedAccess("This stock belongs to Finnhub premium")
+            }
             val currentPrice = price.c
             val previousPrice = price.pc
             val pricePercentage = (1 - (previousPrice / currentPrice)) * 100
