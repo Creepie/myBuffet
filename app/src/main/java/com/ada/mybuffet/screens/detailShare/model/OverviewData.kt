@@ -1,5 +1,10 @@
 package com.ada.mybuffet.screens.detailShare.model
 
+/**
+ *  * @author Paul Pfisterer
+ * Data class that stores all the relevant information
+ * that can be gotten from the collections(purchases, sales, fees, dividends) for one stock
+ */
 data class OverviewData(
     val purchaseSum: Double = 0.0,
     val purchaseFeeSum: Double = 0.0,

@@ -24,6 +24,8 @@ import com.google.android.material.snackbar.Snackbar
 
 import android.view.animation.RotateAnimation
 import android.widget.ImageButton
+import com.ada.mybuffet.utils.DatabaseException
+import com.ada.mybuffet.utils.InvalidSalePurchaseBalanceException
 import com.ada.mybuffet.utils.StockCalculationUtils
 
 
@@ -179,11 +181,17 @@ class ShareDetail : Fragment(R.layout.fragment_share_detail) {
                             }
                             //On failure, display snackbar, and undo swipping by refreshing
                             is Resource.Failure -> {
-                                if (item is Purchase) {
-                                    val failureText = R.string.share_detail_cant_be_deleted
+                                val exception: Exception = it.throwable as Exception
+                                if (exception is InvalidSalePurchaseBalanceException) {
                                     shareDetailPurchaseAdapter.notifyItemChanged(viewHolder.adapterPosition)
                                     Snackbar.make(
-                                        requireView(), failureText, Snackbar.LENGTH_LONG
+                                        requireView(), exception.message!!, Snackbar.LENGTH_LONG
+                                    ).show()
+                                }
+                                if (exception is DatabaseException) {
+                                    shareDetailPurchaseAdapter.notifyItemChanged(viewHolder.adapterPosition)
+                                    Snackbar.make(
+                                        requireView(), exception.message!!, Snackbar.LENGTH_LONG
                                     ).show()
                                 }
                             }

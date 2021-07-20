@@ -22,7 +22,6 @@ class ShareDetailViewModel(
     private val shareDetailRepo: IShareDetailRepository,
     private val shareItem: ShareItem
 ) : ViewModel() {
-    // private val shareDetailModel = ShareDetailModel()
 
     /**
      * Fetches the purchase list. Returns a Resource.Success with a list from the repo on success.
@@ -132,6 +131,26 @@ class ShareDetailViewModel(
                 val price = (it.data as SymbolPrice)
                 currentWorth = price.c
                 currentWorthPercentage = (1-(price.pc/price.c))*100
+
+                value = Resource.Success(
+                    OverviewData(
+                        purchaseSum = purchaseSum,
+                        purchaseFeeSum = purchaseFeeSum,
+                        purchaseCount = purchaseCount,
+                        saleSum = saleSum,
+                        saleFeeSum = saleFeeSum,
+                        saleCount = saleCount,
+                        feeSum = feeSum,
+                        dividendSum = dividendSum,
+                        currentWorth = currentWorth,
+                        currentWorthPercentage = currentWorthPercentage
+                    )
+                )
+            }
+            if (it is Resource.Failure) {
+                //If price could not be loaded, use last price from database
+                currentWorth = shareItem.currentPrice.toDouble()
+                currentWorthPercentage = shareItem.currentPricePercent.toDouble()
 
                 value = Resource.Success(
                     OverviewData(
