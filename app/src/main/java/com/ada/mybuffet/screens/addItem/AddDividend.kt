@@ -83,6 +83,16 @@ class AddDividend : Fragment(R.layout.fragment_add_dividend) {
             if (amount.isNotEmpty()
                 && numberString.isNotEmpty()
             ) {
+                //Prevent 0 as input for values
+                if(amount.toDouble() == 0.0 || numberString.toDouble() == 0.0) {
+                    Snackbar.make(
+                        requireView(),
+                        "Zero as value is not accepted",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    return
+                }
+
                 //Valid Input, start Animation, Create dividendItem
                 addItemDividendSaveButton.startAnimation()
                 val number = numberString.toString().toInt()

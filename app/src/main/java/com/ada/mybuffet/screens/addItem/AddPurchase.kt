@@ -97,6 +97,16 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
                 && numberString.isNotEmpty()
                 && fees.isNotEmpty()
             ) {
+                //Prevent 0 as input for values
+                if(price.toDouble() == 0.0 || numberString.toDouble() == 0.0) {
+                    Snackbar.make(
+                        requireView(),
+                        "Zero as value is not accepted",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    return
+                }
+
                 //Valid Input, start Animation, Create purchaseItem
                 addItemPurchaseSaveButton.startAnimation()
                 val number = numberString.toString().toInt()

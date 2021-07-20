@@ -57,12 +57,14 @@ class AddItemRepository : IAddItemRepository {
             else -> return Resource.Failure(Exception())
         }
         //update the stock overview
+        Log.d("PURCHASE", "before the updateStock")
         try {
             updateStock(shareItem = stockItem, item = item)
         } catch (e: Exception) {
             //If there is an error, return
             return Resource.Failure(e)
         }
+        Log.d("PURCHASE", "after the updateStock")
         //add the item with the id to the collection with the path name
         val docRef = firestore.collection("users").document(userid).collection("shares")
             .document(stockItem.shareItemId).collection(pathName)
@@ -216,20 +218,22 @@ class AddItemRepository : IAddItemRepository {
                     stockItem.totalPurchaseNumber + purchase.shareNumber
                 val newTotalPurchaseAmount: Double =
                     stockItem.totalPurchaseAmount.toDouble() + purchase.shareNumber * purchase.sharePrice.toDouble()
+                Log.d("PURCHASE", "before the conversion")
                 stockDocRef.update(
                     "totalInvestment",
                     String.format(Locale.ENGLISH, "%.2f", newTotalInvestment),
                     "totalHoldings",
                     String.format(Locale.ENGLISH, "%.2f", newTotalHoldings),
                     "totalShareNumber",
-                    String.format(Locale.ENGLISH, "%.2f", newShareNumber),
+                    newShareNumber.toInt(),
                     "totalFees",
                     String.format(Locale.ENGLISH, "%.2f", newTotalFees),
                     "totalPurchaseNumber",
-                    String.format(Locale.ENGLISH, "%.2f", newTotalPurchaseNumber),
+                    newTotalPurchaseNumber.toInt(),
                     "totalPurchaseAmount",
                     String.format(Locale.ENGLISH, "%.2f", newTotalPurchaseAmount),
                 )
+                Log.d("PURCHASE", "after the conversion")
             }
             is SaleItem -> {
                 //If a sale is added, it is checked, whether there would be more sales
@@ -254,13 +258,13 @@ class AddItemRepository : IAddItemRepository {
                     "totalHoldings",
                     String.format(Locale.ENGLISH, "%.2f", newTotalHoldings),
                     "totalShareNumber",
-                    String.format(Locale.ENGLISH, "%.2f", newShareNumber),
+                    newShareNumber.toInt(),
                     "totalFees",
                     String.format(Locale.ENGLISH, "%.2f", newTotalFees),
                     "totalInvestment",
                     String.format(Locale.ENGLISH, "%.2f", newTotalInvestment),
                     "totalSaleNumber",
-                    String.format(Locale.ENGLISH, "%.2f", newTotalSaleNumber),
+                    newTotalSaleNumber.toInt(),
                     "totalSaleAmount",
                     String.format(Locale.ENGLISH, "%.2f", newTotalSaleAmount),
                 )
