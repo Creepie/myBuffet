@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@string/font_roboto_medium"
-        android:text="@string/fee_item_description_label"
+        android:text="@string/add_item_fee_description_label"
         android:textColor="@color/grayText"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"

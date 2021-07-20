@@ -92,13 +92,16 @@ class ShareDetailViewModel(
         try {
             val symbolPrice = shareDetailRepo.getCurrentPrice(shareItem.stockSymbol)
             if (symbolPrice != null) {
+                Log.d("PURCHASE", "symbol price gotten")
                 emit(Resource.Success<SymbolPrice>(symbolPrice))
                 shareDetailRepo.updatePriceInDB(shareItem.shareItemId, symbolPrice)
             } else {
+                Log.d("PURCHASE", "symbol not price gotten")
                 emit(Resource.Failure<Exception>(Exception()))
             }
 
         } catch (e: Exception) {
+            Log.d("PURCHASE", "symbol not price gotten")
             emit(Resource.Failure<Exception>(e))
         }
     }

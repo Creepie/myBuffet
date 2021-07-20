@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import java.io.IOException
+import java.net.URLEncoder
 import java.util.*
 import kotlin.Exception
 
@@ -216,17 +217,17 @@ class AddItemRepository : IAddItemRepository {
                     stockItem.totalPurchaseAmount.toDouble() + purchase.shareNumber * purchase.sharePrice.toDouble()
                 stockDocRef.update(
                     "totalInvestment",
-                    newTotalInvestment.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalInvestment),
                     "totalHoldings",
-                    newTotalHoldings.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalHoldings),
                     "totalShareNumber",
-                    newShareNumber,
+                    String.format(Locale.ENGLISH, "%.2f", newShareNumber),
                     "totalFees",
-                    newTotalFees.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalFees),
                     "totalPurchaseNumber",
-                    newTotalPurchaseNumber,
+                    String.format(Locale.ENGLISH, "%.2f", newTotalPurchaseNumber),
                     "totalPurchaseAmount",
-                    newTotalPurchaseAmount.toString()
+                    String.format(Locale.ENGLISH, "%.2f", newTotalPurchaseAmount),
                 )
             }
             is SaleItem -> {
@@ -236,7 +237,7 @@ class AddItemRepository : IAddItemRepository {
                 val sale = item as SaleItem
                 var newShareNumber: Int = stockItem.totalShareNumber - sale.shareNumber
                 if (newShareNumber < 0) {
-                    throw InvalidSalePurchaseBalanceException("Purchase could not be deleted, to many sales exist")
+                    throw InvalidSalePurchaseBalanceException("Sale could not be created, to few purchases exist")
                 }
                 //new values are calculated
                 val newTotalHoldings: Double = stockItem.currentPrice.toDouble() * newShareNumber
@@ -250,17 +251,17 @@ class AddItemRepository : IAddItemRepository {
                 //the stock overview is updated in the db with the calculated values
                 stockDocRef.update(
                     "totalHoldings",
-                    newTotalHoldings.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalHoldings),
                     "totalShareNumber",
-                    newShareNumber,
+                    String.format(Locale.ENGLISH, "%.2f", newShareNumber),
                     "totalFees",
-                    newTotalFees.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalFees),
                     "totalInvestment",
-                    newTotalInvestment.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalInvestment),
                     "totalSaleNumber",
-                    newTotalSaleNumber,
+                    String.format(Locale.ENGLISH, "%.2f", newTotalSaleNumber),
                     "totalSaleAmount",
-                    newTotalSaleAmount.toString()
+                    String.format(Locale.ENGLISH, "%.2f", newTotalSaleAmount),
                 )
             }
             is FeeItem -> {
@@ -273,9 +274,9 @@ class AddItemRepository : IAddItemRepository {
                 //the stock overview is updated in the db with the calculated values
                 stockDocRef.update(
                     "totalInvestment",
-                    newTotalInvestment.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalInvestment),
                     "totalFees",
-                    newTotalFees.toString()
+                    String.format(Locale.ENGLISH, "%.2f", newTotalFees),
                 )
             }
             is DividendItem -> {
@@ -286,7 +287,7 @@ class AddItemRepository : IAddItemRepository {
                 //the stock overview is updated in the db with the calculated values
                 stockDocRef.update(
                     "totalDividends",
-                    newTotalInvestment.toString(),
+                    String.format(Locale.ENGLISH, "%.2f", newTotalInvestment),
                 )
             }
             else -> throw DatabaseException("Item could not be added")

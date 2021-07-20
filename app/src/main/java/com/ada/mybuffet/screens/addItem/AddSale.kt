@@ -141,6 +141,10 @@ class AddSale : Fragment(R.layout.fragment_add_sale) {
                         is Resource.Failure -> {
                             //End Animation
                             addItemSaleSaveButton.revertAnimation()
+                            addItemSaleSaveButton.background = ContextCompat.getDrawable(
+                                binding.root.context,
+                                R.drawable.btn_background_blue
+                            )
                             //Display Snackbar, depending on the error
                             val exception: Exception = it.throwable as Exception
                             if (exception is InvalidSalePurchaseBalanceException) {

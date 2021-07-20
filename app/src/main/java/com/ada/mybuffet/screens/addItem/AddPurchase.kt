@@ -35,6 +35,7 @@ import java.util.*
 class AddPurchase : Fragment(R.layout.fragment_add_item) {
     //Arguments passed via the navigation, includes the shareItem
     private val args: AddPurchaseArgs by navArgs()
+
     //Lazy creation of the View model via the Factory with the required arguments
     private val viewModel: AddItemViewModel by viewModels() {
         AddItemViewModelFactory(
@@ -45,7 +46,7 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //Get Argument. If the view was opend from the start page, the shareItem is null
+        //Get Argument. If the view was opened from the start page, the shareItem is null
         val shareItem = args.shareItem
 
         //Setup binding
@@ -143,6 +144,10 @@ class AddPurchase : Fragment(R.layout.fragment_add_item) {
                         is Resource.Failure -> {
                             //End Animation
                             addItemPurchaseSaveButton.revertAnimation()
+                            addItemPurchaseSaveButton.background = ContextCompat.getDrawable(
+                                binding.root.context,
+                                R.drawable.btn_background_blue
+                            )
                             //Display Snackbar, depending on the error
                             val exception: Exception = it.throwable as Exception
                             if (exception is StockNotFound) {
