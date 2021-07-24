@@ -51,7 +51,8 @@ interface FinnhubApiService{
      */
     @GET
     suspend fun getPressNews(@Url url: String): SymbolPressResponse
-
+   // @GET("press-releases?token=$token")
+   // suspend fun getPressNews(@Query("symbol") symbol: String): SymbolPressResponse
 
     /**
      * this function is to get the current exchangeRate

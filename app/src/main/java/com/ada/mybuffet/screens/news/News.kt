@@ -3,6 +3,7 @@ package com.ada.mybuffet.screens.news
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RectShape
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,15 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ada.mybuffet.R
 import com.ada.mybuffet.databinding.FragmentNewsBinding
 import com.ada.mybuffet.features.NewsRecyclerAdapter
 import com.ada.mybuffet.repo.StockShare
 import com.ada.mybuffet.repo.SymbolPressResponse
+import com.ada.mybuffet.screens.stocks.StocksOverviewDirections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,7 +35,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [News.newInstance] factory method to
  * create an instance of this fragment.
  */
-class News : Fragment() {
+class News : Fragment(), NewsRecyclerViewClickListener {
     var _binding: FragmentNewsBinding? = null
     val binding: FragmentNewsBinding get() = _binding!!
 
@@ -62,7 +66,7 @@ class News : Fragment() {
        // binding.newsRecyclerViewStocks.layoutManager = LinearLayoutManager(activity)
 
 
-        val newsListAdapter = NewsListAdapter()
+        val newsListAdapter = NewsListAdapter(this)
 
         binding.apply {
             //recycler
@@ -83,17 +87,12 @@ class News : Fragment() {
                     })
             }
 
-            //spinner
-            newsSPChooseStock.apply {
-                val list = ArrayList<String>()
-                list.addAll(viewModel.model.map.keys.toList())
-                list.add("All")
-                adapter = ArrayAdapter(context,android.R.layout.simple_spinner_item,list)
-            }
+
 
         }
 
 
+        /*
         binding.newsSPChooseStock.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -109,6 +108,8 @@ class News : Fragment() {
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
+         */
 
 
         val observer = Observer<MutableList<SymbolPressResponse>> {
@@ -170,6 +171,15 @@ class News : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
+    override fun onCardClicked(shareItem: SymbolPressResponse) {
+        Log.d("TAG", "Clicked")
+        //go to detail screen of the stock share
+        val action = NewsDirections.actionNewsToNewsArticle(shareItem)
+        findNavController().navigate(action)
+    }
+
 
     companion object {
         /**

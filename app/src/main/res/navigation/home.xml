@@ -37,7 +37,12 @@
         android:id="@+id/news"
         android:name="com.ada.mybuffet.screens.news.News"
         android:label="fragment_news"
-        tools:layout="@layout/fragment_news" />
+        tools:layout="@layout/fragment_news" >
+        <action
+            android:id="@+id/action_news_to_newsArticle"
+            app:destination="@+id/newsDetail"
+            />
+    </fragment>
     <fragment
         android:id="@+id/stocks"
         android:name="com.ada.mybuffet.screens.stocks.StocksOverview"
@@ -112,5 +117,14 @@
         <argument
             android:name="stockShare"
             app:argType="com.ada.mybuffet.repo.StockShare" />
+    </dialog>
+    <dialog
+        android:id="@+id/newsDetail"
+        android:name="com.ada.mybuffet.screens.news.newsDetail.NewsDetail"
+        android:label="fragment_news_article"
+        tools:layout="@layout/fragment_news_article" >
+        <argument
+            android:name="SymbolPressResponse"
+            app:argType="com.ada.mybuffet.repo.SymbolPressResponse" />
     </dialog>
 </navigation>

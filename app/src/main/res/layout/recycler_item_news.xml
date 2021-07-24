@@ -30,4 +30,15 @@ android:background="@drawable/layout_pill_bg"
     app:layout_constraintStart_toStartOf="@+id/recycler_item_sub"
     app:layout_constraintTop_toBottomOf="@+id/recycler_item_sub" />
 
+    <TextView
+        android:id="@+id/recycler_item_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/myShares_rv_placeholder_name"
+        android:fontFamily="@string/font_roboto_medium"
+        android:textSize="10sp"
+        android:textColor="@color/grayText"
+        app:layout_constraintStart_toStartOf="@+id/recycler_item_header"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_item_header" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

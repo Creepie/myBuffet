@@ -27,6 +27,15 @@ class NewsModel() {
         "https://finnhub.io/api/v1/press-releases?symbol=VOE.VI&token=sandbox_c2vgcniad3i9mrpv9cn0"
     )
 
+
+    /*
+    var urlList = arrayListOf<String>(
+        "AAPL",
+        "VOE.VI"
+    )
+
+     */
+
     suspend fun loadAll(): ArrayList<SymbolPressResponse>{
         var list = ArrayList<SymbolPressResponse>()
         var time = System.currentTimeMillis()

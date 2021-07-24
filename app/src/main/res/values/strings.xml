@@ -136,5 +136,9 @@
 
     <string name="news_title">News</string>
 
+    <string name="profile_title">Profile</string>
+    <string name="profile_name">Name</string>
+    <string name="profile_email">Email</string>
+
 
 </resources>
