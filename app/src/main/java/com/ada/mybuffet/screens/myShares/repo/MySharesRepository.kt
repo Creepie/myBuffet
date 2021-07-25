@@ -16,12 +16,16 @@ import kotlinx.coroutines.tasks.await
 import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.util.ArrayList
 
 class MySharesRepository : IMySharesRepository {
 
     private val TAG = "MY_SHARES_REPOSITORY"
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
+    companion object {
+        var shareItemStringList: ArrayList<String> = arrayListOf()
+    }
 
     override suspend fun getShareItemsFromDB(): Flow<Resource<MutableList<ShareItem>>> =
         callbackFlow {
@@ -42,6 +46,7 @@ class MySharesRepository : IMySharesRepository {
                         val shareItem = doc.toObject(ShareItem::class.java)
                         if (shareItem != null) {
                             shareItemList.add(shareItem)
+                            shareItemStringList.add(shareItem.stockSymbol)
                         }
                     }
 
@@ -63,7 +68,7 @@ class MySharesRepository : IMySharesRepository {
             IllegalAccessException()
         )
 
-        val shareItemList = mutableListOf<ShareItem>()
+        var shareItemList = mutableListOf<ShareItem>()
         var returnValue: Resource<MutableList<ShareItem>> = Resource.Failure(IOException())
 
         // create reference to the collection in firestore

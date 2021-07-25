@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ada.mybuffet.databinding.RecyclerItemNewsBinding
 import com.ada.mybuffet.repo.SymbolPressResponse
 
-
+/**
+ * @author Selin Bilge
+ */
 class NewsListAdapter(
     private val listener: NewsRecyclerViewClickListener
 ) :  ListAdapter<SymbolPressResponse, NewsListAdapter.StockDetailViewHolder>(
@@ -38,11 +40,9 @@ class NewsListAdapter(
             fun bind(share: SymbolPressResponse) {
                 binding.apply {
 
+                    var index = 0
                     for (i in share.majorDevelopment.indices){
-                        globalArticle = share.majorDevelopment.get(i).description
-                        globalHeadline = share.majorDevelopment.get(i).headline
-                        globalSymbol = share.majorDevelopment.get(i).symbol
-
+                        index = i
                         recyclerItemHeader.text = share.majorDevelopment.get(i).headline
                         recyclerItemSub.text = share.majorDevelopment.get(i).symbol
                         recyclerItemDate.text = share.majorDevelopment.get(i).datetime
@@ -50,6 +50,9 @@ class NewsListAdapter(
 
                     root.setOnClickListener {
                         listener.onCardClicked(share)
+                        globalArticle = share.majorDevelopment.get(index).description
+                        globalHeadline = share.majorDevelopment.get(index).headline
+                        globalSymbol = share.majorDevelopment.get(index).symbol
                     }
 
                 }

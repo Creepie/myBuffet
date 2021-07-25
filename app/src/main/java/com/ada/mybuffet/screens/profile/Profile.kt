@@ -16,7 +16,9 @@ import com.google.firebase.ktx.Firebase
 import android.R
 import kotlinx.android.synthetic.main.fragment_profile.view.*
 
-
+/**
+ * @author Selin Bilge
+ */
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -71,7 +73,7 @@ class Profile : Fragment() {
 
         mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
-        binding.tVPfNameField.text = currentUser?.displayName
+      //  binding.tVPfNameField.text = currentUser?.displayName
         binding.tVPfEmailField.text = currentUser?.email
 
         return binding.root

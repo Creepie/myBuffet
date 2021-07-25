@@ -9,12 +9,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.ada.mybuffet.features.NewsRecyclerAdapter
 import com.ada.mybuffet.repo.FinnhubApi
+import com.ada.mybuffet.repo.StockShare
 import com.ada.mybuffet.repo.SymbolPressResponse
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.IOException
 
+/**
+ * @author Selin Bilge
+ */
 class NewsViewModel (application: Application) : AndroidViewModel(application){
     var model = NewsModel()
 
@@ -33,16 +35,22 @@ class NewsViewModel (application: Application) : AndroidViewModel(application){
        viewModelScope.launch {
            _news.value = model.loadAll()
        }
+
+
    }
 
 
 
-
+/*
     fun chanceStockData(position: Int) {
         CoroutineScope(Dispatchers.IO).launch {
             _news.postValue(model.loadSharesFromFirebase(model.indexList[position]))
         }
     }
+
+ */
+
+
 
 
 

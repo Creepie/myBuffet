@@ -17,6 +17,7 @@ import retrofit2.http.Url
  * normal: c2vgcniad3i9mrpv9cmg
  */
 
+
 private const val Base_URL = "https://finnhub.io/api/v1/"
 
 private const val token = "c2vgcniad3i9mrpv9cmg"
@@ -49,10 +50,10 @@ interface FinnhubApiService{
      * this function is to get press releases of a share
      * https://finnhub.io/docs/api/press-releases
      */
-    @GET
-    suspend fun getPressNews(@Url url: String): SymbolPressResponse
-   // @GET("press-releases?token=$token")
-   // suspend fun getPressNews(@Query("symbol") symbol: String): SymbolPressResponse
+    //@GET
+    //suspend fun getPressNews(@Url url: String): SymbolPressResponse
+    @GET("press-releases?token=$token")
+    suspend fun getPressNews(@Query("symbol") symbol: String): SymbolPressResponse
 
     /**
      * this function is to get the current exchangeRate
