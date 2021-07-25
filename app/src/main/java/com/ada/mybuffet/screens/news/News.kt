@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ImageButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -20,6 +22,7 @@ import com.ada.mybuffet.databinding.FragmentNewsBinding
 import com.ada.mybuffet.features.NewsRecyclerAdapter
 import com.ada.mybuffet.repo.StockShare
 import com.ada.mybuffet.repo.SymbolPressResponse
+import com.ada.mybuffet.screens.detailShare.model.OverviewData
 import com.ada.mybuffet.screens.stocks.StocksOverviewDirections
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,6 +69,7 @@ class News : Fragment(), NewsRecyclerViewClickListener {
 
         // refreshbutton
         binding.newsBtnRefresh.setOnClickListener {
+            it.animate().rotationBy(360f)
             viewModel.loadData()
         }
 
@@ -121,6 +125,7 @@ class News : Fragment(), NewsRecyclerViewClickListener {
         val action = NewsDirections.actionNewsToNewsArticle(shareItem)
         findNavController().navigate(action)
     }
+
 
 
     companion object {
