@@ -25,8 +25,6 @@ class NewsViewModel (application: Application) : AndroidViewModel(application){
     val news: LiveData<MutableList<SymbolPressResponse>>
         get() = _news
 
-
-
     init {
         loadData()
     }
@@ -35,24 +33,6 @@ class NewsViewModel (application: Application) : AndroidViewModel(application){
        viewModelScope.launch {
            _news.value = model.loadAll()
        }
-
-
    }
-
-
-
-/*
-    fun chanceStockData(position: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            _news.postValue(model.loadSharesFromFirebase(model.indexList[position]))
-        }
-    }
-
- */
-
-
-
-
-
 
 }

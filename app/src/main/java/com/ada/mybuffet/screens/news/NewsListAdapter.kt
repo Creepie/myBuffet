@@ -31,15 +31,12 @@ class NewsListAdapter(
             return StockDetailViewHolder(binding, listener)
         }
 
-
-
         class StockDetailViewHolder(private val binding: RecyclerItemNewsBinding,
                                     private val listener: NewsRecyclerViewClickListener) :
             RecyclerView.ViewHolder(binding.root) {
 
             fun bind(share: SymbolPressResponse) {
                 binding.apply {
-
                     var index = 0
                     for (i in share.majorDevelopment.indices){
                         index = i
@@ -54,7 +51,6 @@ class NewsListAdapter(
                         globalHeadline = share.majorDevelopment.get(index).headline
                         globalSymbol = share.majorDevelopment.get(index).symbol
                     }
-
                 }
             }
         }

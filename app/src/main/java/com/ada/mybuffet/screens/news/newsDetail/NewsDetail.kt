@@ -19,6 +19,8 @@ import kotlinx.android.synthetic.main.fragment_news_article.view.*
 
 /**
  * @author Selin Bilge
+ * This class displays the news article after the user clicked on a specific article in the item
+ *
  */
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

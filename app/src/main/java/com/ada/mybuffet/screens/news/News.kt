@@ -27,6 +27,9 @@ import kotlinx.coroutines.launch
 
 /**
  * @author Selin Bilge
+ * This class diplays the news screen, where the user can read articles about
+ * the stocks that he has
+ * it only shows a short overview, when the item is clicked the whole article shows
  */
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -66,14 +69,10 @@ class News : Fragment(), NewsRecyclerViewClickListener {
             viewModel.loadData()
         }
 
-       // binding.newsRecyclerViewStocks.layoutManager = LinearLayoutManager(activity)
-
-
         val newsListAdapter = NewsListAdapter(this)
 
         binding.apply {
             //recycler
-
             newsRecyclerViewStocks.apply {
                 adapter = newsListAdapter
                 layoutManager = LinearLayoutManager(requireContext())
@@ -90,74 +89,14 @@ class News : Fragment(), NewsRecyclerViewClickListener {
                     })
             }
 
-
-
         }
-
-
-        /*
-        binding.newsSPChooseStock.onItemSelectedListener = object :
-            AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long
-            ) {
-                if (viewModel.model.indexList.size == position){
-                    CoroutineScope(Dispatchers.IO).launch {
-                        viewModel.loadData()
-                    }
-                } else {
-                    viewModel.chanceStockData(position)
-                }
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-
-         */
-
 
         val observer = Observer<MutableList<SymbolPressResponse>> {
             newNews -> println(newNews)
             newNews.sortBy { it.symbol }
             newsListAdapter.submitList(newNews)
-
-
-            //  val adapter = NewsRecyclerAdapter(newNews)
-            // binding.newsRecycler.adapter = adapter
-          //  binding.newsRecyclerViewStocks.adapter = adapter
-
         }
-
-
         viewModel.news.observe(viewLifecycleOwner,observer)
-
-
-
-        /**
-         * -----------------------------------------------------------------------------------
-         */
-
-
-        /*
-       // binding.newsBtnRefresh.
-        binding.newsBTLoadNews
-
-        binding.newsBTLoadNews.setOnClickListener {
-            viewModel.loadData()
-        }
-
-        binding.newsRecycler.layoutManager = LinearLayoutManager(activity)
-
-
-
-        val observer = Observer<MutableList<SymbolPressResponse>> {
-            newNews ->
-            val adapter = NewsRecyclerAdapter(newNews)
-            binding.newsRecycler.adapter = adapter
-        }
-
-        viewModel.news.observe(viewLifecycleOwner,observer)
-
-         */
 
     }
 

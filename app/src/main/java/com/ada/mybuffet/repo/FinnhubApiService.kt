@@ -50,9 +50,7 @@ interface FinnhubApiService{
      * this function is to get press releases of a share
      * https://finnhub.io/docs/api/press-releases
      */
-    //@GET
-    //suspend fun getPressNews(@Url url: String): SymbolPressResponse
-    @GET("press-releases?token=$token")
+    @GET("press-releases?token=$sandboxToken")
     suspend fun getPressNews(@Query("symbol") symbol: String): SymbolPressResponse
 
     /**
